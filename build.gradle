@@ -1,0 +1,30 @@
+apply plugin: 'java'
+apply plugin: 'groovy'
+apply plugin: 'idea'
+
+sourceCompatibility = 1.5
+version = '1.0'
+defaultTasks 'generateTemplate'
+
+
+project.ext {
+    cfnDir = (project.hasProperty('cfnDir')) ? project.getProperty('cfnDir') : "./cfn"
+    printTemplateJSON =  (project.hasProperty('printTemplateJSON')) ? project.getProperty('printTemplateJSON') as Boolean : true
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile 'org.codehaus.groovy:groovy-all:2.3.2'
+    testCompile group: 'junit', name: 'junit', version: '4.11'
+}
+
+task generateTemplate(dependsOn: 'classes', type: JavaExec) {
+    println 'CloudFormation Builder'
+    main = 'cfn'
+    classpath = sourceSets.main.runtimeClasspath
+    args project.ext.cfnDir, project.ext.printTemplateJSON
+}
+

@@ -1,0 +1,3 @@
+Name                        ,Size  ,VolumeType   ,AvailabilityZone
+tableau-primary-volume      ,100   ,gp2          ,ap-northeast-1a
+tableau-worker1-volume      ,150   ,gp2          ,ap-northeast-1c

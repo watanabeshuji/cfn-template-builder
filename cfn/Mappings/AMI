@@ -1,0 +1,4 @@
+Key,            Name,       Value
+AmazonLinux,    201403,     ami-29dc9228
+NAT,            201303,     ami-5f840e5e
+NAT,            201309,     ami-cd43d9cc
