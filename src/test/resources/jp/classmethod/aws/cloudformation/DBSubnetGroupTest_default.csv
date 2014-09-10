@@ -1,0 +1,3 @@
+Name           ,DBSubnetGroupDescription  ,SubnetNames
+db-subnet      ,DB Subnet                 ,subnet-a|subnet-c
+db-subnet-dev  ,DB Subnet for development ,subnet-dev-a|subnet-dev-c
