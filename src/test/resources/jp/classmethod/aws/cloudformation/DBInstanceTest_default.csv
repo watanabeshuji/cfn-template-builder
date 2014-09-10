@@ -1,0 +1,3 @@
+Name     ,MultiAZ   ,AvailabilityZone  ,DBInstanceClass ,AllocatedStorage ,Iops   ,Engine  ,EngineVersion ,Port ,DBParameterGroupName ,DBName  ,MasterUsername ,MasterUserPassword ,VPCSecurityGroupNames
+db-dev   ,false     ,ap-northeast-1a   ,db.m1.small     ,50               ,-      ,mysql   ,5.6.19        ,3306 ,default.mysql5.6     ,app     ,root           ,password1234       ,internal
+db-prd   ,true      ,-                 ,db.m3.xlarge    ,200              ,1000   ,mysql   ,5.6.19        ,3306 ,default.mysql5.6     ,app     ,root           ,password1234       ,internal
