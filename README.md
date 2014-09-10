@@ -114,6 +114,31 @@ template
 }
 ```
 
+### InternetGateway
+TODO
+
+### Subnet
+TODO
+
+
+### RouteTable
+TODO
+
+### Route
+TODO
+
+### SubnetRouteTableAssociation
+TODO
+
+### SecurityGroup
+TODO
+
+### Volume
+TODO
+
+### Instance
+TODO
+
 
 ## 使い方
 cfnディレクトリ下に設定ファイルを定義します。
