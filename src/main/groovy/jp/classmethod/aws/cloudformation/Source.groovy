@@ -31,6 +31,11 @@ class Source {
         Boolean.valueOf(value(key))
     }
 
+    def integer(key) {
+        def v = value(key)
+        v != null ? Integer.valueOf(v) : null
+    }
+
     def list(key) {
         def v = source[meta.indexOf(key)]
         if (v == null || v == '-') return []

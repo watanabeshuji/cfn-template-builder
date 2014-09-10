@@ -5,14 +5,7 @@ apply plugin: 'maven-publish'
 
 sourceCompatibility = 1.5
 group = 'jp.classmethod.aws'
-version = '0.1.1'
-defaultTasks 'generateTemplate'
-
-
-//project.ext {
-//    cfnDir = (project.hasProperty('cfnDir')) ? project.getProperty('cfnDir') : "./cfn"
-//    printTemplateJSON =  (project.hasProperty('printTemplateJSON')) ? project.getProperty('printTemplateJSON') as Boolean : true
-//}
+version = '0.1.2'
 
 repositories {
     mavenCentral()
