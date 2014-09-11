@@ -10,6 +10,7 @@ class DBInstance {
 
     def id
     def name
+    def dBSubnetGroupName
     def multiAZ
     def availabilityZone
     def dBInstanceClass
@@ -30,6 +31,7 @@ class DBInstance {
     def DBInstance(Source source) {
         this.id = source.camelCase('Name')
         this.name = source.value('Name')
+        this.dBSubnetGroupName = source.value('DBSubnetGroupName')
         this.multiAZ = source.bool('MultiAZ')
         this.availabilityZone = source.value('AvailabilityZone')
         this.dBInstanceClass = source.value('DBInstanceClass')
@@ -51,6 +53,7 @@ class DBInstance {
             (this.id): [
                 'Type': 'AWS::RDS::DBInstance',
                 'Properties': [
+                    'DBSubnetGroupName': dBSubnetGroupName,
                     'MultiAZ': multiAZ,
                     'DBInstanceClass': dBInstanceClass,
                     'AllocatedStorage': allocatedStorage,
