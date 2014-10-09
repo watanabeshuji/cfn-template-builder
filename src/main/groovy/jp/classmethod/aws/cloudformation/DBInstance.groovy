@@ -24,6 +24,7 @@ class DBInstance {
     def masterUsername
     def masterUserPassword
     def vPCSecurityGroups
+    def dependsOn
 
     def DBInstance() {
     }
@@ -45,6 +46,7 @@ class DBInstance {
         this.masterUsername = source.value('MasterUsername')
         this.masterUserPassword = source.value('MasterUserPassword')
         this.vPCSecurityGroups = source.camelCaseList('VPCSecurityGroupNames')
+        this.dependsOn = source.camelCaseList('DependsOn')
     }
 
 
@@ -53,7 +55,7 @@ class DBInstance {
             (this.id): [
                 'Type': 'AWS::RDS::DBInstance',
                 'Properties': [
-                    'DBSubnetGroupName': dBSubnetGroupName,
+                    'DBSubnetGroupName': ['Ref': dBSubnetGroupName],
                     'MultiAZ': multiAZ,
                     'DBInstanceClass': dBInstanceClass,
                     'AllocatedStorage': allocatedStorage,
@@ -74,6 +76,7 @@ class DBInstance {
         ]
         if (!this.multiAZ) map[this.id]['Properties']['AvailabilityZone'] = availabilityZone
         if (this.iops) map[this.id]['Properties']['Ipos'] = iops
+        if (!dependsOn.isEmpty()) map[this.id]['DependsOn'] = dependsOn.collect { it }
         map
     }
 
