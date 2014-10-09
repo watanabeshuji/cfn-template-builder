@@ -15,7 +15,7 @@ class DBInstanceTest {
                 new DBInstance(
                         id: 'DbDev',
                         name: 'db-dev',
-                        dBSubnetGroupName: 'db-subnet-dev',
+                        dBSubnetGroupName: 'DbSubnetDev',
                         multiAZ: false,
                         availabilityZone: 'ap-northeast-1a',
                         dBInstanceClass: 'db.m1.small',
@@ -33,7 +33,7 @@ class DBInstanceTest {
                 new DBInstance(
                         id: 'DbPrd',
                         name: 'db-prd',
-                        dBSubnetGroupName: 'db-subnet',
+                        dBSubnetGroupName: 'DbSubnet',
                         multiAZ: true,
                         availabilityZone: null,
                         dBInstanceClass: 'db.m3.xlarge',
@@ -56,7 +56,7 @@ class DBInstanceTest {
         def sut = new DBInstance(
                 id: 'DbDev',
                 name: 'db-dev',
-                dBSubnetGroupName: 'db-subnet-dev',
+                dBSubnetGroupName: 'DbSubnetDev',
                 multiAZ: false,
                 availabilityZone: 'ap-northeast-1a',
                 dBInstanceClass: 'db.m1.small',
@@ -75,7 +75,7 @@ class DBInstanceTest {
             "DbDev": [
                 'Type': 'AWS::RDS::DBInstance',
                 'Properties': [
-                    'DBSubnetGroupName': 'db-subnet-dev',
+                    'DBSubnetGroupName': 'DbSubnetDev',
                     'MultiAZ': false,
                     'AvailabilityZone': 'ap-northeast-1a',
                     'DBInstanceClass': 'db.m1.small',
@@ -103,7 +103,7 @@ class DBInstanceTest {
         def sut = new DBInstance(
                 id: 'DbPrd',
                 name: 'db-prd',
-                dBSubnetGroupName: 'db-subnet',
+                dBSubnetGroupName: 'DbSubnet',
                 multiAZ: true,
                 availabilityZone: null,
                 dBInstanceClass: 'db.m3.xlarge',
@@ -122,7 +122,7 @@ class DBInstanceTest {
             "DbPrd": [
                 'Type': 'AWS::RDS::DBInstance',
                 'Properties': [
-                    'DBSubnetGroupName': 'db-subnet',
+                    'DBSubnetGroupName': 'DbSubnet',
                     'MultiAZ': true,
                     'DBInstanceClass': 'db.m3.xlarge',
                     'AllocatedStorage': '200',
