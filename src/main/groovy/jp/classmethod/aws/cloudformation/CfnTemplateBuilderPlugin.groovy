@@ -2,6 +2,11 @@ package jp.classmethod.aws.cloudformation
 
 import org.gradle.api.Plugin
 import org.gradle.api.Project
+import org.gradle.internal.FileUtils
+
+import java.nio.file.Files
+import java.nio.file.Path
+import java.nio.file.Paths
 
 /**
  * Created by watanabeshuji on 2014/09/09.
@@ -9,8 +14,16 @@ import org.gradle.api.Project
 class CfnTemplateBuilderPlugin implements Plugin<Project> {
 
     void apply(Project project) {
-        project.ext.cfnDir = "./cfn"
-        project.ext.printTemplateJSON = true
+        project.ext.cfnDir = (project.hasProperty('cfnDir')) ? project.getProperty('cfnDir') : "./cfn"
+        project.ext.printTemplateJSON =  (project.hasProperty('printTemplateJSON')) ? project.getProperty('printTemplateJSON') as Boolean : true
+        project.task('initCfn') << {
+            println 'CloudFormation Builder'
+            println 'Create sample CSV files....'
+            def cfnDir = project.ext.cfnDir
+            Files.createDirectory(Paths.get(cfnDir, 'Mappings'))
+            Files.createDirectory(Paths.get(cfnDir, 'userdata'))
+            Files.copy(CfnTemplateBuilderPlugin.class.getResourceAsStream('VPC.csv'), Paths.get(cfnDir, 'VPC.csv'))
+        }
         project.task('generateTemplate') << {
             println 'CloudFormation Builder'
             def dir = project.ext.cfnDir
