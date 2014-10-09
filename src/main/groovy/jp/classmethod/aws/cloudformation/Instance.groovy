@@ -15,6 +15,7 @@ class Instance {
     def imageId
     def iamInstanceProfile
     def sourceDestCheck
+    def privateIpAddress
     def eip
     def securityGroups
     def volumes
@@ -37,6 +38,7 @@ class Instance {
         this.iamInstanceProfile = source.value('IamInstanceProfile')
         this.sourceDestCheck = source.bool('SourceDestCheck')
         this.eip = source.bool('EIP')
+        this.privateIpAddress = source.value('PrivateIpAddress')
         if (source.containsKey('SecurityGroupIds')) {
             this.securityGroups = source.list('SecurityGroupIds')
         } else {
@@ -77,6 +79,9 @@ class Instance {
                     ]
             ]
         }
+        if (privateIpAddress) {
+            result[id]['Properties']['PrivateIpAddress'] = privateIpAddress
+        }
         // Elastic IP if needs
         if (eip) {
             result << [
@@ -111,7 +116,7 @@ class Instance {
                 def userData = new File(userDataDir, instance.name)
                 if (userData.exists()) {
                     userData.eachLine {
-                        instance.userData << it + '\n'
+                        instance.userData << it + '\\n'
                     }
                 }
                 result << instance
