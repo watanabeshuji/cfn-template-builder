@@ -1,11 +1,11 @@
 package jp.classmethod.aws.cloudformation
 
-import groovy.transform.ToString
+import groovy.transform.Canonical
 
 /**
  * Created by watanabeshuji on 2014/08/14.
  */
-@ToString
+@Canonical
 class CacheCluster {
     def id
     def name
@@ -14,11 +14,15 @@ class CacheCluster {
     def engine
     def engineVersion
     def autoMinorVersionUpgrade
+    def cacheParameterGroupName
     def preferredAvailabilityZone
     def cacheSubnetGroupName
     def vpcSecurityGroupIds
 
-    def CacheCluster(source) {
+    def CacheCluster() {
+    }
+
+    def CacheCluster(Source source) {
         this.id = source.camelCase('Name')
         this.name = source.value('Name')
         this.cacheNodeType = source.value('CacheNodeType')
@@ -27,8 +31,33 @@ class CacheCluster {
         this.engineVersion = source.value('EngineVersion')
         this.autoMinorVersionUpgrade = source.bool('AutoMinorVersionUpgrade')
         this.preferredAvailabilityZone = source.value('PreferredAvailabilityZone')
-        this.cacheSubnetGroupName = source.value('CacheSubnetGroupName')
-        this.vpcSecurityGroupIds = source.camelCaseList('VpcSecurityGroupIds')
+        this.cacheParameterGroupName = source.value('CacheParameterGroupName')
+        this.cacheSubnetGroupName = source.camelCase('CacheSubnetGroupName')
+        this.vpcSecurityGroupIds = source.camelCaseList('VpcSecurityGroups')
+    }
+
+    def toResourceMap() {
+        [
+            (this.id): [
+                'Type': 'AWS::ElastiCache::CacheCluster',
+                'Properties': [
+                    'CacheNodeType': cacheNodeType,
+                    'NumCacheNodes': numCacheNodes,
+                    'Engine': engine,
+                    'EngineVersion': engineVersion,
+                    'AutoMinorVersionUpgrade': autoMinorVersionUpgrade,
+                    'PreferredAvailabilityZone': preferredAvailabilityZone,
+                    'CacheParameterGroupName': cacheParameterGroupName,
+                    'CacheSubnetGroupName':  ['Ref': cacheSubnetGroupName],
+                    'VpcSecurityGroupIds': vpcSecurityGroupIds.collect { ['Ref': it] },
+//                   # NOT SUPPORT
+//                    'Tags': [
+//                            ['Key': 'Name', 'Value': name],
+//                            ['Key': 'Application', 'Value': ['Ref': 'AWS::StackId' ]]
+//                    ]
+                ]
+            ]
+        ]
     }
 
     static def load(File file) {
@@ -45,21 +74,7 @@ class CacheCluster {
     }
 
     static def inject(resources, file) {
-        load(file).inject(resources, {o, CacheCluster r ->
-            o << [ "$r.id": [
-                    'Type': 'AWS::ElastiCache::CacheCluster',
-                    'Properties': [
-                            'CacheNodeType': r.cacheNodeType,
-                            'NumCacheNodes': r.numCacheNodes,
-                            'Engine': r.engine,
-                            'EngineVersion': r.engineVersion,
-                            'AutoMinorVersionUpgrade': r.autoMinorVersionUpgrade,
-                            'PreferredAvailabilityZone': r.preferredAvailabilityZone,
-                            'CacheSubnetGroupName': r.cacheSubnetGroupName,
-                            'VpcSecurityGroupIds': r.vpcSecurityGroupIds
-                    ]
-            ]]
-        })
+        load(file).inject(resources, {o, CacheCluster r -> o << r.toResourceMap() })
     }
 
 }
