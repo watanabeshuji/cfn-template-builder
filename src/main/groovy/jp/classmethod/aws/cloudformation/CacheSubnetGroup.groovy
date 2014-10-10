@@ -9,8 +9,9 @@ import groovy.transform.Canonical
 class CacheSubnetGroup {
     def id
     def name
-    def description
-    def subnetIds = []
+    def Description
+    def SubnetNames
+    def SubnetIds
 
     def CacheSubnetGroup() {
     }
@@ -18,20 +19,29 @@ class CacheSubnetGroup {
     def CacheSubnetGroup(Source source) {
         this.id = source.camelCase('Name')
         this.name = source.value('Name')
-        this.description = source.value('Description')
-        this.subnetIds = source.camelCaseList('SubnetNames')
+        this.Description = source.value('Description')
+        if (source.containsKey('SubnetNames')) {
+            SubnetNames = source.camelCaseList('SubnetNames')
+        } else {
+            SubnetIds = source.list('SubnetIds')
+        }
     }
 
     def toResourceMap() {
-        [
+        def map = [
             (this.id): [
                 'Type': 'AWS::ElastiCache::SubnetGroup',
                 'Properties': [
                     'Description': description,
-                    'SubnetIds': subnetIds.collect { ['Ref': it] }
                 ]
             ]
         ]
+        if (SubnetNames) {
+            map[this.id]['Properties']['SubnetIds'] = SubnetNames.collect { ['Ref': it] }
+        } else {
+            map[this.id]['Properties']['SubnetIds'] = SubnetIds
+        }
+        map
     }
 
     static def load(file) {
