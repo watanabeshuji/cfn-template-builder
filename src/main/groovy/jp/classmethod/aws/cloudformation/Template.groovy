@@ -39,6 +39,7 @@ class Template {
         dir.listFiles({d,f -> f ==~ /\d+_SecurityGroup\.csv/ } as FilenameFilter).each { SecurityGroup.inject(resources, it) }
         dir.listFiles({d,f -> f ==~ /\d+_Volume\.csv/ } as FilenameFilter).each { Volume.inject(resources, it) }
         dir.listFiles({d,f -> f ==~ /\d+_Instance\.csv/ } as FilenameFilter).each { Instance.inject(resources, it) }
+        dir.listFiles({d,f -> f ==~ /\d+_ElasticLoadBalancing\.csv/ } as FilenameFilter).each { ElasticLoadBalancing.inject(resources, it) }
         dir.listFiles({d,f -> f ==~ /\d+_DBSubnetGroup\.csv/ } as FilenameFilter).each { DBSubnetGroup.inject(resources, it) }
         dir.listFiles({d,f -> f ==~ /\d+_DBInstance\.csv/ } as FilenameFilter).each { DBInstance.inject(resources, it) }
         dir.listFiles({d,f -> f ==~ /\d+_CacheSubnetGroup\.csv/ } as FilenameFilter).each { CacheSubnetGroup.inject(resources, it) }
