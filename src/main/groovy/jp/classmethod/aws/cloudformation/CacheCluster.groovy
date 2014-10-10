@@ -48,13 +48,8 @@ class CacheCluster {
                     'AutoMinorVersionUpgrade': autoMinorVersionUpgrade,
                     'PreferredAvailabilityZone': preferredAvailabilityZone,
                     'CacheParameterGroupName': cacheParameterGroupName,
-                    'CacheSubnetGroupName':  ['Ref': cacheSubnetGroupName],
-                    'VpcSecurityGroupIds': vpcSecurityGroupIds.collect { ['Ref': it] },
-//                   # NOT SUPPORT
-//                    'Tags': [
-//                            ['Key': 'Name', 'Value': name],
-//                            ['Key': 'Application', 'Value': ['Ref': 'AWS::StackId' ]]
-//                    ]
+                    'CacheSubnetGroupName':  Util.ref(cacheSubnetGroupName),
+                    'VpcSecurityGroupIds': vpcSecurityGroupIds.collect { Util.ref(it) },
                 ]
             ]
         ]
