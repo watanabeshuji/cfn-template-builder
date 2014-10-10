@@ -41,11 +41,11 @@ class ElasticLoadBalancing {
             (this.id): [
                 'Type': 'AWS::ElasticLoadBalancing::LoadBalancer',
                 'Properties': [
-                    'LoadBalancerName': 'elb',
-                    'Subnets': this.Subnets,
+                    'LoadBalancerName': this.name,
+                    'Subnets': this.Subnets.collect { Util.ref(it) },
                     'Listeners': this.Listeners,
-                    'SecurityGroups': this.SecurityGroups,
-                    'Instances': this.Instances,
+                    'SecurityGroups': this.SecurityGroups.collect { Util.ref(it) },
+                    'Instances': this.Instances.collect { Util.ref(it) },
                     'HealthCheck': [
                         Target: this.Target,
                         Timeout: this.Timeout,
