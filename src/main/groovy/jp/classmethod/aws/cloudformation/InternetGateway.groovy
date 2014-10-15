@@ -5,16 +5,16 @@ import groovy.transform.Canonical
 @Canonical
 class InternetGateway {
     def id
-    def name
-    def vpcId
+    def Name
+    def Vpc
 
     def InternetGateway() {
     }
 
     def InternetGateway(Source source) {
         this.id = source.camelCase('Name')
-        this.name = source.value('Name')
-        this.vpcId = source.camelCase('Vpc')
+        this.Name = source.value('Name')
+        this.Vpc = source.camelCase('Vpc')
     }
 
     def toResourceMap() {
@@ -23,7 +23,7 @@ class InternetGateway {
                 'Type': 'AWS::EC2::InternetGateway',
                 'Properties': [
                     'Tags': [
-                        ['Key': 'Name', 'Value': name],
+                        ['Key': 'Name', 'Value': Name],
                         ['Key': 'Application', 'Value': ['Ref': 'AWS::StackId' ]]
                     ]
                 ]
@@ -31,25 +31,15 @@ class InternetGateway {
             ("Attach$id" as String): [
                 'Type': 'AWS::EC2::VPCGatewayAttachment',
                 'Properties': [
-                    'VpcId': ["Ref": vpcId],
-                    'InternetGatewayId': ["Ref": id]
+                    'VpcId': Util.ref(this.Vpc),
+                    'InternetGatewayId': Util.ref(this.id)
                 ]
             ]
         ]
     }
 
     static def load(File file) {
-        if (!file.exists()) return []
-        def result = []
-        def meta
-        file.eachLine { line, num ->
-            if (num == 1) {
-                meta = new SourceMeta(line.split(','))
-            } else {
-                result << new InternetGateway(meta.newSource(line.split(',')))
-            }
-        }
-        result
+        Util.load(file, {new InternetGateway(it)})
     }
 
     static def inject(resources, file) {
