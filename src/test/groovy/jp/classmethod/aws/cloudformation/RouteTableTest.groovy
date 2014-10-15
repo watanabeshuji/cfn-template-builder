@@ -12,15 +12,15 @@ class RouteTableTest {
         File input = new File(getClass().getResource("RouteTableTest_default.csv").getFile())
         def actual = RouteTable.load(input)
         assert actual == [
-                new RouteTable(id: 'PublicRouteTable',  name: 'public-route-table',  vpcId: 'Vpc'),
-                new RouteTable(id: 'PrivateRouteTable', name: 'private-route-table', vpcId: 'Vpc')
+                new RouteTable(id: 'PublicRouteTable',  Name: 'public-route-table',  Vpc: 'Vpc'),
+                new RouteTable(id: 'PrivateRouteTable', Name: 'private-route-table', Vpc: 'Vpc')
         ]
     }
 
 
     @Test
     void "toResourceMap"() {
-        def sut = new RouteTable(id: 'PublicRouteTable',  name: 'public-route-table',  vpcId: 'Vpc')
+        def sut = new RouteTable(id: 'PublicRouteTable',  Name: 'public-route-table',  Vpc: 'Vpc')
         def expected = [
             'PublicRouteTable': [
                 'Type': 'AWS::EC2::RouteTable',
