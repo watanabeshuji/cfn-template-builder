@@ -10,7 +10,6 @@ class CacheSubnetGroup {
     def id
     def name
     def Description
-    def SubnetNames
     def SubnetIds
 
     def CacheSubnetGroup() {
@@ -20,28 +19,19 @@ class CacheSubnetGroup {
         this.id = source.camelCase('Name')
         this.name = source.value('Name')
         this.Description = source.value('Description')
-        if (source.containsKey('SubnetNames')) {
-            SubnetNames = source.camelCaseList('SubnetNames')
-        } else {
-            SubnetIds = source.list('SubnetIds')
-        }
+        this.SubnetIds = source.camelCaseList('SubnetIds')
     }
 
     def toResourceMap() {
-        def map = [
+        [
             (this.id): [
                 'Type': 'AWS::ElastiCache::SubnetGroup',
                 'Properties': [
                     'Description': description,
+                    'SubnetIds': SubnetIds.collect { Util.ref(it) }
                 ]
             ]
         ]
-        if (SubnetNames) {
-            map[this.id]['Properties']['SubnetIds'] = SubnetNames.collect { ['Ref': it] }
-        } else {
-            map[this.id]['Properties']['SubnetIds'] = SubnetIds
-        }
-        map
     }
 
     static def load(file) {

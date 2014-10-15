@@ -12,7 +12,7 @@ class CacheSubnetGroupTest {
         File input = new File(getClass().getResource("CacheSubnetGroupTest_default.csv").getFile())
         def actual = CacheSubnetGroup.load(input)
         assert actual == [
-                new CacheSubnetGroup(id: 'CacheSubnetGroupDev', name: 'cache-subnet-group-dev', Description:'Elastic Cache Subnet Group for Development', SubnetNames: ['SubnetA', 'SubnetC'])
+                new CacheSubnetGroup(id: 'CacheSubnetGroupDev', name: 'cache-subnet-group-dev', Description:'Elastic Cache Subnet Group for Development', SubnetIds: ['SubnetA', 'SubnetC'])
         ]
     }
 
@@ -30,7 +30,7 @@ class CacheSubnetGroupTest {
 
     @Test
     void "toResourceMap"() {
-        def sut = new CacheSubnetGroup(id: 'CacheSubnetGroup', name: 'cache-subnet-group', Description:'Elastic Cache Subnet Group', SubnetNames: ['SubnetA', 'SubnetC'])
+        def sut = new CacheSubnetGroup(id: 'CacheSubnetGroup', name: 'cache-subnet-group', Description:'Elastic Cache Subnet Group', SubnetIds: ['SubnetA', 'SubnetC'])
         def expected = [
             "CacheSubnetGroup": [
                 'Type': 'AWS::ElastiCache::SubnetGroup',
