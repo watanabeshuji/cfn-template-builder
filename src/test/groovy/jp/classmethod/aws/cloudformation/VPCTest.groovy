@@ -12,7 +12,7 @@ class VPCTest {
         File input = new File(getClass().getResource("VPCTest_default.csv").getFile())
         def actual = VPC.load(input)
         assert actual == [
-            new VPC(id: 'Vpc', name: 'vpc', cidrBlock: '10.0.0.0/16')
+            new VPC(id: 'Vpc', Name: 'vpc', CidrBlock: '10.0.0.0/16')
         ]
     }
 
@@ -21,14 +21,14 @@ class VPCTest {
         File input = new File(getClass().getResource("VPCTest_2vpcs.csv").getFile())
         def actual = VPC.load(input)
         assert actual == [
-                new VPC(id: 'VpcA', name: 'vpc-a', cidrBlock: '10.0.0.0/16'),
-                new VPC(id: 'VpcB', name: 'vpc-b', cidrBlock: '10.1.0.0/16')
+                new VPC(id: 'VpcA', Name: 'vpc-a', CidrBlock: '10.0.0.0/16'),
+                new VPC(id: 'VpcB', Name: 'vpc-b', CidrBlock: '10.1.0.0/16')
         ]
     }
 
     @Test
     void "toResourceMap"() {
-        def sut = new VPC(id: 'Vpc', name: 'vpc', cidrBlock: '10.0.0.0/16')
+        def sut = new VPC(id: 'Vpc', Name: 'vpc', CidrBlock: '10.0.0.0/16')
         def expected = [
             "Vpc": [
                 'Type': 'AWS::EC2::VPC',
