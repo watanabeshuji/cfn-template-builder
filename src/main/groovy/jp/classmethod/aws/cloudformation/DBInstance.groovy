@@ -9,44 +9,44 @@ import groovy.transform.Canonical
 class DBInstance {
 
     def id
-    def name
-    def dBSubnetGroupName
-    def multiAZ
-    def availabilityZone
-    def dBInstanceClass
-    def allocatedStorage
-    def iops
-    def engine
-    def engineVersion
-    def port
-    def dBParameterGroupName
-    def dBName
-    def masterUsername
-    def masterUserPassword
-    def vPCSecurityGroups
-    def dependsOn
+    def Name
+    def DBSubnetGroupName
+    def MultiAZ
+    def AvailabilityZone
+    def DBInstanceClass
+    def AllocatedStorage
+    def Iops
+    def Engine
+    def EngineVersion
+    def Port
+    def DBParameterGroupName
+    def DBName
+    def MasterUsername
+    def MasterUserPassword
+    def VPCSecurityGroups
+    def DependsOn
 
     def DBInstance() {
     }
 
     def DBInstance(Source source) {
         this.id = source.camelCase('Name')
-        this.name = source.value('Name')
-        this.dBSubnetGroupName = source.value('DBSubnetGroupName')
-        this.multiAZ = source.bool('MultiAZ')
-        this.availabilityZone = source.value('AvailabilityZone')
-        this.dBInstanceClass = source.value('DBInstanceClass')
-        this.allocatedStorage = source.value('AllocatedStorage')
-        this.iops = source.integer('Iops')
-        this.engine = source.value('Engine')
-        this.engineVersion = source.value('EngineVersion')
-        this.port = source.value('Port')
-        this.dBParameterGroupName = source.value('DBParameterGroupName')
-        this.dBName = source.value('DBName')
-        this.masterUsername = source.value('MasterUsername')
-        this.masterUserPassword = source.value('MasterUserPassword')
-        this.vPCSecurityGroups = source.camelCaseList('VPCSecurityGroupNames')
-        this.dependsOn = source.camelCaseList('DependsOn')
+        this.Name = source.value('Name')
+        this.DBSubnetGroupName = source.camelCase('DBSubnetGroupName')
+        this.MultiAZ = source.bool('MultiAZ')
+        this.AvailabilityZone = source.value('AvailabilityZone')
+        this.DBInstanceClass = source.value('DBInstanceClass')
+        this.AllocatedStorage = source.value('AllocatedStorage')
+        this.Iops = source.integer('Iops')
+        this.Engine = source.value('Engine')
+        this.EngineVersion = source.value('EngineVersion')
+        this.Port = source.value('Port')
+        this.DBParameterGroupName = source.value('DBParameterGroupName')
+        this.DBName = source.value('DBName')
+        this.MasterUsername = source.value('MasterUsername')
+        this.MasterUserPassword = source.value('MasterUserPassword')
+        this.VPCSecurityGroups = source.camelCaseList('VPCSecurityGroups')
+        this.DependsOn = source.camelCaseList('DependsOn')
     }
 
 
@@ -55,28 +55,28 @@ class DBInstance {
             (this.id): [
                 'Type': 'AWS::RDS::DBInstance',
                 'Properties': [
-                    'DBSubnetGroupName': ['Ref': dBSubnetGroupName],
-                    'MultiAZ': multiAZ,
-                    'DBInstanceClass': dBInstanceClass,
-                    'AllocatedStorage': allocatedStorage,
-                    'Engine': engine,
-                    'EngineVersion': engineVersion,
-                    'Port': port,
-                    'DBParameterGroupName': dBParameterGroupName,
-                    'DBName': dBName,
-                    'MasterUsername': masterUsername,
-                    'MasterUserPassword': masterUserPassword,
-                    'VPCSecurityGroups': vPCSecurityGroups.collect { ['Ref': it] },
+                    'DBSubnetGroupName': Util.ref(DBSubnetGroupName),
+                    'MultiAZ': MultiAZ,
+                    'DBInstanceClass': DBInstanceClass,
+                    'AllocatedStorage': AllocatedStorage,
+                    'Engine': Engine,
+                    'EngineVersion': EngineVersion,
+                    'Port': Port,
+                    'DBParameterGroupName': DBParameterGroupName,
+                    'DBName': DBName,
+                    'MasterUsername': MasterUsername,
+                    'MasterUserPassword': MasterUserPassword,
+                    'VPCSecurityGroups': VPCSecurityGroups.collect { Util.ref(it) },
                     'Tags': [
-                            ['Key': 'Name', 'Value': name],
+                            ['Key': 'Name', 'Value': Name],
                             ['Key': 'Application', 'Value': ['Ref': 'AWS::StackId' ]]
                     ]
                 ]
             ]
         ]
-        if (!this.multiAZ) map[this.id]['Properties']['AvailabilityZone'] = availabilityZone
-        if (this.iops) map[this.id]['Properties']['Ipos'] = iops
-        if (!dependsOn.isEmpty()) map[this.id]['DependsOn'] = dependsOn.collect { it }
+        if (!this.MultiAZ) map[this.id]['Properties']['AvailabilityZone'] = AvailabilityZone
+        if (this.Iops) map[this.id]['Properties']['Ipos'] = Iops
+        if (!DependsOn.isEmpty()) map[this.id]['DependsOn'] = DependsOn.collect { it }
         map
     }
 

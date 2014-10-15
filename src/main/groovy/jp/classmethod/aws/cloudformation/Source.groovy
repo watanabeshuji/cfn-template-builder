@@ -50,7 +50,9 @@ class Source {
     }
 
     def camelCaseList(key) {
-        def v = source[meta.indexOf(key)]
+        def idx = meta.indexOf(key)
+        if (idx < 0) return []
+        def v = source[idx]
         if (v == null || v == '-') return null
         v.split(/\|/).collect {
             it.contains(':')  ? toMap(it) : Util.toCamelCase(it)
