@@ -12,14 +12,14 @@ class RouteTest {
         File input = new File(getClass().getResource("RouteTest_default.csv").getFile())
         def actual = Route.load(input)
         assert actual == [
-            new Route(id: 'PublicRoute',  name: 'public-route',  routeTableId:'PublicRouteTable',  cidrBlock: '0.0.0.0/0', gatewayId:'Igw'),
-            new Route(id: 'PrivateRoute', name: 'private-route', routeTableId:'PrivateRouteTable', cidrBlock: '0.0.0.0/0', instanceId:'Bastion')
+            new Route(id: 'PublicRoute',  Name: 'public-route',  RouteTable:'PublicRouteTable',  DestinationCidrBlock: '0.0.0.0/0', Gateway:'Igw'),
+            new Route(id: 'PrivateRoute', Name: 'private-route', RouteTable:'PrivateRouteTable', DestinationCidrBlock: '0.0.0.0/0', Instance:'Bastion')
         ]
     }
 
     @Test
     void "IGWでのtoResourceMap"() {
-        def sut = new Route(id: 'PublicRoute',  name: 'public-route',  routeTableId:'PublicRouteTable',  cidrBlock: '0.0.0.0/0', gatewayId:'Igw')
+        def sut = new Route(id: 'PublicRoute',  Name: 'public-route',  RouteTable:'PublicRouteTable',  DestinationCidrBlock: '0.0.0.0/0', Gateway:'Igw')
         def expected = [
             "PublicRoute": [
                 'Type': 'AWS::EC2::Route',
@@ -36,7 +36,7 @@ class RouteTest {
 
     @Test
     void "NATでのtoResourceMap"() {
-        def sut = new Route(id: 'PrivateRoute', name: 'private-route', routeTableId:'PrivateRouteTable', cidrBlock: '0.0.0.0/0', instanceId:'Bastion')
+        def sut = new Route(id: 'PrivateRoute', Name: 'private-route', RouteTable:'PrivateRouteTable', DestinationCidrBlock: '0.0.0.0/0', Instance:'Bastion')
         def expected = [
                 "PrivateRoute": [
                         'Type': 'AWS::EC2::Route',
