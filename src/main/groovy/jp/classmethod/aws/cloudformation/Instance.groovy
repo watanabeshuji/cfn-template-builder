@@ -8,16 +8,16 @@ import groovy.transform.Canonical
 @Canonical
 class Instance {
     def id
-    def name
-    def instanceType
-    def keyName
-    def subnetId
-    def imageId
-    def iamInstanceProfile
-    def sourceDestCheck
-    def privateIpAddress
-    def eip
-    def securityGroups
+    def Name
+    def InstanceType
+    def KeyName
+    def SubnetId
+    def ImageId
+    def IamInstanceProfile
+    def SourceDestCheck
+    def PrivateIpAddress
+    def EIP
+    def SecurityGroupIds
     def volumes
     def userData = []
 
@@ -26,24 +26,16 @@ class Instance {
 
     def Instance(Source source) {
         this.id = source.camelCase('Name')
-        this.name = source.value('Name')
-        this.instanceType = source.value('InstanceType')
-        this.keyName = source.value('KeyName')
-        if (source.containsKey('SubnetId')) {
-            this.subnetId = source.value('SubnetId')
-        } else {
-            this.subnetId = ["Ref": source.camelCase('Subnet')]
-        }
-        this.imageId = source.value('ImageId')
-        this.iamInstanceProfile = source.value('IamInstanceProfile')
-        this.sourceDestCheck = source.bool('SourceDestCheck')
-        this.eip = source.bool('EIP')
-        this.privateIpAddress = source.value('PrivateIpAddress')
-        if (source.containsKey('SecurityGroupIds')) {
-            this.securityGroups = source.list('SecurityGroupIds')
-        } else {
-            this.securityGroups = source.camelCaseList('SecurityGroups').collect { ['Ref': it] }
-        }
+        this.Name = source.value('Name')
+        this.InstanceType = source.value('InstanceType')
+        this.KeyName = source.value('KeyName')
+        this.SubnetId = source.camelCase('SubnetId')
+        this.ImageId = source.value('ImageId')
+        this.IamInstanceProfile = source.value('IamInstanceProfile')
+        this.SourceDestCheck = source.bool('SourceDestCheck')
+        this.PrivateIpAddress = source.value('PrivateIpAddress')
+        this.EIP = source.bool('EIP')
+        this.SecurityGroupIds = source.camelCaseList('SecurityGroupIds')
         def volumesInput = source.value('Volumes')
         if (volumesInput != null) {
             volumes = volumesInput.split(/\|/).collect {
@@ -58,15 +50,15 @@ class Instance {
                 (id): [
                         'Type': 'AWS::EC2::Instance',
                         'Properties': [
-                                'InstanceType': instanceType,
-                                'KeyName': keyName,
-                                'SubnetId': subnetId,
-                                'ImageId': imageId,
-                                'IamInstanceProfile': iamInstanceProfile,
-                                'SourceDestCheck': sourceDestCheck,
-                                'SecurityGroupIds': securityGroups,
+                                'InstanceType': InstanceType,
+                                'KeyName': KeyName,
+                                'SubnetId': Util.ref(SubnetId),
+                                'ImageId': ImageId,
+                                'IamInstanceProfile': IamInstanceProfile,
+                                'SourceDestCheck': SourceDestCheck,
+                                'SecurityGroupIds': SecurityGroupIds.collect { Util.ref(it) },
                                 'Tags': [
-                                        ['Key': 'Name', 'Value': name],
+                                        ['Key': 'Name', 'Value': Name],
                                         ['Key': 'Application', 'Value': ['Ref': 'AWS::StackId' ]]
                                 ],
                         ]
@@ -79,11 +71,11 @@ class Instance {
                     ]
             ]
         }
-        if (privateIpAddress) {
-            result[id]['Properties']['PrivateIpAddress'] = privateIpAddress
+        if (PrivateIpAddress) {
+            result[id]['Properties']['PrivateIpAddress'] = PrivateIpAddress
         }
         // Elastic IP if needs
-        if (eip) {
+        if (EIP) {
             result << [
                     ("${id}EIP" as String): [
                             'Type': 'AWS::EC2::EIP',

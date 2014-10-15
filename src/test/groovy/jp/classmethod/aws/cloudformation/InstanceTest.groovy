@@ -11,21 +11,21 @@ class InstanceTest {
     void "default.csvのload"() {
         File input = new File(getClass().getResource("InstanceTest_default.csv").getFile())
         def actual = Instance.load(input)
-        assert actual[0].userData == ['#! /bin/bash -v\n', 'yum update -y\n']
+        assert actual[0].userData == ['#! /bin/bash -v\\n', 'yum update -y\\n']
         assert actual == [
                 new Instance(
                         id: 'Bastion',
-                        name: 'bastion',
-                        instanceType: 't1.micro',
-                        keyName: ['Fn::FindInMap': ['Common', 'KeyPair', 'Ec2KeyName']],
-                        subnetId: ['Ref': 'PublicSubnet'],
-                        imageId: ['Fn::FindInMap': ['AMI', 'NAT', '201309']],
-                        iamInstanceProfile: ['Fn::FindInMap': ['Common', 'Role', 'Ec2Role']],
-                        sourceDestCheck: false,
-                        eip: true,
-                        securityGroups: [ ['Ref': 'Internal'], ['Ref': 'CmMainte'] ],
+                        Name: 'bastion',
+                        InstanceType: 't1.micro',
+                        KeyName: ['Fn::FindInMap': ['Common', 'KeyPair', 'Ec2KeyName']],
+                        SubnetId: 'PublicSubnet',
+                        ImageId: ['Fn::FindInMap': ['AMI', 'NAT', '201309']],
+                        IamInstanceProfile: ['Fn::FindInMap': ['Common', 'Role', 'Ec2Role']],
+                        SourceDestCheck: false,
+                        EIP: true,
+                        SecurityGroupIds: ['Internal', 'CmMainte'],
                         volumes: null,
-                        userData: ['#! /bin/bash -v\n', 'yum update -y\n']
+                        userData: ['#! /bin/bash -v\\n', 'yum update -y\\n']
                 )
         ]
     }
@@ -34,21 +34,21 @@ class InstanceTest {
     void "withVolume.csvのload"() {
         File input = new File(getClass().getResource("InstanceTest_withVolume.csv").getFile())
         def actual = Instance.load(input)
-        assert actual[0].userData == ['#! /bin/bash -v\n', 'yum update -y\n']
+        assert actual[0].userData == ['#! /bin/bash -v\\n', 'yum update -y\\n']
         assert actual == [
                 new Instance(
                         id: 'Bastion',
-                        name: 'bastion',
-                        instanceType: 't1.micro',
-                        keyName: ['Fn::FindInMap': ['Common', 'KeyPair', 'Ec2KeyName']],
-                        subnetId: ['Ref': 'PublicSubnet'],
-                        imageId: ['Fn::FindInMap': ['AMI', 'NAT', '201309']],
-                        iamInstanceProfile: ['Fn::FindInMap': ['Common', 'Role', 'Ec2Role']],
-                        sourceDestCheck: false,
-                        eip: true,
-                        securityGroups: [ ['Ref': 'Internal'], ['Ref': 'CmMainte'] ],
+                        Name: 'bastion',
+                        InstanceType: 't1.micro',
+                        KeyName: ['Fn::FindInMap': ['Common', 'KeyPair', 'Ec2KeyName']],
+                        SubnetId: 'PublicSubnet',
+                        ImageId: ['Fn::FindInMap': ['AMI', 'NAT', '201309']],
+                        IamInstanceProfile: ['Fn::FindInMap': ['Common', 'Role', 'Ec2Role']],
+                        SourceDestCheck: false,
+                        EIP: true,
+                        SecurityGroupIds: ['Internal', 'CmMainte'],
                         volumes: [['VolumeId': 'ExtVolume', 'Device': '/dev/sdh']],
-                        userData: ['#! /bin/bash -v\n', 'yum update -y\n']
+                        userData: ['#! /bin/bash -v\\n', 'yum update -y\\n']
                 )
         ]
     }
@@ -57,17 +57,17 @@ class InstanceTest {
     void "toResourceMap"() {
         def sut = new Instance(
                 id: 'Bastion',
-                name: 'bastion',
-                instanceType: 't1.micro',
-                keyName: ['Fn::FindInMap': ['Common', 'KeyPair', 'Ec2KeyName']],
-                subnetId: ['Ref': 'PublicSubnet'],
-                imageId: ['Fn::FindInMap': ['AMI', 'NAT', '201309']],
-                iamInstanceProfile: ['Fn::FindInMap': ['Common', 'Role', 'Ec2Role']],
-                sourceDestCheck: false,
-                eip: true,
-                securityGroups: [ ['Ref': 'Internal'], ['Ref': 'CmMainte'] ],
+                Name: 'bastion',
+                InstanceType: 't1.micro',
+                KeyName: ['Fn::FindInMap': ['Common', 'KeyPair', 'Ec2KeyName']],
+                SubnetId: 'PublicSubnet',
+                ImageId: ['Fn::FindInMap': ['AMI', 'NAT', '201309']],
+                IamInstanceProfile: ['Fn::FindInMap': ['Common', 'Role', 'Ec2Role']],
+                SourceDestCheck: false,
+                EIP: true,
+                SecurityGroupIds: ['Internal', 'CmMainte'],
                 volumes: null,
-                userData: ['#! /bin/bash -v\n', 'yum update -y\n']
+                userData: ['#! /bin/bash -v\\n', 'yum update -y\\n']
         )
         def expected = [
             'Bastion': [
@@ -87,7 +87,7 @@ class InstanceTest {
                     'UserData': [
                         'Fn::Base64': [
                             'Fn::Join': ['',
-                                 ['#! /bin/bash -v\n', 'yum update -y\n']
+                                 ['#! /bin/bash -v\\n', 'yum update -y\\n']
                             ]
                         ]
                     ]
@@ -109,15 +109,15 @@ class InstanceTest {
     void "toResourceMap_Volume有"() {
         def sut = new Instance(
                 id: 'Bastion',
-                name: 'bastion',
-                instanceType: 't1.micro',
-                keyName: ['Fn::FindInMap': ['Common', 'KeyPair', 'Ec2KeyName']],
-                subnetId: ['Ref': 'PublicSubnet'],
-                imageId: ['Fn::FindInMap': ['AMI', 'NAT', '201309']],
-                iamInstanceProfile: ['Fn::FindInMap': ['Common', 'Role', 'Ec2Role']],
-                sourceDestCheck: false,
-                eip: false,
-                securityGroups: [ ['Ref': 'Internal'], ['Ref': 'CmMainte'] ],
+                Name: 'bastion',
+                InstanceType: 't1.micro',
+                KeyName: ['Fn::FindInMap': ['Common', 'KeyPair', 'Ec2KeyName']],
+                SubnetId: 'PublicSubnet',
+                ImageId: ['Fn::FindInMap': ['AMI', 'NAT', '201309']],
+                IamInstanceProfile: ['Fn::FindInMap': ['Common', 'Role', 'Ec2Role']],
+                SourceDestCheck: false,
+                EIP: false,
+                SecurityGroupIds: ['Internal', 'CmMainte'],
                 volumes: [['VolumeId': 'ExtVolume', 'Device': '/dev/sdh']],
                 userData: []
         )
