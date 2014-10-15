@@ -5,18 +5,18 @@ import groovy.transform.Canonical
 @Canonical
 class SubnetRouteTableAssociation {
     def id
-    def name
-    def subnetId
-    def routeTableId
+    def Name
+    def Subnet
+    def RouteTable
 
     def SubnetRouteTableAssociation() {
     }
 
     def SubnetRouteTableAssociation(Source source) {
         this.id = source.camelCase('Name')
-        this.name = source.value('Name')
-        this.subnetId = source.camelCase('Subnet')
-        this.routeTableId = source.camelCase('RouteTable')
+        this.Name = source.value('Name')
+        this.Subnet = source.camelCase('Subnet')
+        this.RouteTable = source.camelCase('RouteTable')
     }
 
     def toResourceMap() {
@@ -24,25 +24,15 @@ class SubnetRouteTableAssociation {
             (this.id): [
                 'Type': 'AWS::EC2::SubnetRouteTableAssociation',
                 'Properties': [
-                    'SubnetId': ['Ref': subnetId],
-                    'RouteTableId': ['Ref': routeTableId]
+                    'SubnetId': Util.ref(Subnet),
+                    'RouteTableId': Util.ref(RouteTable)
                 ]
             ]
         ]
     }
 
-    static def load(file) {
-        if (!file.exists()) return []
-        def result = []
-        def meta
-        file.eachLine { line, num ->
-            if (num == 1) {
-                meta = new SourceMeta(line.split(','))
-            } else {
-                result << new SubnetRouteTableAssociation(meta.newSource(line.split(',')))
-            }
-        }
-        result
+    static def load(File file) {
+        Util.load(file, {new SubnetRouteTableAssociation(it)})
     }
 
     static def inject(resources, file) {

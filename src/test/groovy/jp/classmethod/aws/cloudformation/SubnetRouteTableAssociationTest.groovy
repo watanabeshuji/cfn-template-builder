@@ -12,8 +12,8 @@ class SubnetRouteTableAssociationTest {
         File input = new File(getClass().getResource("SubnetRouteTableAssociationTest_default.csv").getFile())
         def actual = SubnetRouteTableAssociation.load(input)
         assert actual == [
-                new SubnetRouteTableAssociation(id: 'PublicRouteAssociation',  name: 'public-route-association',  subnetId: 'PublicSubnet',  routeTableId: 'PublicRouteTable'),
-                new SubnetRouteTableAssociation(id: 'PrivateRouteAssociation', name: 'private-route-association', subnetId: 'PrivateSubnet', routeTableId: 'PrivateRouteTable')
+                new SubnetRouteTableAssociation(id: 'PublicRouteAssociation',  Name: 'public-route-association',  Subnet: 'PublicSubnet',  RouteTable: 'PublicRouteTable'),
+                new SubnetRouteTableAssociation(id: 'PrivateRouteAssociation', Name: 'private-route-association', Subnet: 'PrivateSubnet', RouteTable: 'PrivateRouteTable')
         ]
     }
 
@@ -21,9 +21,9 @@ class SubnetRouteTableAssociationTest {
     void "toResourceMap"() {
         def sut = new SubnetRouteTableAssociation(
                 id: 'PublicRouteAssociation',
-                name: 'public-route-association',
-                subnetId: 'PublicSubnet',
-                routeTableId: 'PublicRouteTable')
+                Name: 'public-route-association',
+                Subnet: 'PublicSubnet',
+                RouteTable: 'PublicRouteTable')
         def expected = [
             "PublicRouteAssociation": [
                 'Type': 'AWS::EC2::SubnetRouteTableAssociation',
