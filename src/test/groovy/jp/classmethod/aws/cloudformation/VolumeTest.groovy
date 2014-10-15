@@ -12,14 +12,14 @@ class VolumeTest {
         File input = new File(getClass().getResource("VolumeTest_default.csv").getFile())
         def actual = Volume.load(input)
         assert actual == [
-            new Volume(id: 'TableauPrimaryVolume', name: 'tableau-primary-volume', size: '100', volumeType: 'gp2', availabilityZone: 'ap-northeast-1a'),
-            new Volume(id: 'TableauWorker1Volume', name: 'tableau-worker1-volume', size: '150', volumeType: 'gp2', availabilityZone: 'ap-northeast-1c')
+            new Volume(id: 'TableauPrimaryVolume', Name: 'tableau-primary-volume', Size: '100', VolumeType: 'gp2', AvailabilityZone: 'ap-northeast-1a'),
+            new Volume(id: 'TableauWorker1Volume', Name: 'tableau-worker1-volume', Size: '150', VolumeType: 'gp2', AvailabilityZone: 'ap-northeast-1c')
         ]
     }
 
     @Test
     void "toResourceMap"() {
-        def sut = new Volume(id: 'TableauPrimaryVolume', name: 'tableau-primary-volume', size: '100', volumeType: 'gp2', availabilityZone: 'ap-northeast-1a')
+        def sut = new Volume(id: 'TableauPrimaryVolume', Name: 'tableau-primary-volume', Size: '100', VolumeType: 'gp2', AvailabilityZone: 'ap-northeast-1a')
         def expected = [
             "TableauPrimaryVolume": [
                 'Type': 'AWS::EC2::Volume',

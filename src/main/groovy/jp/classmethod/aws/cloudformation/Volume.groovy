@@ -5,20 +5,20 @@ import groovy.transform.Canonical
 @Canonical
 class Volume {
     def id
-    def name
-    def size
-    def volumeType
-    def availabilityZone
+    def Name
+    def Size
+    def VolumeType
+    def AvailabilityZone
 
     def Volume() {
     }
 
     def Volume(Source source) {
         this.id = source.camelCase('Name')
-        this.name = source.value('Name')
-        this.size = source.value('Size')
-        this.volumeType = source.value('VolumeType')
-        this.availabilityZone = source.value('AvailabilityZone')
+        this.Name = source.value('Name')
+        this.Size = source.value('Size')
+        this.VolumeType = source.value('VolumeType')
+        this.AvailabilityZone = source.value('AvailabilityZone')
     }
 
     def toResourceMap() {
@@ -26,11 +26,11 @@ class Volume {
             (this.id): [
                 'Type': 'AWS::EC2::Volume',
                 'Properties': [
-                    'AvailabilityZone': availabilityZone,
-                    'Size': size,
-                    'VolumeType': volumeType,
+                    'AvailabilityZone': AvailabilityZone,
+                    'Size': Size,
+                    'VolumeType': VolumeType,
                     'Tags': [
-                        ['Key': 'Name', 'Value': name],
+                        ['Key': 'Name', 'Value': Name],
                         ['Key': 'Application', 'Value': ['Ref': 'AWS::StackId' ]]
                     ]
                 ]
@@ -38,18 +38,8 @@ class Volume {
         ]
     }
 
-    static def load(file) {
-        if (!file.exists()) return []
-        def result = []
-        def meta
-        file.eachLine { line, num ->
-            if (num == 1) {
-                meta = new SourceMeta(line.split(','))
-            } else {
-                result << new Volume(meta.newSource(line.split(',')))
-            }
-        }
-        result
+    static def load(File file) {
+        Util.load(file, { new Volume(it) })
     }
 
     static def inject(resources, file) {
