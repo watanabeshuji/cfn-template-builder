@@ -5,20 +5,20 @@ import groovy.transform.Canonical
 @Canonical
 class Subnet {
     def id
-    def name
-    def vpcId
-    def cidrBlock
-    def az
+    def Name
+    def Vpc
+    def CidrBlock
+    def AvailabilityZone
 
     def Subnet() {
     }
 
     def Subnet(Source source) {
         this.id = source.camelCase('Name')
-        this.name = source.value('Name')
-        this.vpcId = source.camelCase('Vpc')
-        this.cidrBlock = source.value('CidrBlock')
-        this.az = source.value('AvailabilityZone')
+        this.Name = source.value('Name')
+        this.Vpc = source.camelCase('Vpc')
+        this.CidrBlock = source.value('CidrBlock')
+        this.AvailabilityZone = source.value('AvailabilityZone')
     }
 
     def toResourceMap() {
@@ -26,11 +26,11 @@ class Subnet {
             (this.id): [
                 'Type': 'AWS::EC2::Subnet',
                 'Properties': [
-                    'VpcId': ["Ref": vpcId],
-                    'CidrBlock': cidrBlock,
-                    'AvailabilityZone': az,
+                    'VpcId': Util.ref(this.Vpc),
+                    'CidrBlock': CidrBlock,
+                    'AvailabilityZone': AvailabilityZone,
                     'Tags': [
-                        ['Key': 'Name', 'Value': name],
+                        ['Key': 'Name', 'Value': Name],
                         ['Key': 'Application', 'Value': ['Ref': 'AWS::StackId' ]]
                     ]
                 ]
@@ -39,17 +39,7 @@ class Subnet {
     }
 
     static def load(file) {
-        if (!file.exists()) return []
-        def result = []
-        def meta
-        file.eachLine { line, num ->
-            if (num == 1) {
-                meta = new SourceMeta(line.split(','))
-            } else {
-                result << new Subnet(meta.newSource(line.split(',')))
-            }
-        }
-        result
+        Util.load(file, {new Subnet(it)})
     }
 
     static def inject(resources, file) {

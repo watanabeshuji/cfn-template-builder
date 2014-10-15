@@ -12,14 +12,14 @@ class SubnetTest {
         File input = new File(getClass().getResource("SubnetTest_default.csv").getFile())
         def actual = Subnet.load(input)
         assert actual == [
-                new Subnet(id: 'PublicSubnet',  name: 'public-subnet',  vpcId:'Vpc', cidrBlock: '10.0.0.0/24', az: 'ap-northeast-1a'),
-                new Subnet(id: 'PrivateSubnet', name: 'private-subnet', vpcId:'Vpc', cidrBlock: '10.0.2.0/24', az: 'ap-northeast-1a')
+                new Subnet(id: 'PublicSubnet',  Name: 'public-subnet',  Vpc:'Vpc', CidrBlock: '10.0.0.0/24', AvailabilityZone: 'ap-northeast-1a'),
+                new Subnet(id: 'PrivateSubnet', Name: 'private-subnet', Vpc:'Vpc', CidrBlock: '10.0.2.0/24', AvailabilityZone: 'ap-northeast-1a')
         ]
     }
 
     @Test
     void "toResourceMap"() {
-        def sut = new Subnet(id: 'PublicSubnet',  name: 'public-subnet',  vpcId:'Vpc', cidrBlock: '10.0.0.0/24', az: 'ap-northeast-1a')
+        def sut = new Subnet(id: 'PublicSubnet',  Name: 'public-subnet',  Vpc:'Vpc', CidrBlock: '10.0.0.0/24', AvailabilityZone: 'ap-northeast-1a')
         def expected = [
             "PublicSubnet": [
                 'Type': 'AWS::EC2::Subnet',
