@@ -12,15 +12,15 @@ class DBSubnetGroupTest {
         File input = new File(getClass().getResource("DBSubnetGroupTest_default.csv").getFile())
         def actual = DBSubnetGroup.load(input)
         assert actual == [
-                new DBSubnetGroup(id: 'DbSubnet',    name: 'db-subnet',     dBSubnetGroupDescription:'DB Subnet',                 subnetIds: ['SubnetA', 'SubnetC']),
-                new DBSubnetGroup(id: 'DbSubnetDev', name: 'db-subnet-dev', dBSubnetGroupDescription:'DB Subnet for development', subnetIds: ['SubnetDevA', 'SubnetDevC'])
+                new DBSubnetGroup(id: 'DbSubnet',    Name: 'db-subnet',     DBSubnetGroupDescription:'DB Subnet',                 SubnetNames: ['SubnetA', 'SubnetC']),
+                new DBSubnetGroup(id: 'DbSubnetDev', Name: 'db-subnet-dev', DBSubnetGroupDescription:'DB Subnet for development', SubnetNames: ['SubnetDevA', 'SubnetDevC'])
         ]
     }
 
 
     @Test
     void "toResourceMap"() {
-        def sut = new DBSubnetGroup(id: 'DbSubnet',    name: 'db-subnet',     dBSubnetGroupDescription:'DB Subnet', subnetIds: ['SubnetA', 'SubnetC'])
+        def sut = new DBSubnetGroup(id: 'DbSubnet',    Name: 'db-subnet',  DBSubnetGroupDescription:'DB Subnet', SubnetNames: ['SubnetA', 'SubnetC'])
         def expected = [
             "DbSubnet": [
                 'Type': 'AWS::RDS::DBSubnetGroup',

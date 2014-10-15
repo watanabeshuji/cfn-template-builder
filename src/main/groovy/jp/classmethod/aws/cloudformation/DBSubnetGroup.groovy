@@ -9,18 +9,18 @@ import groovy.transform.Canonical
 class DBSubnetGroup {
 
     def id
-    def name
-    def dBSubnetGroupDescription
-    def subnetIds = []
+    def Name
+    def DBSubnetGroupDescription
+    def SubnetNames = []
 
     def DBSubnetGroup() {
     }
 
     def DBSubnetGroup(Source source) {
         this.id = source.camelCase('Name')
-        this.name = source.value('Name')
-        this.dBSubnetGroupDescription = source.value('DBSubnetGroupDescription')
-        this.subnetIds = source.camelCaseList('SubnetNames')
+        this.Name = source.value('Name')
+        this.DBSubnetGroupDescription = source.value('DBSubnetGroupDescription')
+        this.SubnetNames = source.camelCaseList('SubnetNames')
     }
 
 
@@ -29,10 +29,10 @@ class DBSubnetGroup {
             (this.id): [
                 'Type': 'AWS::RDS::DBSubnetGroup',
                 'Properties': [
-                    'DBSubnetGroupDescription': dBSubnetGroupDescription,
-                    'SubnetIds': subnetIds.collect { ['Ref': it] },
+                    'DBSubnetGroupDescription': DBSubnetGroupDescription,
+                    'SubnetIds': SubnetNames.collect { Util.ref(it) },
                     'Tags': [
-                        ['Key': 'Name', 'Value': name],
+                        ['Key': 'Name', 'Value': Name],
                         ['Key': 'Application', 'Value': ['Ref': 'AWS::StackId' ]]
                     ]
                 ]
@@ -41,17 +41,7 @@ class DBSubnetGroup {
     }
 
     static def load(file) {
-        if (!file.exists()) return []
-        def result = []
-        def meta
-        file.eachLine { line, num ->
-            if (num == 1) {
-                meta = new SourceMeta(line.split(','))
-            } else {
-                result << new DBSubnetGroup(meta.newSource(line.split(',')))
-            }
-        }
-        result
+        Util.load(file, { new DBSubnetGroup(it) })
     }
 
     static def inject(resources, file) {
