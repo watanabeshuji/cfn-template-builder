@@ -12,12 +12,12 @@ class SecurityGroupTest {
         File input = new File(getClass().getResource("SecurityGroupTest_default.csv").getFile())
         def actual = SecurityGroup.load(input)
         assert (actual as List) == [
-            new SecurityGroup(id: 'Internal', name: 'internal', vpcId: 'Vpc', desc: 'Allow all communications in VPC', ingress: [
+            new SecurityGroup(id: 'Internal', Name: 'internal', Vpc: 'Vpc', Description: 'Allow all communications in VPC', ingress: [
                 new SecurityGroup.Ingress('tcp',   '0', '65535', '10.0.0.0/16'),
                 new SecurityGroup.Ingress('udp',   '0', '65535', '10.0.0.0/16'),
                 new SecurityGroup.Ingress('icmp', '-1',    '-1', '10.0.0.0/16')
             ]),
-            new SecurityGroup(id: 'CmMainte', name: 'cm-mainte', vpcId: 'Vpc', desc: 'Allow ssh from Classmethod', ingress: [
+            new SecurityGroup(id: 'CmMainte', Name: 'cm-mainte', Vpc: 'Vpc', Description: 'Allow ssh from Classmethod', ingress: [
                 new SecurityGroup.Ingress('tcp',   '22', '22', '111.222.333.444/32'),
                 new SecurityGroup.Ingress('tcp',   '22', '22', '222.333.444.555/32')
             ])
@@ -27,7 +27,7 @@ class SecurityGroupTest {
 
     @Test
     void "toResourceMap"() {
-        def sut = new SecurityGroup(id: 'Internal', name: 'internal', vpcId: 'Vpc', desc: 'Allow all communications in VPC', ingress: [
+        def sut = new SecurityGroup(id: 'Internal', Name: 'internal', Vpc: 'Vpc', Description: 'Allow all communications in VPC', ingress: [
             new SecurityGroup.Ingress('tcp',   '0', '65535', '10.0.0.0/16'),
             new SecurityGroup.Ingress('udp',   '0', '65535', '10.0.0.0/16'),
             new SecurityGroup.Ingress('icmp', '-1',    '-1', '10.0.0.0/16')

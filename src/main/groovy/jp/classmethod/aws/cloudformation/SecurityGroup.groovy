@@ -9,9 +9,9 @@ import groovy.transform.Canonical
 class SecurityGroup {
 
     def id
-    def name
-    def vpcId
-    def desc
+    def Name
+    def Vpc
+    def Description
     def ingress = []
 
     def SecurityGroup() {
@@ -19,9 +19,9 @@ class SecurityGroup {
 
     def SecurityGroup(Source source) {
         this.id = source.camelCase('Name')
-        this.name = source.value('Name')
-        this.vpcId = source.camelCase('Vpc')
-        this.desc = source.value('Description')
+        this.Name = source.value('Name')
+        this.Vpc = source.camelCase('Vpc')
+        this.Description = source.value('Description')
         this.addIngress(source)
     }
 
@@ -37,18 +37,18 @@ class SecurityGroup {
             (this.id): [
                 'Type': 'AWS::EC2::SecurityGroup',
                 'Properties': [
-                    'VpcId': ['Ref': vpcId],
-                    'GroupDescription': desc,
+                    'VpcId': Util.ref(this.Vpc),
+                    'GroupDescription': Description,
                     'SecurityGroupIngress': ingress.collect {
                         [
-                            'IpProtocol': it.protocol,
-                            'FromPort': it.fromPort,
-                            'ToPort': it.toPort,
-                            'CidrIp': it.cidrIp
+                            'IpProtocol': it.Protocol,
+                            'FromPort': it.FromPort,
+                            'ToPort': it.ToPort,
+                            'CidrIp': it.CidrIp
                         ]
                     },
                     'Tags': [
-                        ['Key': 'Name', 'Value': name],
+                        ['Key': 'Name', 'Value': Name],
                         ['Key': 'Application', 'Value': ['Ref': 'AWS::StackId' ]]
                     ]
                 ]
@@ -59,16 +59,16 @@ class SecurityGroup {
     @Canonical
     static class Ingress {
 
-        def protocol
-        def fromPort
-        def toPort
-        def cidrIp
+        def Protocol
+        def FromPort
+        def ToPort
+        def CidrIp
 
         Ingress(protocol, fromPort, toPort, cidrIp) {
-            this.protocol = protocol
-            this.fromPort = fromPort
-            this.toPort = toPort
-            this.cidrIp = cidrIp
+            this.Protocol = protocol
+            this.FromPort = fromPort
+            this.ToPort = toPort
+            this.CidrIp = cidrIp
         }
     }
 
