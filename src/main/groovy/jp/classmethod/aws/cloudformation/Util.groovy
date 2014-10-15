@@ -17,4 +17,18 @@ class Util {
             ['Ref': value]
         }
     }
+
+    static def load(File file, cls) {
+        if (!file.exists()) return []
+        def result = []
+        def meta
+        file.eachLine { line, num ->
+            if (num == 1) {
+                meta = new SourceMeta(line.split(','))
+            } else {
+                result << cls(meta.newSource(line.split(',')))
+            }
+        }
+        result
+    }
 }

@@ -5,16 +5,16 @@ import groovy.transform.Canonical
 @Canonical
 class VPC {
     def id
-    def name
-    def cidrBlock
+    def Name
+    def CidrBlock
 
     def VPC() {
     }
 
     def VPC(Source source) {
         this.id = source.camelCase('Name')
-        this.name = source.value('Name')
-        this.cidrBlock = source.value('CidrBlock')
+        this.Name = source.value('Name')
+        this.CidrBlock = source.value('CidrBlock')
     }
 
     def toResourceMap() {
@@ -22,9 +22,9 @@ class VPC {
             (this.id): [
                 'Type': 'AWS::EC2::VPC',
                 'Properties': [
-                    'CidrBlock': cidrBlock,
+                    'CidrBlock': CidrBlock,
                     'Tags': [
-                        ['Key': 'Name', 'Value': name],
+                        ['Key': 'Name', 'Value': Name],
                         ['Key': 'Application', 'Value': ['Ref': 'AWS::StackId' ]]
                     ]
                 ]
@@ -33,17 +33,7 @@ class VPC {
     }
 
     static def load(file) {
-        if (!file.exists()) return []
-        def result = []
-        def meta
-        file.eachLine { line, num ->
-            if (num == 1) {
-                meta = new SourceMeta(line.split(','))
-            } else {
-                result << new VPC(meta.newSource(line.split(',')))
-            }
-        }
-        result
+        Util.load(file, { new VPC(it)} )
     }
 
     static def inject(resources, file) {
