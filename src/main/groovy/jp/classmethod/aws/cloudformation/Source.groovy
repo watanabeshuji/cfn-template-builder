@@ -21,7 +21,7 @@ class Source {
         if (!containsKey(key)) return null
         def v = source[meta.indexOf(key)]
         if (v == null || v == '-') return null
-        if (v.indexOf(':') != -1) {
+        if (v.indexOf(':') != -1 && !v.startsWith('arn')) {
             v = toMap(v)
         }
         return v
