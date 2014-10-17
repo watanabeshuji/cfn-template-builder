@@ -252,25 +252,7 @@
                         "IpProtocol": "tcp",
                         "FromPort": "22",
                         "ToPort": "22",
-                        "CidrIp": "59.146.77.152/32"
-                    },
-                    {
-                        "IpProtocol": "tcp",
-                        "FromPort": "22",
-                        "ToPort": "22",
-                        "CidrIp": "202.213.251.236/32"
-                    },
-                    {
-                        "IpProtocol": "tcp",
-                        "FromPort": "22",
-                        "ToPort": "22",
-                        "CidrIp": "121.101.71.250/32"
-                    },
-                    {
-                        "IpProtocol": "tcp",
-                        "FromPort": "22",
-                        "ToPort": "22",
-                        "CidrIp": "124.84.24.145/32"
+                        "CidrIp": "111.222.333.444/32"
                     }
                 ],
                 "Tags": [
@@ -285,6 +267,77 @@
                         }
                     }
                 ]
+            }
+        },
+        "Bastion": {
+            "Type": "AWS::EC2::Instance",
+            "Properties": {
+                "InstanceType": "t1.micro",
+                "KeyName": {
+                    "Fn::FindInMap": [
+                        "Common",
+                        "KeyPair",
+                        "Ec2KeyName"
+                    ]
+                },
+                "SubnetId": {
+                    "Ref": "PublicSubnet"
+                },
+                "ImageId": {
+                    "Fn::FindInMap": [
+                        "AMI",
+                        "NAT",
+                        "201309"
+                    ]
+                },
+                "IamInstanceProfile": {
+                    "Fn::FindInMap": [
+                        "Common",
+                        "Role",
+                        "Ec2Role"
+                    ]
+                },
+                "SourceDestCheck": false,
+                "SecurityGroupIds": [
+                    {
+                        "Ref": "Internal"
+                    },
+                    {
+                        "Ref": "CmMainte"
+                    }
+                ],
+                "Tags": [
+                    {
+                        "Key": "Name",
+                        "Value": "bastion"
+                    },
+                    {
+                        "Key": "Application",
+                        "Value": {
+                            "Ref": "AWS::StackId"
+                        }
+                    }
+                ],
+                "UserData": {
+                    "Fn::Base64": {
+                        "Fn::Join": [
+                            "",
+                            [
+                                "#! /bin/bash -v\\n",
+                                "yum update -y\\n"
+                            ]
+                        ]
+                    }
+                }
+            }
+        },
+        "BastionEIP": {
+            "Type": "AWS::EC2::EIP",
+            "Properties": {
+                "Domain": "vpc",
+                "InstanceId": {
+                    "Ref": "Bastion"
+                }
             }
         }
     }
