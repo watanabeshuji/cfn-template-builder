@@ -1,0 +1,3 @@
+Name          ,Type     ,Default      ,AllowedValues      ,Description
+InstanceType  ,String   ,t2.small     ,t2.small|m3.large  ,Instance type for EC2 Instance
+Env           ,String   ,-            ,blue|green         ,Environment for deployment(Blue/Green)

@@ -10,13 +10,18 @@ class Template {
     def json
     def resources
 
-    def Template(Meta meta, Mappings mappings, resources) {
+    def Template(Meta meta, Mappings mappings, Map parameters, resources) {
         this.resources = resources
         json = new JsonBuilder(['AWSTemplateFormatVersion': '2010-09-09'])
         json {
             'AWSTemplateFormatVersion' '2010-09-09'
             'Description' meta['Description'] ?: ''
-            'Mappings' mappings
+            if (!mappings.isEmpty()) {
+                'Mappings' mappings
+            }
+            if (!parameters.isEmpty()) {
+                'Parameters' parameters
+            }
             'Resources' resources
         }
     }
@@ -28,6 +33,7 @@ class Template {
     static def build(String dirName) {
         def meta = Meta.load(new File("$dirName/Meta.txt"))
         def mappings = Mappings.load(new File("$dirName/Mappings"))
+        def parameters = Parameter.load(new File("$dirName/Parameters.csv"))
         def resources = [:]
         File dir = new File(dirName)
         dir.listFiles({d,f -> f ==~ /\d+_VPC\.csv/ } as FilenameFilter).each { VPC.inject(resources, it) }
@@ -44,7 +50,7 @@ class Template {
         dir.listFiles({d,f -> f ==~ /\d+_DBInstance\.csv/ } as FilenameFilter).each { DBInstance.inject(resources, it) }
         dir.listFiles({d,f -> f ==~ /\d+_CacheSubnetGroup\.csv/ } as FilenameFilter).each { CacheSubnetGroup.inject(resources, it) }
         dir.listFiles({d,f -> f ==~ /\d+_CacheCluster\.csv/ } as FilenameFilter).each { CacheCluster.inject(resources, it) }
-        new Template(meta, mappings, resources)
+        new Template(meta, mappings, parameters, resources)
     }
 
 }

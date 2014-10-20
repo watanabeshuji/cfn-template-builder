@@ -20,6 +20,25 @@
             }
         }
     },
+    "Parameters": {
+        "InstanceType": {
+            "Type": "String",
+            "Default": "t2.small",
+            "AllowedValues": [
+                "t2.small",
+                "m3.large"
+            ],
+            "Description": "Instance type for EC2 Instance"
+        },
+        "Env": {
+            "Type": "String",
+            "AllowedValues": [
+                "blue",
+                "green"
+            ],
+            "Description": "Environment for deployment(Blue/Green)"
+        }
+    },
     "Resources": {
         "Vpc": {
             "Type": "AWS::EC2::VPC",

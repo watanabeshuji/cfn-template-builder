@@ -24,20 +24,20 @@ class Parameter {
         this.Description = source.value('Description')
     }
 
-    def toResourceMap() {
+    def toMap() {
         def map = [
-            (this.Name): [
-                'Type': this.Type
-            ]
+            'Type': this.Type
         ]
-        if (Default) map[Name]['Default'] = Default
-        if (AllowedValues && !AllowedValues.isEmpty()) map[Name]['AllowedValues'] = AllowedValues
-        if (Description) map[Name]['Description'] = Description
+        if (Default) map['Default'] = Default
+        if (AllowedValues && !AllowedValues.isEmpty()) map['AllowedValues'] = AllowedValues
+        if (Description) map['Description'] = Description
         map
     }
 
 
-    static Parameter[] load(File file) {
-        Util.load(file, {new Parameter(it)})
+    static def load(File file) {
+        Util.load(file, {new Parameter(it)}).collectEntries {
+            [it.Name, it.toMap()]
+        }
     }
 }
