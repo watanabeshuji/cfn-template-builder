@@ -11,11 +11,7 @@ class Util {
     }
 
     static def ref(value) {
-        if (Map.class.isInstance(value)) {
-            value
-        } else {
-            ['Ref': value]
-        }
+        Map.class.isInstance(value) ? value : ['Ref': value]
     }
 
     static def load(File file, cls) {
