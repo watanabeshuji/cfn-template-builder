@@ -7,6 +7,8 @@ class VPC {
     def id
     def Name
     def CidrBlock
+    def EnableDnsSupport
+    def EnableDnsHostnames
 
     def VPC() {
     }
@@ -15,10 +17,12 @@ class VPC {
         this.id = source.camelCase('Name')
         this.Name = source.value('Name')
         this.CidrBlock = source.value('CidrBlock')
+        this.EnableDnsSupport = source.bool('EnableDnsSupport')
+        this.EnableDnsHostnames = source.bool('EnableDnsHostnames')
     }
 
     def toResourceMap() {
-        [
+        def map = [
             (this.id): [
                 'Type': 'AWS::EC2::VPC',
                 'Properties': [
@@ -30,6 +34,9 @@ class VPC {
                 ]
             ]
         ]
+        if (EnableDnsSupport != null) map[id]['Properties']['EnableDnsSupport'] = EnableDnsSupport
+        if (EnableDnsHostnames != null) map[id]['Properties']['EnableDnsHostnames'] = EnableDnsHostnames
+        map
     }
 
     static def load(file) {

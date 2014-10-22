@@ -6,9 +6,9 @@ package jp.classmethod.aws.cloudformation
 class Source {
 
     def source
-    def meta
+    SourceMeta meta
 
-    def Source(source, meta) {
+    def Source(source, SourceMeta meta) {
         this.source = source.collect { it.trim() }
         this.meta = meta
     }
@@ -19,16 +19,28 @@ class Source {
 
     def value(key) {
         if (!containsKey(key)) return null
-        def v = source[meta.indexOf(key)]
+        def idx = meta.indexOf(key)
+        if (idx == -1) return null
+        def v = source[idx]
         if (v == null || v == '-') return null
-        if (v.indexOf(':') != -1 && !v.startsWith('arn')) {
-            v = toMap(v)
-        }
+        if (convertToRef(v)) return ['Ref': v.substring(2, v.length() - 1)]
+        if (convertToMap(v)) return toMap(v)
         return v
     }
 
+    private def convertToRef(value) {
+        value ==~ /P\[[a-zA-Z0-9_\\-]+\]/
+    }
+
+    private def convertToMap(value) {
+        value.indexOf(':') != -1 && !value.startsWith('arn')
+    }
+
+
+
     def bool(key) {
-        Boolean.valueOf(value(key))
+        def b = value(key)
+        b != null ? Boolean.valueOf(b) : null
     }
 
     def integer(key) {
