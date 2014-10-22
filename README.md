@@ -78,6 +78,33 @@ Meta.txt
 Description=Template for VPC with NAT instance
 ```
 
+### Mappings
+CfnのMappingsに対応。
+Mappingsディレクトリを作成し、テキストファイルを配置する。
+
+Mappings/Common
+```
+Key,            Name,           Value
+KeyPair,        Ec2KeyName,     default-key
+Role,           Ec2Role,        ec2-user
+```
+
+この場合、Common/KeyPair/Ec2KeyName = default-key というMappingが定義される。
+各種リソースから、Mappingを参照する場合は、「Common:KeyPair:Ec2KeyName」のようにコロンで区切って指定すること。
+
+### Parameters.csv
+CfnのParametersに対応。
+
+Parameters.csv
+```
+Name          ,Type     ,Default      ,AllowedValues      ,Description
+InstanceType  ,String   ,t2.small     ,t2.small|m3.large  ,Instance type for EC2 Instance
+Env           ,String   ,-            ,blue|green         ,Environment for deployment(Blue/Green)
+```
+
+各種リソースから、Parameters、「P[InstanceType]」のようにP[パラメータ名]の書式とすること。
+
+
 ### VPC
 AWS::EC2::VPC リソースを定義します。
 
