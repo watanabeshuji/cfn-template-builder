@@ -23,19 +23,10 @@ class Source {
         if (idx == -1) return null
         def v = source[idx]
         if (v == null || v == '-') return null
-        if (convertToRef(v)) return ['Ref': v.substring(2, v.length() - 1)]
+        if (convertToRef(v)) return toRef(v)
         if (convertToMap(v)) return toMap(v)
         return v
     }
-
-    private def convertToRef(value) {
-        value ==~ /P\[[a-zA-Z0-9_\\-]+\]/
-    }
-
-    private def convertToMap(value) {
-        value.indexOf(':') != -1 && !value.startsWith('arn')
-    }
-
 
 
     def bool(key) {
@@ -54,7 +45,6 @@ class Source {
         v.split(/\|/).collect {
             it.contains(':')  ? toMap(it) : it
         }
-//        value(key).split()
     }
 
     def camelCase(key) {
@@ -71,8 +61,21 @@ class Source {
         }
     }
 
-    def toMap(value) {
-        ['Fn::FindInMap': value.split(':') ]
+    private def convertToRef(value) {
+        value ==~ /P\[[a-zA-Z0-9_\\-]+\]/
     }
+
+    private def toRef(value) {
+        ['Ref': value.substring(2, value.length() - 1)]
+    }
+
+    private def convertToMap(value) {
+        value.indexOf(':') != -1 && !value.startsWith('arn')
+    }
+
+    private def toMap(value) {
+        ['Fn::FindInMap': value.split(':').collect({ convertToRef(it) ? toRef(it) : it }) ]
+    }
+
 
 }
