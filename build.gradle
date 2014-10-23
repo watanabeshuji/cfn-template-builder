@@ -3,9 +3,17 @@ apply plugin: 'groovy'
 apply plugin: 'idea'
 apply plugin: 'maven-publish'
 
-sourceCompatibility = 1.8
+sourceCompatibility = 1.7
+targetCompatibility = 1.7
+
 group = 'jp.classmethod.aws'
-version = '0.1.5'
+version = '0.1.6'
+
+idea {
+    module {
+        jdkName = '1.7'
+    }
+}
 
 repositories {
     mavenCentral()
