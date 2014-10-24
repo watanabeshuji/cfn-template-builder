@@ -24,6 +24,7 @@ class Source {
         def v = source[idx]
         if (v == null || v == '-') return null
         if (convertToRef(v)) return toRef(v)
+        if (convertToGetAttr(v)) return toGetAttr(v)
         if (convertToMap(v)) return toMap(v)
         return v
     }
@@ -77,5 +78,12 @@ class Source {
         ['Fn::FindInMap': value.split(':').collect({ convertToRef(it) ? toRef(it) : it }) ]
     }
 
+    private def convertToGetAttr(value) {
+        value ==~ /A\[[a-zA-Z0-9_\\-|]+\]/
+    }
+
+    private def toGetAttr(value) {
+        ['Fn::GetAtt': value.substring(2, value.length() - 1).split('\\|')]
+    }
 
 }
