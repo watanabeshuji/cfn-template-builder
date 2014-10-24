@@ -27,4 +27,9 @@ class Util {
         }
         result
     }
+
+    static def associatedFile(String path, String association) {
+        int idx = path.lastIndexOf('.') - 1
+        "${path[0..idx]}_$association${path.substring(idx+1)}"
+    }
 }

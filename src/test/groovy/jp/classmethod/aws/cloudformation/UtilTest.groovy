@@ -14,4 +14,9 @@ class UtilTest {
         assert Util.toCamelCase("HelloWorld") == "HelloWorld"
     }
 
+
+    @Test
+    void "associatedFile"() {
+        assert Util.associatedFile("/path/to/file.csv", "sub") == "/path/to/file_sub.csv"
+    }
 }

@@ -76,11 +76,9 @@ class ElasticLoadBalancing {
     }
 
     static def loadListeners(File baseFile, name) {
-        def path = baseFile.absolutePath
-        path = path.substring(0, path.length() - 4) // .csv
         def meta
         def result = []
-        new File("${path}_${name}_Listeners.csv").eachLine { line, num ->
+        new File(Util.associatedFile(baseFile.absolutePath, "${name}_Listeners")).eachLine { line, num ->
             if (num == 1) {
                 meta = new SourceMeta(line.split(','))
             } else {

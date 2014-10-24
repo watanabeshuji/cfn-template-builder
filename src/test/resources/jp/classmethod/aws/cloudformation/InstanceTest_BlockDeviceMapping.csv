@@ -1,0 +1,2 @@
+Name       ,InstanceType  ,KeyName                   ,SubnetId      ,ImageId
+WebServer  ,m3.medium     ,Common:KeyPair:Ec2KeyName ,public-subnet ,AMI:AmazonLinux:20140901

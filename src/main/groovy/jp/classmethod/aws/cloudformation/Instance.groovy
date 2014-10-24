@@ -19,6 +19,7 @@ class Instance {
     def EIP
     def SecurityGroupIds
     def volumes
+    def BlockStoreMappings = []
     def userData = []
 
     def Instance() {
@@ -47,22 +48,22 @@ class Instance {
 
     def toResourceMap() {
         def result = [
-                (id): [
-                        'Type': 'AWS::EC2::Instance',
-                        'Properties': [
-                                'InstanceType': InstanceType,
-                                'KeyName': KeyName,
-                                'SubnetId': Util.ref(SubnetId),
-                                'ImageId': ImageId,
-                                'IamInstanceProfile': IamInstanceProfile,
-                                'SourceDestCheck': SourceDestCheck,
-                                'SecurityGroupIds': SecurityGroupIds.collect { Util.ref(it) },
-                                'Tags': [
-                                        ['Key': 'Name', 'Value': Name],
-                                        ['Key': 'Application', 'Value': ['Ref': 'AWS::StackId' ]]
-                                ],
-                        ]
-                ]
+            (id): [
+                'Type': 'AWS::EC2::Instance',
+                'Properties': [:]
+            ]
+        ]
+        if (InstanceType) result[id]['Properties']['InstanceType'] = InstanceType
+        if (KeyName) result[id]['Properties']['KeyName'] = KeyName
+        result[id]['Properties']['SubnetId'] = Util.ref(SubnetId)
+        result[id]['Properties']['ImageId'] = ImageId
+        if (IamInstanceProfile) result[id]['Properties']['IamInstanceProfile'] = IamInstanceProfile
+        if (SourceDestCheck != null) result[id]['Properties']['SourceDestCheck'] = SourceDestCheck
+        result[id]['Properties']['SecurityGroupIds'] = SecurityGroupIds.collect { Util.ref(it) }
+        if (PrivateIpAddress) result[id]['Properties']['PrivateIpAddress'] = PrivateIpAddress
+        result[id]['Properties']['Tags'] = [
+            ['Key': 'Name', 'Value': Name],
+            ['Key': 'Application', 'Value': ['Ref': 'AWS::StackId' ]]
         ]
         if(!userData.isEmpty()) {
             result[id]['Properties']['UserData'] = [
@@ -70,9 +71,6 @@ class Instance {
                             'Fn::Join': ['', userData]
                     ]
             ]
-        }
-        if (PrivateIpAddress) {
-            result[id]['Properties']['PrivateIpAddress'] = PrivateIpAddress
         }
         // Elastic IP if needs
         if (EIP) {
@@ -85,6 +83,9 @@ class Instance {
                             ]
                     ]
             ]
+        }
+        if (!BlockStoreMappings.isEmpty()) {
+            result[id]['Properties']['BlockStoreMappings'] = BlockStoreMappings
         }
         if (volumes) {
             result[id]['Properties']['Volumes'] = volumes.collect {
@@ -111,10 +112,38 @@ class Instance {
                         instance.userData << it + '\\n'
                     }
                 }
+                instance.BlockStoreMappings += loadBlockStoreMappings(file, instance.name)
                 result << instance
             }
         }
         result
+    }
+
+    static def loadBlockStoreMappings(File baseFile, name) {
+        def result = []
+        def file = new File(Util.associatedFile(baseFile.absolutePath, "${name}_BlockStoreMappings"))
+        if (!file.exists()) return []
+        def meta
+        file.eachLine { line, num ->
+            if (num == 1) {
+                meta = new SourceMeta(line.split(','))
+            } else {
+                result << Instance.blockStoreMapping(meta.newSource(line.split(',')))
+            }
+        }
+        result
+    }
+
+    static def blockStoreMapping(Source source) {
+        def map = [
+            'DeviceName': source.value('DeviceName'),
+            'Ebs': [
+                'VolumeSize': source.value('EbsVolumeSize'),
+            ]
+        ]
+        if (source.value('EbsVolumeType')) map['Ebs']['VolumeType'] = source.value('EbsVolumeType')
+        if (source.value('EbsDeleteOnTermination')) map['Ebs']['DeleteOnTermination'] = source.value('EbsDeleteOnTermination')
+        map
     }
 
     static def inject(resources, file) {
