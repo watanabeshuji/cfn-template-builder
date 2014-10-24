@@ -358,6 +358,50 @@
                     "Ref": "Bastion"
                 }
             }
+        },
+        "WebServerWaitHandle": {
+            "Type": "AWS::CloudFormation::WaitConditionHandle"
+        },
+        "BatchServerWaitHandle": {
+            "Type": "AWS::CloudFormation::WaitConditionHandle"
+        },
+        "WebServerWaitCondition": {
+            "Type": "AWS::CloudFormation::WaitCondition",
+            "Properties": {
+                "Handle": {
+                    "Ref": "WebServerWaitHandle"
+                },
+                "Timeout": "1000"
+            },
+            "DependsOn": [
+                "Bastion"
+            ]
+        },
+        "BatchServerWaitCondition": {
+            "Type": "AWS::CloudFormation::WaitCondition",
+            "Properties": {
+                "Handle": {
+                    "Ref": "BatchServerWaitHandle"
+                },
+                "Timeout": "900"
+            }
+        }
+    },
+    "Outputs": {
+        "WebServerIpAddress": {
+            "Value": {
+                "Ref": "BastionEIP"
+            },
+            "Description": "IP Address of Web Server"
+        },
+        "WebServerAvailabilityZone": {
+            "Value": {
+                "Fn::GetAtt": [
+                    "Bastion",
+                    "AvailabilityZone"
+                ]
+            },
+            "Description": "Availability Zone of Web Server"
         }
     }
 }

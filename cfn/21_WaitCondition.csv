@@ -1,0 +1,3 @@
+Name                      ,Handle                ,Timeout  ,DependsOn
+WebServerWaitCondition    ,WebServerWaitHandle   ,1000     ,Bastion
+BatchServerWaitCondition  ,BatchServerWaitHandle ,900      ,-
