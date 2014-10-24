@@ -67,7 +67,7 @@ class InstanceTest {
                         SubnetId: 'PublicSubnet',
                         ImageId: ['Fn::FindInMap': ['AMI', 'AmazonLinux', '20140901']],
                         SecurityGroupIds: [],
-                        BlockStoreMappings: [
+                        BlockDeviceMappings: [
                             [
                                 'DeviceName': '/dev/xvda',
                                 'Ebs': ['VolumeSize': '200', 'VolumeType': 'gp2', 'DeleteOnTermination': 'true']
@@ -183,7 +183,7 @@ class InstanceTest {
             SubnetId: 'PublicSubnet',
             ImageId: ['Fn::FindInMap': ['AMI', 'AmazonLinux', '20140901']],
             SecurityGroupIds: [],
-            BlockStoreMappings: [
+            BlockDeviceMappings: [
                 [
                     'DeviceName': '/dev/xvda',
                     'Ebs': ['VolumeSize': '200', 'VolumeType': 'gp2', 'DeleteOnTermination': 'true']
@@ -203,7 +203,7 @@ class InstanceTest {
                     'SubnetId': ['Ref': 'PublicSubnet'],
                     'ImageId': ['Fn::FindInMap': ['AMI', 'AmazonLinux', '20140901']],
                     'SecurityGroupIds': [],
-                    'BlockStoreMappings': [
+                    'BlockDeviceMappings': [
                         [
                             'DeviceName': '/dev/xvda',
                             'Ebs': ['VolumeSize': '200', 'VolumeType': 'gp2', 'DeleteOnTermination': 'true']

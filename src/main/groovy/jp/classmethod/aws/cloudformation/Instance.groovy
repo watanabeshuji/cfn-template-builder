@@ -19,7 +19,7 @@ class Instance {
     def EIP
     def SecurityGroupIds
     def volumes
-    def BlockStoreMappings = []
+    def BlockDeviceMappings = []
     def userData = []
 
     def Instance() {
@@ -84,8 +84,8 @@ class Instance {
                     ]
             ]
         }
-        if (!BlockStoreMappings.isEmpty()) {
-            result[id]['Properties']['BlockStoreMappings'] = BlockStoreMappings
+        if (!BlockDeviceMappings.isEmpty()) {
+            result[id]['Properties']['BlockDeviceMappings'] = BlockDeviceMappings
         }
         if (volumes) {
             result[id]['Properties']['Volumes'] = volumes.collect {
@@ -112,29 +112,29 @@ class Instance {
                         instance.userData << it + '\\n'
                     }
                 }
-                instance.BlockStoreMappings += loadBlockStoreMappings(file, instance.name)
+                instance.BlockDeviceMappings += loadBlockDeviceMappings(file, instance.name)
                 result << instance
             }
         }
         result
     }
 
-    static def loadBlockStoreMappings(File baseFile, name) {
+    static def loadBlockDeviceMappings(File baseFile, name) {
         def result = []
-        def file = new File(Util.associatedFile(baseFile.absolutePath, "${name}_BlockStoreMappings"))
+        def file = new File(Util.associatedFile(baseFile.absolutePath, "${name}_BlockDeviceMappings"))
         if (!file.exists()) return []
         def meta
         file.eachLine { line, num ->
             if (num == 1) {
                 meta = new SourceMeta(line.split(','))
             } else {
-                result << Instance.blockStoreMapping(meta.newSource(line.split(',')))
+                result << Instance.blockDeviceMapping(meta.newSource(line.split(',')))
             }
         }
         result
     }
 
-    static def blockStoreMapping(Source source) {
+    static def blockDeviceMapping(Source source) {
         def map = [
             'DeviceName': source.value('DeviceName'),
             'Ebs': [
