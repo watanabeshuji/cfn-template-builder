@@ -10,6 +10,7 @@ class ElasticLoadBalancing {
 
     def id
     def name
+    def LoadBalancerName
     def Subnets
     def Listeners = []
     def SecurityGroups
@@ -26,6 +27,7 @@ class ElasticLoadBalancing {
     def ElasticLoadBalancing(Source source) {
         this.id = source.camelCase('Name')
         this.name = source.value('Name')
+        this.LoadBalancerName = source.value('LoadBalancerName')
         this.Subnets = source.list('Subnets')
         this.SecurityGroups = source.list('SecurityGroups')
         this.Instances = source.list('Instances')
@@ -41,7 +43,7 @@ class ElasticLoadBalancing {
             (this.id): [
                 'Type': 'AWS::ElasticLoadBalancing::LoadBalancer',
                 'Properties': [
-                    'LoadBalancerName': this.name,
+                    'LoadBalancerName': this.LoadBalancerName,
                     'Subnets': this.Subnets.collect { Util.ref(it) },
                     'Listeners': this.Listeners,
                     'SecurityGroups': this.SecurityGroups.collect { Util.ref(it) },

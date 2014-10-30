@@ -15,6 +15,7 @@ class ElasticLoadBalancingTest {
             new ElasticLoadBalancing(
                 id: 'Elb',
                 name: 'elb',
+                LoadBalancerName: 'elb-blue',
                 Subnets: [['Fn::FindInMap': ['Resources', 'Subnet', 'FrontA']], ['Fn::FindInMap': ['Resources', 'Subnet', 'FrontC']]],
                 Listeners: [
                     ['Protocol': 'HTTP', 'LoadBalancerPort': '80', 'InstanceProtocol': 'HTTP' ,'InstancePort':'80'],
@@ -44,6 +45,7 @@ class ElasticLoadBalancingTest {
         def sut = new ElasticLoadBalancing(
             id: 'Elb',
             name: 'elb',
+            LoadBalancerName: 'elb-blue',
             Subnets: [['Fn::FindInMap': ['Resources', 'Subnet', 'FrontA']], ['Fn::FindInMap': ['Resources', 'Subnet', 'FrontC']]],
             Listeners: [
                 ['Protocol': 'HTTP', 'LoadBalancerPort': '80', 'InstanceProtocol': 'HTTP' ,'InstancePort':'80'],
@@ -69,7 +71,7 @@ class ElasticLoadBalancingTest {
             "Elb": [
                 'Type': 'AWS::ElasticLoadBalancing::LoadBalancer',
                 'Properties': [
-                    'LoadBalancerName': 'elb',
+                    'LoadBalancerName': 'elb-blue',
                     'Subnets': [['Fn::FindInMap': ['Resources', 'Subnet', 'FrontA']], ['Fn::FindInMap': ['Resources', 'Subnet', 'FrontC']]],
                     'Listeners': [
                         ['Protocol': 'HTTP', 'LoadBalancerPort': '80', 'InstanceProtocol': 'HTTP' ,'InstancePort':'80'],
