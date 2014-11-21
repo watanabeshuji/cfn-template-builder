@@ -1,0 +1,3 @@
+Name           ,Vpc  ,CidrBlock     ,AvailabilityZone
+public-subnet  ,vpc  ,10.0.0.0/24   ,ap-northeast-1a
+private-subnet ,vpc  ,10.0.2.0/24   ,ap-northeast-1a

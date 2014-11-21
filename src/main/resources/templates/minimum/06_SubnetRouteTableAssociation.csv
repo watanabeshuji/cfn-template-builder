@@ -1,0 +1,3 @@
+Name                           ,Subnet             ,RouteTable
+public-route-association       ,public-subnet      ,public-route-table
+private-route-association      ,private-subnet     ,private-route-table

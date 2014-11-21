@@ -17,6 +17,16 @@ class TemplateTest {
     }
 
 
+    @Test
+    void "build_templates_minimum"() {
+        String dirName = new File("./src/main/resources/templates/minimum").absolutePath
+        def expected = new File(dirName, "cfn.template").text
+        def actual = Template.build(dirName).toPrettyString()
+        println actual
+        assertText(actual, expected)
+    }
+
+
     void assertText(actual, expected) {
         if (actual == expected) return
         def actualLines = actual.split(/\n/)
