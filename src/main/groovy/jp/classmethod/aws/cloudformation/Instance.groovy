@@ -109,7 +109,7 @@ class Instance {
                 def userData = new File(userDataDir, instance.name)
                 if (userData.exists()) {
                     userData.eachLine {
-                        instance.userData << it + '\\n'
+                        instance.userData << it + '\n'
                     }
                 }
                 instance.BlockDeviceMappings += loadBlockDeviceMappings(file, instance.name)
