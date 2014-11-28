@@ -9,8 +9,9 @@ group = 'jp.classmethod.aws'
 version = '0.2.0'
 
 idea {
-    module {
-        jdkName = '1.7'
+    project {
+        jdkName = '1.8'
+        languageLevel = '1.8'
     }
 }
 
