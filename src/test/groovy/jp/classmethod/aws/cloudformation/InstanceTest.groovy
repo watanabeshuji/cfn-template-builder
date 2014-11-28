@@ -31,6 +31,45 @@ class InstanceTest {
     }
 
     @Test
+    void "tomcat.csvのload"() {
+        File input = new File(getClass().getResource("InstanceTest_tomcat.csv").getFile())
+        def actual = Instance.load(input)
+        assert actual == [
+                new Instance(
+                        id: 'Tomcat',
+                        Name: 'tomcat',
+                        InstanceType: 't1.small',
+                        KeyName: ['Fn::FindInMap': ['Common', 'KeyPair', 'Ec2KeyName']],
+                        SubnetId: 'PublicSubnet',
+                        ImageId: ['Fn::FindInMap': ['AMI', 'AmazonLinux', '20140901']],
+                        IamInstanceProfile: ['Fn::FindInMap': ['Common', 'Role', 'Ec2Role']],
+                        SourceDestCheck: true,
+                        EIP: false,
+                        SecurityGroupIds: ['Internal'],
+                        volumes: null,
+                        userData: [
+                                '#! /bin/bash -v\n',
+                                'yum -y update\n',
+                                '\n',
+                                '# Helper function\n',
+                                'function error_exit\n',
+                                '{\n',
+                                '  /opt/aws/bin/cfn-signal -e 1 -r "$1" \'', ["Ref": "WebServerWaitHandle"], '\'\n',
+                                '  exit 1\n',
+                                '}\n',
+                                'yum -y install java-1.8.0-openjdk-devel tomcat8\n',
+                                'yum -y remove  java-1.7.0-openjdk\n',
+                                'chkconfig tomcat8 on\n',
+                                'service tomat8 start\n',
+                                '\n',
+                                '# All is well so signal success\n',
+                                '/opt/aws/bin/cfn-signal -e $? -r "Server setup complete" \'', ["Ref" : "WebServerWaitHandle"], '\'\n',
+                        ]
+                )
+        ]
+    }
+
+    @Test
     void "withVolume.csvのload"() {
         File input = new File(getClass().getResource("InstanceTest_withVolume.csv").getFile())
         def actual = Instance.load(input)

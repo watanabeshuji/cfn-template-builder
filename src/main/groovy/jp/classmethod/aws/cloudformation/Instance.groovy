@@ -109,13 +109,28 @@ class Instance {
                 def userData = new File(userDataDir, instance.name)
                 if (userData.exists()) {
                     userData.eachLine {
-                        instance.userData << it + '\n'
+                        instance.userData.addAll(conv(it))
+//                        instance.userData << it + '\n'
                     }
                 }
                 instance.BlockDeviceMappings += loadBlockDeviceMappings(file, instance.name)
                 result << instance
             }
         }
+        result
+    }
+
+    static private conv(line) {
+        def result = []
+        String l = line
+        def m = (l =~ /(.*)\[Ref:([A-Za-z0-9]+)\](.*)/)
+        while(m.matches()) {
+            result << m[0][1]
+            result << ["Ref": m[0][2]]
+            l = m[0][3]
+            m = (l =~ /(.*)\[Ref:([A-Za-z0-9]+)\](.*)/)
+        }
+        result << l + '\n'
         result
     }
 
