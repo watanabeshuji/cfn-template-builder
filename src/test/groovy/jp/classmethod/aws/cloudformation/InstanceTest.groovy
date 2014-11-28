@@ -11,7 +11,7 @@ class InstanceTest {
     void "default.csvのload"() {
         File input = new File(getClass().getResource("InstanceTest_default.csv").getFile())
         def actual = Instance.load(input)
-        assert actual[0].userData == ['#! /bin/bash -v\\n', 'yum update -y\\n']
+        assert actual[0].userData == ['#! /bin/bash -v\n', 'yum update -y\n']
         assert actual == [
                 new Instance(
                         id: 'Bastion',
@@ -25,7 +25,7 @@ class InstanceTest {
                         EIP: true,
                         SecurityGroupIds: ['Internal', 'CmMainte'],
                         volumes: null,
-                        userData: ['#! /bin/bash -v\\n', 'yum update -y\\n']
+                        userData: ['#! /bin/bash -v\n', 'yum update -y\n']
                 )
         ]
     }
@@ -34,7 +34,7 @@ class InstanceTest {
     void "withVolume.csvのload"() {
         File input = new File(getClass().getResource("InstanceTest_withVolume.csv").getFile())
         def actual = Instance.load(input)
-        assert actual[0].userData == ['#! /bin/bash -v\\n', 'yum update -y\\n']
+        assert actual[0].userData == ['#! /bin/bash -v\n', 'yum update -y\n']
         assert actual == [
                 new Instance(
                         id: 'Bastion',
@@ -48,7 +48,7 @@ class InstanceTest {
                         EIP: true,
                         SecurityGroupIds: ['Internal', 'CmMainte'],
                         volumes: [['VolumeId': 'ExtVolume', 'Device': '/dev/sdh']],
-                        userData: ['#! /bin/bash -v\\n', 'yum update -y\\n']
+                        userData: ['#! /bin/bash -v\n', 'yum update -y\n']
                 )
         ]
     }

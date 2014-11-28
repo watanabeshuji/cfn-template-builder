@@ -342,8 +342,8 @@
                         "Fn::Join": [
                             "",
                             [
-                                "#! /bin/bash -v\\n",
-                                "yum update -y\\n"
+                                "#! /bin/bash -v\n",
+                                "yum update -y\n"
                             ]
                         ]
                     }
