@@ -35,6 +35,8 @@ class CfnTemplateBuilderPlugin implements Plugin<Project> {
             out.write(template.toPrettyString())
             println "File generated:  ${out.absolutePath}"
         }
+        project.tasks.initCfn.description = "Initialize cfn-template-builder. Create cfn directory."
+        project.tasks.generateTemplate.description = "Generate CloudFormation Template file. Option: -PcfnDir=[cfnDir]."
     }
 }
 
