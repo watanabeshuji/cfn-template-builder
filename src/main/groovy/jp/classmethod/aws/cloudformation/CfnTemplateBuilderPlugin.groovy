@@ -17,7 +17,6 @@ class CfnTemplateBuilderPlugin implements Plugin<Project> {
 
     void apply(Project project) {
         project.ext.cfnDir = (project.hasProperty('cfnDir')) ? project.getProperty('cfnDir') : "./cfn"
-        project.ext.printTemplateJSON =  (project.hasProperty('printTemplateJSON')) ? project.getProperty('printTemplateJSON') as Boolean : true
         project.task('cfnInit') << {
             println 'CloudFormation Builder'
             println 'Create sample CSV files....'
@@ -40,7 +39,8 @@ class CfnTemplateBuilderPlugin implements Plugin<Project> {
         project.task('cfnBuild') << {
             println 'CloudFormation Builder'
             def dir = project.ext.cfnDir
-            def printTemplateJSON = project.ext.printTemplateJSON
+            def output = (project.hasProperty('output')) ? project.getProperty('output') as Boolean : true
+            def dryRun = (project.hasProperty('dryRun')) ? project.getProperty('dryRun') as Boolean : false
             println "Load from $dir"
             def template = Template.build(dir)
             if (printTemplateJSON) println template.toPrettyString()
