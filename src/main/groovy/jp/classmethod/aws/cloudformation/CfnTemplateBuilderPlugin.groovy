@@ -16,7 +16,7 @@ class CfnTemplateBuilderPlugin implements Plugin<Project> {
     void apply(Project project) {
         project.ext.cfnDir = (project.hasProperty('cfnDir')) ? project.getProperty('cfnDir') : "./cfn"
         project.ext.printTemplateJSON =  (project.hasProperty('printTemplateJSON')) ? project.getProperty('printTemplateJSON') as Boolean : true
-        project.task('initCfn') << {
+        project.task('cfnInit') << {
             println 'CloudFormation Builder'
             println 'Create sample CSV files....'
             def cfnDir = project.ext.cfnDir
@@ -31,7 +31,11 @@ class CfnTemplateBuilderPlugin implements Plugin<Project> {
             Files.createDirectory(Paths.get(cfnDir, 'userdata'))
             Files.copy(CfnTemplateBuilderPlugin.class.getResourceAsStream('Meta.txt'), Paths.get(cfnDir, 'Meta.txt'))
         }
-        project.task('generateTemplate') << {
+        project.task('cfnNew') << {
+            println 'CloudFormation Builder'
+
+        }
+        project.task('cfnBuild') << {
             println 'CloudFormation Builder'
             def dir = project.ext.cfnDir
             def printTemplateJSON = project.ext.printTemplateJSON
@@ -42,8 +46,14 @@ class CfnTemplateBuilderPlugin implements Plugin<Project> {
             out.write(template.toPrettyString())
             println "File generated:  ${out.absolutePath}"
         }
-        project.tasks.initCfn.description = "Initialize cfn-template-builder. Create cfn directory."
-        project.tasks.generateTemplate.description = "Generate CloudFormation Template file. Option: -PcfnDir=[cfnDir]."
+        project.task('generateTemplate') << {
+            println 'CloudFormation Builder'
+            println "Deprecated task. Please use 'cfnBuild' task"
+        }
+        project.tasks.cfnInit.description = "Initialize cfn-template-builder. Create cfn directory. Option: -PcfnDir=[cfnDir]."
+        project.tasks.cfnNew.description = "Create new cfn-template-builder file. Option: -PcfnType=[Type] -PcfnDir=[cfnDir]."
+        project.tasks.cfnBuild.description = "Build CloudFormation Template file. Option: -PcfnDir=[cfnDir]."
+        project.tasks.generateTemplate.description = "Deprecated task. Please use 'cfnBuild' task"
     }
 }
 
