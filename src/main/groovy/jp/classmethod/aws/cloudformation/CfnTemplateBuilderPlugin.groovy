@@ -20,9 +20,16 @@ class CfnTemplateBuilderPlugin implements Plugin<Project> {
             println 'CloudFormation Builder'
             println 'Create sample CSV files....'
             def cfnDir = project.ext.cfnDir
+            if (Paths.get(cfnDir).toFile().exists()) {
+                println ""
+                println "Sorry!!"
+                println "Already exist cfn directory: " + cfnDir
+                return
+            }
+            Files.createDirectory(Paths.get(cfnDir))
             Files.createDirectory(Paths.get(cfnDir, 'Mappings'))
             Files.createDirectory(Paths.get(cfnDir, 'userdata'))
-            Files.copy(CfnTemplateBuilderPlugin.class.getResourceAsStream('VPC.csv'), Paths.get(cfnDir, 'VPC.csv'))
+            Files.copy(CfnTemplateBuilderPlugin.class.getResourceAsStream('Meta.txt'), Paths.get(cfnDir, 'Meta.txt'))
         }
         project.task('generateTemplate') << {
             println 'CloudFormation Builder'
