@@ -13,6 +13,8 @@ import java.nio.file.Paths
  */
 class CfnTemplateBuilderPlugin implements Plugin<Project> {
 
+    static final String TASK_NAME = 'AWS tasks'
+
     void apply(Project project) {
         project.ext.cfnDir = (project.hasProperty('cfnDir')) ? project.getProperty('cfnDir') : "./cfn"
         project.ext.printTemplateJSON =  (project.hasProperty('printTemplateJSON')) ? project.getProperty('printTemplateJSON') as Boolean : true
@@ -50,6 +52,10 @@ class CfnTemplateBuilderPlugin implements Plugin<Project> {
             println 'CloudFormation Builder'
             println "Deprecated task. Please use 'cfnBuild' task"
         }
+        project.tasks.cfnInit.group = TASK_NAME
+        project.tasks.cfnNew.group = TASK_NAME
+        project.tasks.cfnBuild.group = TASK_NAME
+        project.tasks.generateTemplate.group = TASK_NAME
         project.tasks.cfnInit.description = "Initialize cfn-template-builder. Create cfn directory. Option: -PcfnDir=[cfnDir]."
         project.tasks.cfnNew.description = "Create new cfn-template-builder file. Option: -PcfnType=[Type] -PcfnDir=[cfnDir]."
         project.tasks.cfnBuild.description = "Build CloudFormation Template file. Option: -PcfnDir=[cfnDir]."
