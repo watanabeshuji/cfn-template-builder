@@ -50,17 +50,25 @@ class CfnTemplateBuilderPlugin implements Plugin<Project> {
             out.write(template.toPrettyString())
             println "File generated:  ${out.absolutePath}"
         }
+        project.task('cfnClean') << {
+            println 'CloudFormation Builder'
+            println 'Cleanup cfn directory....'
+            def cfnDir = project.ext.cfnDir
+            Paths.get(cfnDir).toFile().deleteDir()
+        }
         project.task('generateTemplate') << {
             println 'CloudFormation Builder'
             println "Deprecated task. Please use 'cfnBuild' task"
         }
         project.tasks.cfnInit.group = TASK_NAME
         project.tasks.cfnNew.group = TASK_NAME
+        project.tasks.cfnClean.group = TASK_NAME
         project.tasks.cfnBuild.group = TASK_NAME
         project.tasks.generateTemplate.group = TASK_NAME
         project.tasks.cfnInit.description = "Initialize cfn-template-builder. Create cfn directory. Option: -PcfnDir=[cfnDir]."
-        project.tasks.cfnNew.description = "Create new cfn-template-builder file. Option: -PcfnType=(VPC|InternetGateway|ALL) -PcfnDir=[cfnDir]."
+        project.tasks.cfnNew.description = "Create new cfn-template-builder file. Option: -PcfnType=(VPC|InternetGateway|templates.Routing|ALL) -PcfnDir=[cfnDir]."
         project.tasks.cfnBuild.description = "Build CloudFormation Template file. Option: -PcfnDir=[cfnDir]."
+        project.tasks.cfnClean.description = "Cleanup cfn directory. Option: -PcfnDir=[cfnDir]."
         project.tasks.generateTemplate.description = "Deprecated task. Please use 'cfnBuild' task"
     }
 
@@ -79,11 +87,19 @@ class CfnTemplateBuilderPlugin implements Plugin<Project> {
             case 'Subnet':
                 copyTemplateFile('/templates/Subnet/default.csv', Paths.get(cfnDir, '00_Subnet.csv'))
                 break
+            case 'Routing':
+                copyTemplateFile('/templates/Routing/RouteTable_default.csv', Paths.get(cfnDir, '00_RouteTable.csv'))
+                copyTemplateFile('/templates/Routing/Route_default.csv', Paths.get(cfnDir, '00_Route.csv'))
+                copyTemplateFile('/templates/Routing/SubnetRouteTableAssociation_default.csv', Paths.get(cfnDir, '00_SubnetRouteTableAssociation.csv'))
+                break
             case 'ALL':
                 [
                     ['/templates/VPC/default.csv', '01_VPC.csv'],
                     ['/templates/InternetGateway/default.csv', '02_InternetGateway.csv'],
                     ['/templates/Subnet/default.csv', '03_Subnet.csv'],
+                    ['/templates/Routing/RouteTable_default.csv', '04_RouteTable.csv'],
+                    ['/templates/Routing/Route_default.csv', '05_Route.csv'],
+                    ['/templates/Routing/SubnetRouteTableAssociation_default.csv', '06_SubnetRouteTableAssociation.csv'],
                 ].each { copyTemplateFile(it[0], Paths.get(cfnDir, it[1]))}
                 break
         }
