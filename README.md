@@ -3,6 +3,15 @@
 ## これは何？
 CSV形式びCloudFormationの定義ファイルをJSONに整形するGradleのPluginです。
 
+## タスク
+Key          |Desc                           
+-----------  |-------------------------------
+cfnClean     |cfnディレクトリを削除します                
+cfnInit      |cfnディレクトリを作成し、最小限のファイルを作成します                
+cfnNew       |テンプレートファイルを追加します。-PcfnTypeで追加する種別を個別に指定するか、指定しない場合はデフォルト構成を追加します
+cfnBuild     |cfnテンプレートを作成します                
+
+
 ## 設定
 Gradleプロジェクトを作成し、以下の内容に従ってプラグインを設定します。
 
@@ -42,7 +51,7 @@ apply plugin: 'cfn-template-builder'
 apply plugin: 'idea'
 
 version = '1.0'
-defaultTasks 'generateTemplate'
+defaultTasks 'cfnBuild'
 
 buildscript {
     repositories {
@@ -178,7 +187,7 @@ cfnディレクトリ下に設定ファイルを定義します。
 ### オプション
 
 -PcfnDir=[ベースディレクトリ]  cfn以外のディレクトリを指定する場合はパラメータを指定してください。
--printTemplateJSON=[true|false]  標準出力にJSONを表示したくない場合はfalseを指定してください（デフォルト: true）
+-Poutput=[true|false]  標準出力にJSONを表示したくない場合はfalseを指定してください（デフォルト: true）
 
 
 
