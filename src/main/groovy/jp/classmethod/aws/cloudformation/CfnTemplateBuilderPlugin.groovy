@@ -76,10 +76,14 @@ class CfnTemplateBuilderPlugin implements Plugin<Project> {
             case 'InternetGateway':
                 copyTemplateFile('/templates/InternetGateway/default.csv', Paths.get(cfnDir, '00_InternetGateway.csv'))
                 break
+            case 'Subnet':
+                copyTemplateFile('/templates/Subnet/default.csv', Paths.get(cfnDir, '00_Subnet.csv'))
+                break
             case 'ALL':
                 [
                     ['/templates/VPC/default.csv', '01_VPC.csv'],
                     ['/templates/InternetGateway/default.csv', '02_InternetGateway.csv'],
+                    ['/templates/Subnet/default.csv', '03_Subnet.csv'],
                 ].each { copyTemplateFile(it[0], Paths.get(cfnDir, it[1]))}
                 break
         }
