@@ -19,7 +19,6 @@ class CfnTemplateBuilderPlugin implements Plugin<Project> {
         project.ext.cfnDir = (project.hasProperty('cfnDir')) ? project.getProperty('cfnDir') : "./cfn"
         project.task('cfnInit') << {
             println 'CloudFormation Builder'
-            println 'Create sample CSV files....'
             def cfnDir = project.ext.cfnDir
             if (Paths.get(cfnDir).toFile().exists()) {
                 println ""
@@ -34,8 +33,9 @@ class CfnTemplateBuilderPlugin implements Plugin<Project> {
         }
         project.task('cfnNew') << {
             println 'CloudFormation Builder'
+            println 'Create new CSV files....'
             def cfnDir = project.ext.cfnDir
-            def cfnType = getProjectProperty(project, 'cfnType', 'VPC')
+            def cfnType = getProjectProperty(project, 'cfnType', 'ALL')
             createTemplateFile(cfnDir, cfnType)
         }
         project.task('cfnBuild') << {
@@ -45,7 +45,7 @@ class CfnTemplateBuilderPlugin implements Plugin<Project> {
             def dryRun = (project.hasProperty('dryRun')) ? project.getProperty('dryRun') as Boolean : false
             println "Load from $dir"
             def template = Template.build(dir)
-            if (printTemplateJSON) println template.toPrettyString()
+            if (output) println template.toPrettyString()
             def out = new File(dir, "cfn.template")
             out.write(template.toPrettyString())
             println "File generated:  ${out.absolutePath}"
@@ -77,7 +77,10 @@ class CfnTemplateBuilderPlugin implements Plugin<Project> {
                 copyTemplateFile('/templates/InternetGateway/default.csv', Paths.get(cfnDir, '00_InternetGateway.csv'))
                 break
             case 'ALL':
-
+                [
+                    ['/templates/VPC/default.csv', '01_VPC.csv'],
+                    ['/templates/InternetGateway/default.csv', '02_InternetGateway.csv'],
+                ].each { copyTemplateFile(it[0], Paths.get(cfnDir, it[1]))}
                 break
         }
     }
@@ -87,7 +90,7 @@ class CfnTemplateBuilderPlugin implements Plugin<Project> {
             println "Already file exist: $path"
             return
         }
-        Files.copy(this.class.getResourceAsStream(resource), path)
+        Files.copy(CfnTemplateBuilderPlugin.class.getResourceAsStream(resource), path)
         println "Create template file: $path"
     }
 }
