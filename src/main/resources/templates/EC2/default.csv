@@ -1,0 +1,2 @@
+Name           ,InstanceType  ,KeyName                    ,SubnetId         ,ImageId                   ,IamInstanceProfile     ,SourceDestCheck  ,PrivateIpAddress  ,EIP    ,SecurityGroupIds
+Web            ,t2.small      ,Common:KeyPair:Ec2Key      ,public-subnet-a  ,AMI:AmazonLinux:20140901  ,Common:Role:StgWebRole ,true             ,-                 ,true   ,internal|public-web|cm-mainte

@@ -66,7 +66,7 @@ class CfnTemplateBuilderPlugin implements Plugin<Project> {
         project.tasks.cfnBuild.group = TASK_NAME
         project.tasks.generateTemplate.group = TASK_NAME
         project.tasks.cfnInit.description = "Initialize cfn-template-builder. Create cfn directory. Option: -PcfnDir=[cfnDir]."
-        project.tasks.cfnNew.description = "Create new cfn-template-builder file. Option: -PcfnType=(VPC|InternetGateway|Routing|SecurityGroup|ALL) -PcfnDir=[cfnDir]."
+        project.tasks.cfnNew.description = "Create new cfn-template-builder file. Option: -PcfnType=(VPC|InternetGateway|Routing|SecurityGroup|EC2|ALL) -PcfnDir=[cfnDir]."
         project.tasks.cfnBuild.description = "Build CloudFormation Template file. Option: -PcfnDir=[cfnDir]."
         project.tasks.cfnClean.description = "Cleanup cfn directory. Option: -PcfnDir=[cfnDir]."
         project.tasks.generateTemplate.description = "Deprecated task. Please use 'cfnBuild' task"
@@ -95,6 +95,9 @@ class CfnTemplateBuilderPlugin implements Plugin<Project> {
             case 'SecurityGroup':
                 copyTemplateFile('/templates/SecurityGroup/default.csv', Paths.get(cfnDir, '00_SecurityGroup.csv'))
                 break
+            case 'EC2':
+                copyTemplateFile('/templates/EC2/default.csv', Paths.get(cfnDir, '00_EC2.csv'))
+                break
             case 'ALL':
                 [
                     ['/templates/VPC/default.csv', '01_VPC.csv'],
@@ -104,6 +107,7 @@ class CfnTemplateBuilderPlugin implements Plugin<Project> {
                     ['/templates/Routing/Route_default.csv', '05_Route.csv'],
                     ['/templates/Routing/SubnetRouteTableAssociation_default.csv', '06_SubnetRouteTableAssociation.csv'],
                     ['/templates/SecurityGroup/default.csv', '07_SecurityGroup.csv'],
+                    ['/templates/EC2/default.csv', '11_Instance.csv'],
                 ].each { copyTemplateFile(it[0], Paths.get(cfnDir, it[1]))}
                 break
         }
