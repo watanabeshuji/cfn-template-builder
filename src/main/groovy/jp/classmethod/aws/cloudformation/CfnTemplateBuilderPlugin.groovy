@@ -35,7 +35,7 @@ class CfnTemplateBuilderPlugin implements Plugin<Project> {
         project.task('cfnNew') << {
             println 'CloudFormation Builder'
             def cfnDir = project.ext.cfnDir
-            def cfnType = getProjectProperty(project, 'cfnType', 'vpc')
+            def cfnType = getProjectProperty(project, 'cfnType', 'VPC')
             createTemplateFile(cfnDir, cfnType)
         }
         project.task('cfnBuild') << {
@@ -59,7 +59,7 @@ class CfnTemplateBuilderPlugin implements Plugin<Project> {
         project.tasks.cfnBuild.group = TASK_NAME
         project.tasks.generateTemplate.group = TASK_NAME
         project.tasks.cfnInit.description = "Initialize cfn-template-builder. Create cfn directory. Option: -PcfnDir=[cfnDir]."
-        project.tasks.cfnNew.description = "Create new cfn-template-builder file. Option: -PcfnType=(vpc|) -PcfnDir=[cfnDir]."
+        project.tasks.cfnNew.description = "Create new cfn-template-builder file. Option: -PcfnType=(VPC|InternetGateway|ALL) -PcfnDir=[cfnDir]."
         project.tasks.cfnBuild.description = "Build CloudFormation Template file. Option: -PcfnDir=[cfnDir]."
         project.tasks.generateTemplate.description = "Deprecated task. Please use 'cfnBuild' task"
     }
@@ -69,12 +69,25 @@ class CfnTemplateBuilderPlugin implements Plugin<Project> {
     }
 
     private createTemplateFile(String cfnDir, String cfnType) {
-        def path = Paths.get(cfnDir, '00_VPC.csv')
+        switch (cfnType) {
+            case 'VPC':
+                copyTemplateFile('/templates/VPC/default.csv', Paths.get(cfnDir, '00_VPC.csv'))
+                break
+            case 'InternetGateway':
+                copyTemplateFile('/templates/InternetGateway/default.csv', Paths.get(cfnDir, '00_InternetGateway.csv'))
+                break
+            case 'ALL':
+
+                break
+        }
+    }
+
+    private copyTemplateFile(String resource, Path path) {
         if (path.toFile().exists()) {
             println "Already file exist: $path"
             return
         }
-        Files.copy(this.class.getResourceAsStream('/templates/vpc/default.csv'), path)
+        Files.copy(this.class.getResourceAsStream(resource), path)
         println "Create template file: $path"
     }
 }
