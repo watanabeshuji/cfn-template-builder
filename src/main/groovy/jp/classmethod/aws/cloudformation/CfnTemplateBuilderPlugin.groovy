@@ -34,7 +34,9 @@ class CfnTemplateBuilderPlugin implements Plugin<Project> {
         }
         project.task('cfnNew') << {
             println 'CloudFormation Builder'
-
+            def cfnDir = project.ext.cfnDir
+            def cfnType = getProjectProperty(project, 'cfnType', 'vpc')
+            createTemplateFile(cfnDir, cfnType)
         }
         project.task('cfnBuild') << {
             println 'CloudFormation Builder'
@@ -57,9 +59,23 @@ class CfnTemplateBuilderPlugin implements Plugin<Project> {
         project.tasks.cfnBuild.group = TASK_NAME
         project.tasks.generateTemplate.group = TASK_NAME
         project.tasks.cfnInit.description = "Initialize cfn-template-builder. Create cfn directory. Option: -PcfnDir=[cfnDir]."
-        project.tasks.cfnNew.description = "Create new cfn-template-builder file. Option: -PcfnType=[Type] -PcfnDir=[cfnDir]."
+        project.tasks.cfnNew.description = "Create new cfn-template-builder file. Option: -PcfnType=(vpc|) -PcfnDir=[cfnDir]."
         project.tasks.cfnBuild.description = "Build CloudFormation Template file. Option: -PcfnDir=[cfnDir]."
         project.tasks.generateTemplate.description = "Deprecated task. Please use 'cfnBuild' task"
+    }
+
+    private getProjectProperty(Project project, String propertyName, defaultValue) {
+        (project.hasProperty(propertyName)) ? project.getProperty(propertyName) : defaultValue
+    }
+
+    private createTemplateFile(String cfnDir, String cfnType) {
+        def path = Paths.get(cfnDir, '00_VPC.csv')
+        if (path.toFile().exists()) {
+            println "Already file exist: $path"
+            return
+        }
+        Files.copy(this.class.getResourceAsStream('/templates/vpc/default.csv'), path)
+        println "Create template file: $path"
     }
 }
 
