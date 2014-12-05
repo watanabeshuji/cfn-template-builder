@@ -29,7 +29,9 @@ class CfnTemplateBuilderPlugin implements Plugin<Project> {
             Files.createDirectory(Paths.get(cfnDir))
             Files.createDirectory(Paths.get(cfnDir, 'Mappings'))
             Files.createDirectory(Paths.get(cfnDir, 'userdata'))
-            Files.copy(CfnTemplateBuilderPlugin.class.getResourceAsStream('Meta.txt'), Paths.get(cfnDir, 'Meta.txt'))
+            Files.copy(CfnTemplateBuilderPlugin.class.getResourceAsStream('/templates/Meta.txt'), Paths.get(cfnDir, 'Meta.txt'))
+            Files.copy(CfnTemplateBuilderPlugin.class.getResourceAsStream('/templates/Mappings/AMI'), Paths.get(cfnDir, 'Mappings', 'AMI'))
+            Files.copy(CfnTemplateBuilderPlugin.class.getResourceAsStream('/templates/Mappings/Common'), Paths.get(cfnDir, 'Mappings', 'Common'))
         }
         project.task('cfnNew') << {
             println 'CloudFormation Builder'
