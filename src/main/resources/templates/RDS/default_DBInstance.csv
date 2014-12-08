@@ -1,0 +1,2 @@
+Name     ,DBSubnetGroupName  ,MultiAZ   ,AvailabilityZone  ,DBInstanceClass ,AllocatedStorage ,Iops   ,Engine  ,EngineVersion ,Port ,DBParameterGroupName ,DBName  ,MasterUsername ,MasterUserPassword ,VPCSecurityGroups
+db-prd   ,db-subnet          ,false     ,ap-northeast-1a   ,db.t2.small    ,6                 ,-      ,mysql   ,5.6.21        ,3306 ,default.mysql5.6     ,app     ,root           ,password1234       ,internal

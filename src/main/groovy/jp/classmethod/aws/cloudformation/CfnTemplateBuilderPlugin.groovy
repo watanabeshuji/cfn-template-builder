@@ -100,6 +100,10 @@ class CfnTemplateBuilderPlugin implements Plugin<Project> {
             case 'EC2':
                 copyTemplateFile('/templates/EC2/default.csv', Paths.get(cfnDir, '00_EC2.csv'))
                 break
+            case 'RDS':
+                copyTemplateFile('/templates/RDS/default_DBSubnetGroup.csv', Paths.get(cfnDir, '00_DBSubnetGroup.csv'))
+                copyTemplateFile('/templates/RDS/default_DBInstance.csv', Paths.get(cfnDir, '00_DBInstance.csv'))
+                break
             case 'ALL':
                 [
                     ['/templates/VPC/default.csv', '01_VPC.csv'],
@@ -110,6 +114,8 @@ class CfnTemplateBuilderPlugin implements Plugin<Project> {
                     ['/templates/Routing/SubnetRouteTableAssociation_default.csv', '06_SubnetRouteTableAssociation.csv'],
                     ['/templates/SecurityGroup/default.csv', '07_SecurityGroup.csv'],
                     ['/templates/EC2/default.csv', '11_Instance.csv'],
+                    ['/templates/RDS/default_DBSubnetGroup.csv', '21_DBSubnetGroup.csv'],
+                    ['/templates/RDS/default_DBInstance.csv', '22_DBInstance.csv'],
                 ].each { copyTemplateFile(it[0], Paths.get(cfnDir, it[1]))}
                 break
         }
