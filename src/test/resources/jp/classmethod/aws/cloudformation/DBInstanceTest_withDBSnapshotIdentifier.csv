@@ -1,0 +1,2 @@
+Name     ,DBSubnetGroupName  ,MultiAZ   ,AvailabilityZone  ,DBInstanceClass ,AllocatedStorage ,Iops   ,Engine  ,EngineVersion ,Port ,DBParameterGroupName ,DBName  ,MasterUsername ,MasterUserPassword ,VPCSecurityGroups ,DBSnapshotIdentifier
+db-dev   ,db-subnet-dev      ,false     ,ap-northeast-1a   ,db.m1.small     ,50               ,-      ,mysql   ,5.6.21        ,3306 ,default.mysql5.6     ,db      ,root           ,password1234       ,internal          ,snapshot01

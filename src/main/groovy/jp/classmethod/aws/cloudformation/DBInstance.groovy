@@ -21,6 +21,7 @@ class DBInstance {
     def Port
     def DBParameterGroupName
     def DBName
+    def DBSnapshotIdentifier
     def MasterUsername
     def MasterUserPassword
     def VPCSecurityGroups
@@ -43,6 +44,7 @@ class DBInstance {
         this.Port = source.value('Port')
         this.DBParameterGroupName = source.value('DBParameterGroupName')
         this.DBName = source.value('DBName')
+        this.DBSnapshotIdentifier = source.value('DBSnapshotIdentifier')
         this.MasterUsername = source.value('MasterUsername')
         this.MasterUserPassword = source.value('MasterUserPassword')
         this.VPCSecurityGroups = source.camelCaseList('VPCSecurityGroups')
@@ -76,6 +78,7 @@ class DBInstance {
         ]
         if (!this.MultiAZ) map[this.id]['Properties']['AvailabilityZone'] = AvailabilityZone
         if (this.Iops) map[this.id]['Properties']['Ipos'] = Iops
+        if (this.DBSnapshotIdentifier) map[this.id]['Properties']['DBSnapshotIdentifier'] = DBSnapshotIdentifier
         if (!DependsOn.isEmpty()) map[this.id]['DependsOn'] = DependsOn.collect { it }
         map
     }

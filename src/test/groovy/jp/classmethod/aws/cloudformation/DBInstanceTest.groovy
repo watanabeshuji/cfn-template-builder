@@ -54,6 +54,35 @@ class DBInstanceTest {
     }
 
     @Test
+    void "withDBSnapshotIdentifier.csvのload"() {
+        File input = new File(getClass().getResource("DBInstanceTest_withDBSnapshotIdentifier.csv").getFile())
+        def actual = DBInstance.load(input)
+        assert actual == [
+                new DBInstance(
+                        id: 'DbDev',
+                        Name: 'db-dev',
+                        DBSubnetGroupName: 'DbSubnetDev',
+                        MultiAZ: false,
+                        AvailabilityZone: 'ap-northeast-1a',
+                        DBInstanceClass: 'db.m1.small',
+                        AllocatedStorage: '50',
+                        Iops: null,
+                        Engine: 'mysql',
+                        EngineVersion: '5.6.21',
+                        Port: '3306',
+                        DBParameterGroupName: 'default.mysql5.6',
+                        DBName: 'db',
+                        DBSnapshotIdentifier: 'snapshot01',
+                        MasterUsername: 'root',
+                        MasterUserPassword: 'password1234',
+                        VPCSecurityGroups: ['Internal'],
+                        DependsOn: []
+                )
+        ]
+    }
+
+
+    @Test
     void "dev toResourceMap"() {
         def sut = new DBInstance(
                 id: 'DbDev',
@@ -149,4 +178,53 @@ class DBInstanceTest {
         assert sut.toResourceMap() == expected
     }
 
+    @Test
+    void "prd toResourceMap DBSnapshotIdentifier"() {
+        def sut = new DBInstance(
+                id: 'DbPrd',
+                Name: 'db-prd',
+                DBSubnetGroupName: ['Ref': 'DbSubnet'],
+                MultiAZ: true,
+                AvailabilityZone: null,
+                DBInstanceClass: 'db.m3.xlarge',
+                AllocatedStorage: '200',
+                Iops: 1000,
+                Engine: 'mysql',
+                EngineVersion: '5.6.19',
+                Port: '3306',
+                DBParameterGroupName: 'default.mysql5.6',
+                DBName: 'app',
+                DBSnapshotIdentifier: 'snapshot01',
+                MasterUsername: 'root',
+                MasterUserPassword: 'password1234',
+                VPCSecurityGroups: ['Internal'],
+                DependsOn: []
+        )
+        def expected = [
+                "DbPrd": [
+                        'Type': 'AWS::RDS::DBInstance',
+                        'Properties': [
+                                'DBSubnetGroupName': ['Ref': 'DbSubnet'],
+                                'MultiAZ': true,
+                                'DBInstanceClass': 'db.m3.xlarge',
+                                'AllocatedStorage': '200',
+                                'Ipos': 1000,
+                                'Engine': 'mysql',
+                                'EngineVersion': '5.6.19',
+                                'Port': '3306',
+                                'DBParameterGroupName': 'default.mysql5.6',
+                                'DBName': 'app',
+                                'MasterUsername': 'root',
+                                'MasterUserPassword': 'password1234',
+                                'VPCSecurityGroups': [['Ref': 'Internal']],
+                                'Tags': [
+                                        ['Key': 'Name', 'Value': 'db-prd'],
+                                        ['Key': 'Application', 'Value': ['Ref': 'AWS::StackId' ]]
+                                ],
+                                'DBSnapshotIdentifier': 'snapshot01'
+                        ]
+                ]
+        ]
+        assert sut.toResourceMap() == expected
+    }
 }
