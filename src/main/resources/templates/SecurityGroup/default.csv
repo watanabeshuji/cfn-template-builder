@@ -4,4 +4,4 @@ internal      ,vpc    ,udp         ,0          ,65535    ,10.0.0.0/16
 internal      ,vpc    ,icmp        ,-1         ,-1       ,10.0.0.0/16
 public-web    ,vpc    ,tcp         ,80         ,80       ,0.0.0.0/0           ,Allow public web access.
 public-web    ,vpc    ,tcp         ,443        ,443      ,0.0.0.0/0
-cm-mainte     ,vpc    ,tcp         ,22         ,22       ,111.222.333.444/32  ,Allow ssh from Classmethod
+cm-mainte     ,vpc    ,tcp         ,22         ,22       ,127.0.0.1/32        ,Allow ssh from Classmethod
