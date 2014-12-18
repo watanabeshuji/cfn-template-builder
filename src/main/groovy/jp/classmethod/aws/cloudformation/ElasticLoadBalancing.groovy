@@ -20,6 +20,10 @@ class ElasticLoadBalancing {
     def Interval
     def UnhealthyThreshold
     def HealthyThreshold
+    def AccessLoggingPolicyEnabled
+    def AccessLoggingPolicyS3BucketName
+    def AccessLoggingPolicyS3BucketPrefix
+    def AccessLoggingPolicyEmitInterval
 
     def ElasticLoadBalancing() {
     }
@@ -36,6 +40,10 @@ class ElasticLoadBalancing {
         this.Interval = source.value('Interval')
         this.UnhealthyThreshold = source.value('UnhealthyThreshold')
         this.HealthyThreshold = source.value('HealthyThreshold')
+        this.AccessLoggingPolicyEnabled = source.value('AccessLoggingPolicyEnabled')
+        this.AccessLoggingPolicyS3BucketName = source.value('AccessLoggingPolicyS3BucketName')
+        this.AccessLoggingPolicyS3BucketPrefix = source.value('AccessLoggingPolicyS3BucketPrefix')
+        this.AccessLoggingPolicyEmitInterval = source.value('AccessLoggingPolicyEmitInterval')
     }
 
     def toResourceMap() {
@@ -58,6 +66,14 @@ class ElasticLoadBalancing {
                 ]
             ]
         ]
+        if (this.AccessLoggingPolicyEnabled) {
+            map[this.id]['Properties']['AccessLoggingPolicy'] = [
+                    'Enabled': this.AccessLoggingPolicyEnabled,
+                    'S3BucketName': this.AccessLoggingPolicyS3BucketName,
+                    'S3BucketPrefix': this.AccessLoggingPolicyS3BucketPrefix,
+                    'EmitInterval': this.AccessLoggingPolicyEmitInterval,
+            ]
+        }
         map
     }
 
