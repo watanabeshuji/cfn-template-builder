@@ -3,6 +3,48 @@
 ## これは何？
 CSV形式びCloudFormationの定義ファイルをJSONに整形するGradleのPluginです。
 
+## Quick Start
+build.gradle を作成します。
+```groovy
+apply plugin: 'cfn-template-builder'
+
+buildscript {
+    repositories {
+        mavenCentral()
+        maven {
+            url "http://watanabeshuji.github.io/cfn-template-builder-repo"
+        }
+    }
+    dependencies {
+        classpath group: 'org.codehaus.groovy', name: 'groovy-all', version: '2.3.2'
+        classpath group: 'jp.classmethod.aws', name: 'cfn-template-builder', version: '+'
+    }
+}
+```
+
+cfnInitタスクを実行します。
+```
+$ gradle cfnInit
+```
+cfnディレクトリが作成され、最小限のファイルとMappingsのサンプルファイルが作成されます。
+
+cfnBuildタスクを実行し、テンプレートファイルを作成します。
+```
+$ gradle cfnBuild
+```
+cfn.template がテンプレートファイルです。
+
+cfnNewタスクを実行し、デフォルト構成を追加します。
+```
+$ gradle cfnNew
+```
+作成可能なテンプレートはオプションで指定可能です。
+
+再度、cfnBuildタスクを実行し、テンプレートファイルを再生成します。
+```
+$ gradle cfnBuild
+```
+
 ## タスク
 Key          |Desc                           
 -----------  |-------------------------------
