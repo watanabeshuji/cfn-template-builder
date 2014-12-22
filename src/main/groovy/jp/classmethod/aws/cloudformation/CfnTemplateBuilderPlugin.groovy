@@ -72,6 +72,33 @@ class CfnTemplateBuilderPlugin implements Plugin<Project> {
         project.tasks.cfnBuild.description = "Build CloudFormation Template file. Option: -PcfnDir=[cfnDir]."
         project.tasks.cfnClean.description = "Cleanup cfn directory. Option: -PcfnDir=[cfnDir]."
         project.tasks.generateTemplate.description = "Deprecated task. Please use 'cfnBuild' task"
+        // Packer tasks TODO 後でプラグインを分離すべき
+        project.ext.amiDir = (project.hasProperty('amiDir')) ? project.getProperty('amiDir') : "./ami"
+        project.task('amiInit') << {
+            println 'CloudFormation Builder'
+            def amiDir = project.ext.amiDir
+            if (Paths.get(amiDir).toFile().exists()) {
+                println ""
+                println "Sorry!!"
+                println "Already exist ami directory: " + amiDir
+                return
+            }
+            Files.createDirectory(Paths.get(amiDir))
+            Files.copy(CfnTemplateBuilderPlugin.class.getResourceAsStream('/ami/variables.json.sample'), Paths.get(amiDir, 'variables.json.sample'))
+            Files.copy(CfnTemplateBuilderPlugin.class.getResourceAsStream('/ami/Example.json'), Paths.get(amiDir, 'Example.json'))
+            Files.createDirectory(Paths.get(amiDir, 'Example'))
+            Files.copy(CfnTemplateBuilderPlugin.class.getResourceAsStream('/ami/ansible/setup.yml'), Paths.get(amiDir, 'Example', 'setup.yml'))
+        }
+        project.task('amiClean') << {
+            println 'CloudFormation Builder'
+            println 'Cleanup ami directory....'
+            def amiDir = project.ext.amiDir
+            Paths.get(amiDir).toFile().deleteDir()
+        }
+        project.tasks.amiInit.group = TASK_NAME
+        project.tasks.amiClean.group = TASK_NAME
+        project.tasks.amiInit.description = "Initialize cfn-template-builder. Create ami directory. Option: -PamiDir=[amiDir]."
+        project.tasks.amiInit.description = "Cleanup ami directory. Option: -PamiDir=[amiDir]."
     }
 
     private getProjectProperty(Project project, String propertyName, defaultValue) {

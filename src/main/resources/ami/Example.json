@@ -1,0 +1,27 @@
+{
+  "variables": {
+    "aws_access_key": "",
+    "aws_secret_key": ""
+  },
+  "builders": [{
+    "type": "amazon-ebs",
+    "access_key": "{{user `aws_access_key`}}",
+    "secret_key": "{{user `aws_secret_key`}}",
+    "region": "ap-northeast-1",
+    "source_ami": "ami-4985b048",
+    "instance_type": "t2.small",
+    "ssh_username": "ec2-user",
+    "ssh_timeout": "5m",
+    "ami_name": "Example_{{isotime | clean_ami_name}}"
+  }],
+  "provisioners": [{
+    "type": "shell",
+    "inline": [
+      "sudo yum -y update",
+      "sudo yum -y --enablerepo=epel install ansible"
+    ]
+  },{
+    "type": "ansible-local",
+    "playbook_file": "Example/setup.yml"
+  }]
+}

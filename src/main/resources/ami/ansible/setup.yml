@@ -1,0 +1,10 @@
+- hosts: localhost
+  sudo: yes
+  tasks:
+   - name: install Apache24, MySQL client
+     yum: name={{item}} state=latest
+     with_items:
+      - httpd24
+      - mysql
+   - name: enable service Apache24
+     service: name=httpd enabled=yes
