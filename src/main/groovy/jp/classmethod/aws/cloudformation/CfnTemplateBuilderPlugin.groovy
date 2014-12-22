@@ -5,9 +5,11 @@ import org.gradle.api.Project
 import org.gradle.api.tasks.Exec
 import org.gradle.internal.FileUtils
 
+import java.nio.file.FileSystems
 import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.Paths
+import java.util.stream.Collectors
 
 /**
  * Created by watanabeshuji on 2014/09/09.
@@ -79,7 +81,12 @@ class CfnTemplateBuilderPlugin implements Plugin<Project> {
             Files.createDirectory(Paths.get(amiDir))
             Files.copy(CfnTemplateBuilderPlugin.class.getResourceAsStream('/ami/variables.json.sample'), Paths.get(amiDir, 'variables.json.sample'))
             Files.copy(CfnTemplateBuilderPlugin.class.getResourceAsStream('/ami/variables.json.sample'), Paths.get(amiDir, 'variables.json'))
-            Files.copy(CfnTemplateBuilderPlugin.class.getResourceAsStream("/ami/${ami}.json"), Paths.get(amiDir, "${ami}.json"))
+            def uri = CfnTemplateBuilderPlugin.class.getResource("/ami/Example.json").toURI()
+            FileSystems.newFileSystem(uri, ["create": "true"]);
+            def lines = Files.lines(Paths.get(uri)).map {
+                it.replaceAll(/\[AMI_NAME\]/, ami)
+            }.collect(Collectors.toList())
+            Files.write(Paths.get(amiDir, "${ami}.json"), lines)
             Files.createDirectory(Paths.get(amiDir, ami))
             Files.copy(CfnTemplateBuilderPlugin.class.getResourceAsStream('/ami/ansible/setup.yml'), Paths.get(amiDir, ami, 'setup.yml'))
         }
@@ -88,6 +95,15 @@ class CfnTemplateBuilderPlugin implements Plugin<Project> {
             def commands = ['packer', 'validate', '--var-file=variables.json', "${ami}.json"]
             println 'CloudFormation Builder'
             println 'Validate ami'
+            println 'Execute: ' + commands.join(' ')
+            workingDir './ami'
+            commandLine commands
+        }
+        project.task('amiBuild', type: Exec) {
+            def ami = project.ext.ami
+            def commands = ['packer', 'build', '--var-file=variables.json', "${ami}.json"]
+            println 'CloudFormation Builder'
+            println 'Build ami'
             println 'Execute: ' + commands.join(' ')
             workingDir './ami'
             commandLine commands
@@ -110,9 +126,11 @@ class CfnTemplateBuilderPlugin implements Plugin<Project> {
         project.tasks.generateTemplate.description = "Deprecated task. Please use 'cfnBuild' task"
         project.tasks.amiInit.group = TASK_NAME
         project.tasks.amiValid.group = TASK_NAME
+        project.tasks.amiBuild.group = TASK_NAME
         project.tasks.amiClean.group = TASK_NAME
         project.tasks.amiInit.description = "Initialize cfn-template-builder. Create ami directory. Option: -Pami=[ami] -PamiDir=[amiDir]."
         project.tasks.amiValid.description = "Validate ami configuration."
+        project.tasks.amiBuild.description = "Build ami."
         project.tasks.amiInit.description = "Cleanup ami directory. Option: -Pami=[ami] -PamiDir=[amiDir]."
     }
 

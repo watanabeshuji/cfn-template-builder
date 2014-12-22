@@ -12,7 +12,7 @@
     "instance_type": "t2.small",
     "ssh_username": "ec2-user",
     "ssh_timeout": "5m",
-    "ami_name": "Example_{{isotime | clean_ami_name}}"
+    "ami_name": "[AMI_NAME]_{{isotime | clean_ami_name}}"
   }],
   "provisioners": [{
     "type": "shell",
@@ -22,6 +22,6 @@
     ]
   },{
     "type": "ansible-local",
-    "playbook_file": "Example/setup.yml"
+    "playbook_file": "[AMI_NAME]/setup.yml"
   }]
 }
