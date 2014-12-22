@@ -85,6 +85,7 @@ class CfnTemplateBuilderPlugin implements Plugin<Project> {
             }
             Files.createDirectory(Paths.get(amiDir))
             Files.copy(CfnTemplateBuilderPlugin.class.getResourceAsStream('/ami/variables.json.sample'), Paths.get(amiDir, 'variables.json.sample'))
+            Files.copy(CfnTemplateBuilderPlugin.class.getResourceAsStream('/ami/variables.json.sample'), Paths.get(amiDir, 'variables.json'))
             Files.copy(CfnTemplateBuilderPlugin.class.getResourceAsStream('/ami/Example.json'), Paths.get(amiDir, 'Example.json'))
             Files.createDirectory(Paths.get(amiDir, 'Example'))
             Files.copy(CfnTemplateBuilderPlugin.class.getResourceAsStream('/ami/ansible/setup.yml'), Paths.get(amiDir, 'Example', 'setup.yml'))
