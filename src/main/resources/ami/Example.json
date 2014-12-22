@@ -22,6 +22,6 @@
     ]
   },{
     "type": "ansible-local",
-    "playbook_file": "[AMI_NAME]/setup.yml"
+    "playbook_file": "[AMI_NAME]/[AMI_PLAYBOOK].yml"
   }]
 }

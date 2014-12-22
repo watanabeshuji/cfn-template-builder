@@ -1,0 +1,12 @@
+- hosts: localhost
+  sudo: yes
+  tasks:
+   - name: remove JDK7
+     yum: name=java-1.7.0-openjdk state=absent
+   - name: install JDK 8, Tomcat8
+     yum: name={{item}} state=latest
+     with_items:
+      - java-1.8.0-openjdk-devel
+      - tomcat8
+   - name: enable service Tomcat8
+     service: name=tomcat8 enabled=yes

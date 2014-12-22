@@ -68,27 +68,31 @@ class CfnTemplateBuilderPlugin implements Plugin<Project> {
         // Packer tasks TODO 後でプラグインを分離すべき
         project.ext.ami = (project.hasProperty('ami')) ? project.getProperty('ami') : "Example"
         project.ext.amiDir = (project.hasProperty('amiDir')) ? project.getProperty('amiDir') : "./ami"
+        project.ext.amiPlaybook = (project.hasProperty('amiPlaybook')) ? project.getProperty('amiPlaybook') : "setup"
         project.task('amiInit') << {
             println 'CloudFormation Builder'
             def ami = project.ext.ami
             def amiDir = project.ext.amiDir
-            if (Paths.get(amiDir).toFile().exists()) {
+            def amiPlaybook = project.ext.amiPlaybook
+            if (Files.exists(Paths.get(amiDir, "${ami}.json"))) {
                 println ""
                 println "Sorry!!"
-                println "Already exist ami directory: " + amiDir
+                println "Already exist ami: ${amiDir}/${ami}.json"
                 return
             }
-            Files.createDirectory(Paths.get(amiDir))
-            Files.copy(CfnTemplateBuilderPlugin.class.getResourceAsStream('/ami/variables.json.sample'), Paths.get(amiDir, 'variables.json.sample'))
-            Files.copy(CfnTemplateBuilderPlugin.class.getResourceAsStream('/ami/variables.json.sample'), Paths.get(amiDir, 'variables.json'))
+            if (!Files.exists(Paths.get(amiDir))) {
+                Files.createDirectory(Paths.get(amiDir))
+                Files.copy(CfnTemplateBuilderPlugin.class.getResourceAsStream('/ami/variables.json.sample'), Paths.get(amiDir, 'variables.json.sample'))
+                Files.copy(CfnTemplateBuilderPlugin.class.getResourceAsStream('/ami/variables.json.sample'), Paths.get(amiDir, 'variables.json'))
+            }
             def uri = CfnTemplateBuilderPlugin.class.getResource("/ami/Example.json").toURI()
             FileSystems.newFileSystem(uri, ["create": "true"]);
             def lines = Files.lines(Paths.get(uri)).map {
-                it.replaceAll(/\[AMI_NAME\]/, ami)
+                it.replaceAll(/\[AMI_NAME\]/, ami).replaceAll(/\[AMI_PLAYBOOK\]/, amiPlaybook)
             }.collect(Collectors.toList())
             Files.write(Paths.get(amiDir, "${ami}.json"), lines)
             Files.createDirectory(Paths.get(amiDir, ami))
-            Files.copy(CfnTemplateBuilderPlugin.class.getResourceAsStream('/ami/ansible/setup.yml'), Paths.get(amiDir, ami, 'setup.yml'))
+            Files.copy(CfnTemplateBuilderPlugin.class.getResourceAsStream("/ami/ansible/${amiPlaybook}.yml"), Paths.get(amiDir, ami, "${amiPlaybook}.yml"))
         }
         project.task('amiValid', type: Exec) {
             def ami = project.ext.ami

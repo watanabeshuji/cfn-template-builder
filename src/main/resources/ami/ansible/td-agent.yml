@@ -1,0 +1,15 @@
+- hosts: localhost
+  sudo: yes
+  tasks:
+  - name: install the 'Development tools' package group
+    yum: name="@Development tools" state=present
+  - name: be sure td-agent is installed
+    shell: curl -L http://toolbelt.treasuredata.com/sh/install-redhat.sh | sh
+  - name: be sure required gem for td-agent.conf
+    shell: /usr/lib64/fluent/ruby/bin/fluent-gem install {{item}}
+    with_items:
+      - fluent-plugin-forest
+      - fluent-plugin-sns
+  - file: path=/etc/td-agent/config.d state=directory recurse=yes
+  - name: be sure td-agent is enabled
+    service: name=td-agent enabled=yes
