@@ -94,6 +94,13 @@ class CfnTemplateBuilderPlugin implements Plugin<Project> {
             Files.createDirectory(Paths.get(amiDir, ami))
             Files.copy(CfnTemplateBuilderPlugin.class.getResourceAsStream("/ami/ansible/${amiPlaybook}.yml"), Paths.get(amiDir, ami, "${amiPlaybook}.yml"))
         }
+        project.task('amiPlaybook') << {
+            println 'CloudFormation Builder'
+            def ami = project.ext.ami
+            def amiDir = project.ext.amiDir
+            def amiPlaybook = project.ext.amiPlaybook
+            Files.copy(CfnTemplateBuilderPlugin.class.getResourceAsStream("/ami/ansible/${amiPlaybook}.yml"), Paths.get(amiDir, ami, "${amiPlaybook}.yml"))
+        }
         project.task('amiValid', type: Exec) {
             def ami = project.ext.ami
             def commands = ['packer', 'validate', '--var-file=variables.json', "${ami}.json"]
@@ -129,13 +136,15 @@ class CfnTemplateBuilderPlugin implements Plugin<Project> {
         project.tasks.cfnClean.description = "Cleanup cfn directory. Option: -PcfnDir=[cfnDir]."
         project.tasks.generateTemplate.description = "Deprecated task. Please use 'cfnBuild' task"
         project.tasks.amiInit.group = TASK_NAME
+        project.tasks.amiPlaybook.group = TASK_NAME
         project.tasks.amiValid.group = TASK_NAME
         project.tasks.amiBuild.group = TASK_NAME
         project.tasks.amiClean.group = TASK_NAME
-        project.tasks.amiInit.description = "Initialize cfn-template-builder. Create ami directory. Option: -Pami=[ami] -PamiDir=[amiDir]."
-        project.tasks.amiValid.description = "Validate ami configuration."
-        project.tasks.amiBuild.description = "Build ami."
-        project.tasks.amiInit.description = "Cleanup ami directory. Option: -Pami=[ami] -PamiDir=[amiDir]."
+        project.tasks.amiInit.description = "Initialize cfn-template-builder. Create ami directory. Option: -PamiDir=[amiDir] -Pami=[ami] -PamiPlaybook=[amiPlaybook]."
+        project.tasks.amiPlaybook.description = "Add playbook to ami.  Option: -PamiDir=[amiDir] -Pami=[ami] -PamiPlaybook=[amiPlaybook]."
+        project.tasks.amiValid.description = "Validate ami configuration.  Option: -PamiDir=[amiDir] -Pami=[ami] -PamiPlaybook=[amiPlaybook]."
+        project.tasks.amiBuild.description = "Build ami.  Option: -PamiDir=[amiDir] -Pami=[ami] -PamiPlaybook=[amiPlaybook]."
+        project.tasks.amiClean.description = "Cleanup ami directory.  Option: -PamiDir=[amiDir] -Pami=[ami] -PamiPlaybook=[amiPlaybook]."
     }
 
     private getProjectProperty(Project project, String propertyName, defaultValue) {
