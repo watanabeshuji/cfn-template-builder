@@ -2,6 +2,7 @@ package jp.classmethod.aws.cloudformation
 
 import org.gradle.api.Plugin
 import org.gradle.api.Project
+import org.gradle.api.tasks.Exec
 import org.gradle.internal.FileUtils
 
 import java.nio.file.Files
@@ -62,16 +63,6 @@ class CfnTemplateBuilderPlugin implements Plugin<Project> {
             println 'CloudFormation Builder'
             println "Deprecated task. Please use 'cfnBuild' task"
         }
-        project.tasks.cfnInit.group = TASK_NAME
-        project.tasks.cfnNew.group = TASK_NAME
-        project.tasks.cfnClean.group = TASK_NAME
-        project.tasks.cfnBuild.group = TASK_NAME
-        project.tasks.generateTemplate.group = TASK_NAME
-        project.tasks.cfnInit.description = "Initialize cfn-template-builder. Create cfn directory. Option: -PcfnDir=[cfnDir]."
-        project.tasks.cfnNew.description = "Create new cfn-template-builder file. Option: -PcfnType=(VPC|InternetGateway|Routing|SecurityGroup|EC2|ALL) -PcfnDir=[cfnDir]."
-        project.tasks.cfnBuild.description = "Build CloudFormation Template file. Option: -PcfnDir=[cfnDir]."
-        project.tasks.cfnClean.description = "Cleanup cfn directory. Option: -PcfnDir=[cfnDir]."
-        project.tasks.generateTemplate.description = "Deprecated task. Please use 'cfnBuild' task"
         // Packer tasks TODO 後でプラグインを分離すべき
         project.ext.amiDir = (project.hasProperty('amiDir')) ? project.getProperty('amiDir') : "./ami"
         project.task('amiInit') << {
@@ -90,15 +81,35 @@ class CfnTemplateBuilderPlugin implements Plugin<Project> {
             Files.createDirectory(Paths.get(amiDir, 'Example'))
             Files.copy(CfnTemplateBuilderPlugin.class.getResourceAsStream('/ami/ansible/setup.yml'), Paths.get(amiDir, 'Example', 'setup.yml'))
         }
+        project.task('amiValid', type: Exec) {
+            def commands = ['packer', 'validate', '--var-file=variables.json', 'Example.json']
+            println 'CloudFormation Builder'
+            println 'Validate ami'
+            println 'Execute: ' + commands.join(' ')
+            workingDir './ami'
+            commandLine commands
+        }
         project.task('amiClean') << {
             println 'CloudFormation Builder'
             println 'Cleanup ami directory....'
             def amiDir = project.ext.amiDir
             Paths.get(amiDir).toFile().deleteDir()
         }
+        project.tasks.cfnInit.group = TASK_NAME
+        project.tasks.cfnNew.group = TASK_NAME
+        project.tasks.cfnClean.group = TASK_NAME
+        project.tasks.cfnBuild.group = TASK_NAME
+        project.tasks.generateTemplate.group = TASK_NAME
+        project.tasks.cfnInit.description = "Initialize cfn-template-builder. Create cfn directory. Option: -PcfnDir=[cfnDir]."
+        project.tasks.cfnNew.description = "Create new cfn-template-builder file. Option: -PcfnType=(VPC|InternetGateway|Routing|SecurityGroup|EC2|ALL) -PcfnDir=[cfnDir]."
+        project.tasks.cfnBuild.description = "Build CloudFormation Template file. Option: -PcfnDir=[cfnDir]."
+        project.tasks.cfnClean.description = "Cleanup cfn directory. Option: -PcfnDir=[cfnDir]."
+        project.tasks.generateTemplate.description = "Deprecated task. Please use 'cfnBuild' task"
         project.tasks.amiInit.group = TASK_NAME
+        project.tasks.amiValid.group = TASK_NAME
         project.tasks.amiClean.group = TASK_NAME
         project.tasks.amiInit.description = "Initialize cfn-template-builder. Create ami directory. Option: -PamiDir=[amiDir]."
+        project.tasks.amiValid.description = "Validate ami configuration."
         project.tasks.amiInit.description = "Cleanup ami directory. Option: -PamiDir=[amiDir]."
     }
 
