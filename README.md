@@ -45,13 +45,27 @@ $ gradle cfnBuild
 ```
 
 ## タスク
-Key          |Desc                           
+Task         |Desc
 -----------  |-------------------------------
 cfnClean     |cfnディレクトリを削除します                
 cfnInit      |cfnディレクトリを作成し、最小限のファイルを作成します                
-cfnNew       |テンプレートファイルを追加します。-PcfnTypeで追加する種別を個別に指定するか、指定しない場合はデフォルト構成を追加します
+cfnNew       |テンプレートファイルを追加します。-PcfnTypeで追加する種別を個別に指定するか、指定しない場合はデフォルト構成（ALL）を追加します
 cfnBuild     |cfnテンプレートを作成します                
+amiClean     |amiディレクトリを削除します
+amiInit      |amiディレクトリを作成し、Ansible/Packer用テンプレートを作成します
+amiPlaybook  |Ansibleのplaybookを追加します
+amiValid     |Packerの定義ファイルを検証します
+amiBuild     |Packerのビルドインスタンスを起動し、AMIを作成します
 
+### オプション
+Gradleの環境変数としてオプションを指定。
+Option       |Default Value  |Task                  |Desc
+-----------  |-------------  |--------              |---------------
+cfnDir       |cfn            |cfn*                  |CloudFormationの定義ファイルを置くディレクトリ名
+cfnType      |ALL            |cfnNew                |CloudFormationの定義ファイル種別
+amiDir       |ami            |ami*                  ||amiを作成するディレクトリ名
+ami          |Example        |ami*                  |ami名、WebなどEC2の名前に合わせる
+amiPlaybook  |setup          |amiInit, amiPlaybook  |Ansible Playbook名
 
 ## 設定
 Gradleプロジェクトを作成し、以下の内容に従ってプラグインを設定します。
