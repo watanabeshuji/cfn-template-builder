@@ -92,7 +92,6 @@ buildscript {
         }
     }
     dependencies {
-        classpath group: 'org.codehaus.groovy', name: 'groovy-all', version: '2.3.2'
         classpath group: 'jp.classmethod.aws', name: 'cfn-template-builder', version: '+'
     }
 }
@@ -117,7 +116,6 @@ buildscript {
         }
     }
     dependencies {
-        classpath group: 'org.codehaus.groovy', name: 'groovy-all', version: '2.3.2'
         classpath group: 'jp.classmethod.aws', name: 'cfn-template-builder', version: '+'
     }
 }
