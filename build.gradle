@@ -3,10 +3,10 @@ apply plugin: 'groovy'
 apply plugin: 'idea'
 apply plugin: 'maven-publish'
 
-sourceCompatibility = targetCompatibility = 1.7
+sourceCompatibility = targetCompatibility = 1.8
 
 group = 'jp.classmethod.aws'
-version = '0.3.4'
+version = '0.3.5'
 
 idea {
     project {
