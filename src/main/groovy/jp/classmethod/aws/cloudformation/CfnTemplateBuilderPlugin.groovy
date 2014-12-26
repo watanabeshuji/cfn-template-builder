@@ -1,5 +1,6 @@
 package jp.classmethod.aws.cloudformation
 
+import org.gradle.api.GradleException
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.tasks.Exec
@@ -61,6 +62,15 @@ class CfnTemplateBuilderPlugin implements Plugin<Project> {
             def cfnDir = project.ext.cfnDir
             Paths.get(cfnDir).toFile().deleteDir()
         }
+        project.task('cfnDeploy') << {
+            println 'CloudFormation Builder'
+            def templateFile = Paths.get(project.ext.cfnDir, "cfn.template")
+            if (!project.hasProperty('cfnStackName')) {
+                throw new GradleException("you must set option 'cfnStackName': such as -PcfnStackName=test")
+            }
+            def stackName = project.getProperty('cfnStackName')
+            new CfnClient().create(stackName, templateFile)
+        }
         project.task('generateTemplate') << {
             println 'CloudFormation Builder'
             println "Deprecated task. Please use 'cfnBuild' task"
@@ -104,18 +114,18 @@ class CfnTemplateBuilderPlugin implements Plugin<Project> {
         project.task('amiValid', type: Exec) {
             def ami = project.ext.ami
             def commands = ['packer', 'validate', '--var-file=variables.json', "${ami}.json"]
-            println 'CloudFormation Builder'
-            println 'Validate ami'
-            println 'Execute: ' + commands.join(' ')
+//            println 'CloudFormation Builder'
+//            println 'Validate ami'
+//            println 'Execute: ' + commands.join(' ')
             workingDir './ami'
             commandLine commands
         }
         project.task('amiBuild', type: Exec) {
             def ami = project.ext.ami
             def commands = ['packer', 'build', '--var-file=variables.json', "${ami}.json"]
-            println 'CloudFormation Builder'
-            println 'Build ami'
-            println 'Execute: ' + commands.join(' ')
+//            println 'CloudFormation Builder'
+//            println 'Build ami'
+//            println 'Execute: ' + commands.join(' ')
             workingDir './ami'
             commandLine commands
         }
