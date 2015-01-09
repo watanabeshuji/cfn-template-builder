@@ -162,6 +162,7 @@ class CfnTemplateBuilderPlugin implements Plugin<Project> {
     }
 
     private createTemplateFile(String cfnDir, String cfnType) {
+        println "createTemplateFile... $cfnType"
         switch (cfnType) {
             case 'VPC':
                 copyTemplateFile('/templates/VPC/default.csv', Paths.get(cfnDir, '00_VPC.csv'))
@@ -186,6 +187,17 @@ class CfnTemplateBuilderPlugin implements Plugin<Project> {
             case 'RDS':
                 copyTemplateFile('/templates/RDS/default_DBSubnetGroup.csv', Paths.get(cfnDir, '00_DBSubnetGroup.csv'))
                 copyTemplateFile('/templates/RDS/default_DBInstance.csv', Paths.get(cfnDir, '00_DBInstance.csv'))
+                break
+            case 'SimplePublicVPC':
+                [
+                        ['/templates/simplepublicvpc/01_VPC.csv', '01_VPC.csv'],
+                        ['/templates/simplepublicvpc/02_InternetGateway.csv', '02_InternetGateway.csv'],
+                        ['/templates/simplepublicvpc/03_Subnet.csv', '03_Subnet.csv'],
+                        ['/templates/simplepublicvpc/04_RouteTable.csv', '04_RouteTable.csv'],
+                        ['/templates/simplepublicvpc/05_Route.csv', '05_Route.csv'],
+                        ['/templates/simplepublicvpc/06_SubnetRouteTableAssociation.csv', '06_SubnetRouteTableAssociation.csv'],
+                        ['/templates/simplepublicvpc/07_SecurityGroup.csv', '07_SecurityGroup.csv'],
+                ].each { copyTemplateFile(it[0], Paths.get(cfnDir, it[1]))}
                 break
             case 'ALL':
                 [
