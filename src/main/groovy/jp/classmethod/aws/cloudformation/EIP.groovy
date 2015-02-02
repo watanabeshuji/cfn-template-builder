@@ -29,7 +29,7 @@ class EIP {
                 ]
             ]
         ]
-        if (InstanceId) result[id]['Properties']['InstanceId'] = InstanceId
+        if (InstanceId) result[id]['Properties']['InstanceId'] = [Ref: InstanceId]
         result
     }
 
