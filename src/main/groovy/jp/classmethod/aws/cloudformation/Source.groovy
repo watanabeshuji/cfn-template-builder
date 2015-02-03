@@ -40,11 +40,19 @@ class Source {
         v != null ? Integer.valueOf(v) : null
     }
 
+    def refList(key) {
+        toList(key, true)
+    }
+
     def list(key) {
+        toList(key, false)
+    }
+
+    private toList(key, ref) {
         def v = source[meta.indexOf(key)]
         if (v == null || v == '-') return []
         v.split(/\|/).collect {
-            it.contains(':')  ? toMap(it) : it
+            it.contains(':')  ? toMap(it) : (ref ? ['Ref': it] : it)
         }
     }
 
