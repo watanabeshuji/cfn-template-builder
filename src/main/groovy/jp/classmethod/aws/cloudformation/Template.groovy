@@ -41,6 +41,7 @@ class Template {
         File dir = new File(dirName)
         dir.listFiles({d,f -> f ==~ /\d+_Role\.csv/ } as FilenameFilter).each { Role.inject(resources, it) }
         dir.listFiles({d,f -> f ==~ /\d+_Policy\.csv/ } as FilenameFilter).each { Policy.inject(resources, it) }
+        dir.listFiles({d,f -> f ==~ /\d+_InstanceProfile\.csv/ } as FilenameFilter).each { InstanceProfile.inject(resources, it) }
         dir.listFiles({d,f -> f ==~ /\d+_VPC\.csv/ } as FilenameFilter).each { VPC.inject(resources, it) }
         dir.listFiles({d,f -> f ==~ /\d+_InternetGateway\.csv/ } as FilenameFilter).each { InternetGateway.inject(resources, it) }
         dir.listFiles({d,f -> f ==~ /\d+_Subnet\.csv/ } as FilenameFilter).each { Subnet.inject(resources, it) }
