@@ -39,6 +39,7 @@ class Template {
         def parameters = Parameter.load(new File("$dirName/Parameters.csv"))
         def resources = [:]
         File dir = new File(dirName)
+        dir.listFiles({d,f -> f ==~ /\d+_Policy\.csv/ } as FilenameFilter).each { Policy.inject(resources, it) }
         dir.listFiles({d,f -> f ==~ /\d+_VPC\.csv/ } as FilenameFilter).each { VPC.inject(resources, it) }
         dir.listFiles({d,f -> f ==~ /\d+_InternetGateway\.csv/ } as FilenameFilter).each { InternetGateway.inject(resources, it) }
         dir.listFiles({d,f -> f ==~ /\d+_Subnet\.csv/ } as FilenameFilter).each { Subnet.inject(resources, it) }
