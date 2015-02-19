@@ -161,15 +161,6 @@
             },
             "DependsOn": "AttachIgw"
         },
-        "PrivateRoute": {
-            "Type": "AWS::EC2::Route",
-            "Properties": {
-                "RouteTableId": {
-                    "Ref": "PrivateRouteTable"
-                },
-                "DestinationCidrBlock": "0.0.0.0/0"
-            }
-        },
         "PublicRouteAssociation": {
             "Type": "AWS::EC2::SubnetRouteTableAssociation",
             "Properties": {

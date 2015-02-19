@@ -12,14 +12,15 @@ class RouteTest {
         File input = new File(getClass().getResource("RouteTest_default.csv").getFile())
         def actual = Route.load(input)
         assert actual == [
-            new Route(id: 'PublicRoute',  Name: 'public-route',  RouteTable:'PublicRouteTable',  DestinationCidrBlock: '0.0.0.0/0', Gateway:'Igw'),
-            new Route(id: 'PrivateRoute', Name: 'private-route', RouteTable:'PrivateRouteTable', DestinationCidrBlock: '0.0.0.0/0', Instance:'Bastion')
+            new Route(id: 'PublicRoute',  Name: 'public-route',  RouteTable:'PublicRouteTable',  DestinationCidrBlock: '0.0.0.0/0',    GatewayId:'Igw'),
+            new Route(id: 'PrivateRoute', Name: 'private-route', RouteTable:'PrivateRouteTable', DestinationCidrBlock: '0.0.0.0/0',    InstanceId:'Bastion'),
+            new Route(id: 'PeeringRoute', Name: 'peering-route', RouteTable:'PrivateRouteTable', DestinationCidrBlock: '10.24.0.0/16', VpcPeeringConnectionId:['Fn::FindInMap':['Resources', 'VpcPeering', 'VPC2']])
         ]
     }
 
     @Test
     void "IGWでのtoResourceMap"() {
-        def sut = new Route(id: 'PublicRoute',  Name: 'public-route',  RouteTable:'PublicRouteTable',  DestinationCidrBlock: '0.0.0.0/0', Gateway:'Igw')
+        def sut = new Route(id: 'PublicRoute',  Name: 'public-route',  RouteTable:'PublicRouteTable',  DestinationCidrBlock: '0.0.0.0/0', GatewayId:'Igw')
         def expected = [
             "PublicRoute": [
                 'Type': 'AWS::EC2::Route',
@@ -36,7 +37,7 @@ class RouteTest {
 
     @Test
     void "NATでのtoResourceMap"() {
-        def sut = new Route(id: 'PrivateRoute', Name: 'private-route', RouteTable:'PrivateRouteTable', DestinationCidrBlock: '0.0.0.0/0', Instance:'Bastion')
+        def sut = new Route(id: 'PrivateRoute', Name: 'private-route', RouteTable:'PrivateRouteTable', DestinationCidrBlock: '0.0.0.0/0', InstanceId:'Bastion')
         def expected = [
                 "PrivateRoute": [
                         'Type': 'AWS::EC2::Route',
@@ -45,6 +46,22 @@ class RouteTest {
                                 'RouteTableId': ['Ref': 'PrivateRouteTable'],
                                 'DestinationCidrBlock': '0.0.0.0/0',
                                 'InstanceId': ['Ref': 'Bastion']
+                        ]
+                ]
+        ]
+        assert sut.toResourceMap() == expected
+    }
+
+    @Test
+    void "VPCPeeringでのtoResourceMap"() {
+        def sut = new Route(id: 'PeeringRoute', Name: 'peering-route', RouteTable:'PrivateRouteTable', DestinationCidrBlock: '10.24.0.0/16', VpcPeeringConnectionId:['Fn::FindInMap':['Resources', 'VpcPeering', 'VPC2']])
+        def expected = [
+                "PeeringRoute": [
+                        'Type': 'AWS::EC2::Route',
+                        'Properties': [
+                                'RouteTableId': ['Ref': 'PrivateRouteTable'],
+                                'DestinationCidrBlock': '10.24.0.0/16',
+                                'VpcPeeringConnectionId': ['Fn::FindInMap':['Resources', 'VpcPeering', 'VPC2']]
                         ]
                 ]
         ]
