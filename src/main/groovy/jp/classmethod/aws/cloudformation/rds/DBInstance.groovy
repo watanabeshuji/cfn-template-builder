@@ -1,6 +1,7 @@
 package jp.classmethod.aws.cloudformation.rds
 
 import groovy.transform.Canonical
+import jp.classmethod.aws.cloudformation.Resource
 
 /**
  * AWS::RDS::DBInstance
@@ -9,10 +10,9 @@ import groovy.transform.Canonical
  * Created by watanabeshuji on 2014/09/10.
  */
 @Canonical
-class DBInstance {
+class DBInstance extends Resource {
 
     def id
-    def Name
     def DBSubnetGroupName
     def MultiAZ
     def AvailabilityZone
@@ -49,7 +49,7 @@ class DBInstance {
                 'MasterUserPassword': MasterUserPassword,
                 'VPCSecurityGroups': VPCSecurityGroups,
                 'Tags': [
-                        ['Key': 'Name', 'Value': Name],
+                        ['Key': 'Name', 'Value': id],
                         ['Key': 'Application', 'Value': ['Ref': 'AWS::StackId' ]]
                 ]
             ]

@@ -1,13 +1,14 @@
 package jp.classmethod.aws.cloudformation.ec2
 
 import groovy.transform.Canonical
+import jp.classmethod.aws.cloudformation.Resource
 
 /**
  * AWS::EC2::EIP
  * Created by watanabeshuji on 2015/02/02.
  */
 @Canonical
-class EIP {
+class EIP extends Resource {
     def id
     def InstanceId
 
@@ -16,7 +17,7 @@ class EIP {
 
     def toResourceMap() {
         def result = [
-            'Type': 'AWS::EC2::EIP',
+            'Type'      : 'AWS::EC2::EIP',
             'Properties': [
                 'Domain': 'vpc'
             ]
