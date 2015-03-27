@@ -5,6 +5,7 @@ import groovy.transform.Canonical
 import jp.classmethod.aws.cloudformation.dsl.CloudFormationDSL
 
 import java.nio.file.Path
+import java.nio.file.Paths
 
 /**
  * Created by watanabeshuji on 2015/03/26.
@@ -31,5 +32,18 @@ class CloudFormation {
 
     static CloudFormation load(Path path) {
         CloudFormationDSL.load(path)
+    }
+
+    static void main(String[] args) {
+        if (args.length == 0) {
+            def msg = '''\
+Error: Rwquire an argument to dsl file path.
+            '''
+            System.err.println msg
+            return
+        }
+        CloudFormation cfn = load(Paths.get(args[0]))
+        println cfn.toPrettyString()
+        if (1 < args.length) Paths.get(args[1]).text = cfn.toPrettyString()
     }
 }
