@@ -1,0 +1,3 @@
+resources {
+    role id: "Role"
+}

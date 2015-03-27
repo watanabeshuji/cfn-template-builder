@@ -1,0 +1,3 @@
+resources {
+    internetGateway id: "InternetGateway"
+}

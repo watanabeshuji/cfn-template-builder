@@ -1,3 +1,0 @@
-DeviceName    ,EbsVolumeType ,EbsVolumeSize ,EbsDeleteOnTermination
-/dev/xvda     ,gp2           ,200           ,true
-/dev/xvdb     ,gp2           ,400           ,-

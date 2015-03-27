@@ -1,3 +1,0 @@
-Protocol ,LoadBalancerPort ,InstanceProtocol ,InstancePort ,SSLCertificateId
-HTTP     ,80               ,HTTP             ,80           ,-
-HTTPS    ,443              ,HTTP             ,80           ,Resources:SSLCertificateId:ExampleCom

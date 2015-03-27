@@ -1,2 +1,0 @@
-Name          ,PolicyName   ,Roles     ,Groups    ,Users
-RootPolicy    ,root         ,Web       ,-         ,Admin|PowerUser

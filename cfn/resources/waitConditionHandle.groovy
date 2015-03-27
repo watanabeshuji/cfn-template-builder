@@ -1,0 +1,3 @@
+resources {
+    waitConditionHandle id: "WebServerWaitConditionHandle"
+}

@@ -1,2 +1,0 @@
-Name,     InstanceType, KeyName,                    SubnetId,       ImageId,        IamInstanceProfile,      SourceDestCheck, EIP,   Volumes             ,SecurityGroupIds
-bastion,  t1.micro,     Common:KeyPair:Ec2KeyName,  public-subnet,  AMI:NAT:201309, Common:Role:Ec2Role,     false,           true,  ExtVolume=/dev/sdh  ,internal|cm-mainte

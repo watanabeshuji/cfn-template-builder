@@ -1,2 +1,0 @@
-Name               ,CacheNodeType  ,NumCacheNodes ,Engine ,EngineVersion ,AutoMinorVersionUpgrade ,CacheParameterGroupName ,PreferredAvailabilityZone ,CacheSubnetGroupName       ,VpcSecurityGroups
-elastic-cache-dev  ,cache.m1.small ,1             ,redis  ,2.8.6         ,true                    ,default.redis2.8        ,ap-northeast-1a           ,Resources:Subnet:PrivateA  ,Resources:SecurityGroup:Internal

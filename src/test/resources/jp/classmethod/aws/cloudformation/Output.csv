@@ -1,3 +1,0 @@
-Name                       ,Value                                                  ,Description
-WebServerIpAddress         ,WebEip                                                 ,IP Address of Web Server
-WebServerAvailabilityZone  ,A[Web|AvailabilityZone]                                ,Availability Zone of Web Server

@@ -1,2 +1,0 @@
-Name                ,Description                 ,SubnetIds
-cache-subnet-group  ,Elastic Cache Subnet Group  ,Resources:Subnet:PrivateA|Resources:Subnet:PrivateC

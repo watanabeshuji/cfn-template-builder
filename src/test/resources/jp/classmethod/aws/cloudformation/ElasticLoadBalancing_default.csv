@@ -1,2 +1,0 @@
-Name     ,LoadBalancerName ,Subnets                                          ,SecurityGroups                                                    ,Instances                                       ,TargetProtocol ,TargetPort ,TargetPath  ,Timeout ,Interval ,UnhealthyThreshold ,HealthyThreshold
-elb      ,elb-blue         ,Resources:Subnet:FrontA|Resources:Subnet:FrontC  ,Resources:SecurityGroup:Internal|Resources:SecurityGroup:FrontWeb ,Resources:Instance:Web1|Resources:Instance:Web2 ,HTTP           ,80         ,/index.html ,5       ,30       ,2                  ,10

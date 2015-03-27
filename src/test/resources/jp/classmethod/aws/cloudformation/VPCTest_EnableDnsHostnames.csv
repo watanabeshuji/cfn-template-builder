@@ -1,2 +1,0 @@
-Name   ,CidrBlock       ,EnableDnsSupport  ,EnableDnsHostnames
-vpc    ,P[VpcCidrBlock] ,true              ,true

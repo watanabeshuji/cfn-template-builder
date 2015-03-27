@@ -1,4 +1,0 @@
-Name,           RouteTable,            DestinationCidrBlock,    GatewayId,    InstanceId  ,VpcPeeringConnectionId
-public-route,   public-route-table,    0.0.0.0/0,               igw,          -           ,-
-private-route,  private-route-table,   0.0.0.0/0,               -,            bastion     ,-
-peering-route,  private-route-table,   10.24.0.0/16,            -,            -           ,Resources:VpcPeering:VPC2

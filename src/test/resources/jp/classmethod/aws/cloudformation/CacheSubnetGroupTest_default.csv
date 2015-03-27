@@ -1,2 +1,0 @@
-Name                    ,Description                                 ,SubnetIds
-cache-subnet-group-dev  ,Elastic Cache Subnet Group for Development  ,subnet-a|subnet-c

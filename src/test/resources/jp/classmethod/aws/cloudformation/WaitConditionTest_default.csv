@@ -1,3 +1,0 @@
-Name                      ,Handle                ,Timeout  ,DependsOn
-WebServerWaitCondition    ,WebServerWaitHandle   ,1000     ,WebServer
-BatchServerWaitCondition  ,BatchServerWaitHandle ,900      ,-
