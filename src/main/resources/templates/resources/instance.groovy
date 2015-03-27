@@ -1,3 +1,5 @@
+package templates.resources
+
 def userData = '''/
 #!/bin/sh
 yum -y update

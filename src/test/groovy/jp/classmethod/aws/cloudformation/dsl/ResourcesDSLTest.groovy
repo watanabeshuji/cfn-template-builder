@@ -30,9 +30,13 @@ import java.nio.file.Paths
  */
 class ResourcesDSLTest {
 
+    private Path getPath(String resource) {
+        Paths.get(getClass().getResource(resource).getPath())
+    }
+
     @Test
     void "load vpc.groovy"() {
-        Path input = Paths.get("cfn/resources/vpc.groovy")
+        Path input = getPath("/templates/resources/vpc.groovy")
         def actual = ResourcesDSL.load(input)
         assert actual == [
             new VPC(id: 'vpc1', CidrBlock: "10.0.0.0/16"),
@@ -42,7 +46,7 @@ class ResourcesDSLTest {
 
     @Test
     void "load internetGateway.groovy"() {
-        Path input = Paths.get("cfn/resources/internetGateway.groovy")
+        Path input = getPath("/templates/resources/internetGateway.groovy")
         def actual = ResourcesDSL.load(input)
         assert actual == [
             new InternetGateway(id: 'InternetGateway'),
@@ -51,7 +55,7 @@ class ResourcesDSLTest {
 
     @Test
     void "load vpcGatewayAttachment.groovy"() {
-        Path input = Paths.get("cfn/resources/vpcGatewayAttachment.groovy")
+        Path input = getPath("/templates/resources/vpcGatewayAttachment.groovy")
         def actual = ResourcesDSL.load(input)
         assert actual == [
                 new VPCGatewayAttachment(id: "InternetGatewayAttach", VpcId: [Ref: "VPC"], InternetGatewayId: [Ref: "InternetGateway"])
@@ -61,7 +65,7 @@ class ResourcesDSLTest {
 
     @Test
     void "load subnet.groovy"() {
-        Path input = Paths.get("cfn/resources/subnet.groovy")
+        Path input = getPath("/templates/resources/subnet.groovy")
         def actual = ResourcesDSL.load(input)
         assert actual == [
             new Subnet(id: 'subnet1', CidrBlock: "10.0.0.0/24", VpcId: [Ref: "vpc"]),
@@ -71,7 +75,7 @@ class ResourcesDSLTest {
 
     @Test
     void "load routeTable.groovy"() {
-        Path input = Paths.get("cfn/resources/routeTable.groovy")
+        Path input = getPath("/templates/resources/routeTable.groovy")
         def actual = ResourcesDSL.load(input)
         assert actual == [
                 new RouteTable(id: 'PublicRouteTable', VpcId: [Ref: "vpc"]),
@@ -80,7 +84,7 @@ class ResourcesDSLTest {
 
     @Test
     void "load route.groovy"() {
-        Path input = Paths.get("cfn/resources/route.groovy")
+        Path input = getPath("/templates/resources/route.groovy")
         def actual = ResourcesDSL.load(input)
         assert actual == [
             new Route(id: 'PublicRoute', DestinationCidrBlock: '0.0.0.0/0', GatewayId: [Ref: "IGW"]),
@@ -91,7 +95,7 @@ class ResourcesDSLTest {
 
     @Test
     void "load subnetRouteTableAssociation.groovy"() {
-        Path input = Paths.get("cfn/resources/subnetRouteTableAssociation.groovy")
+        Path input = getPath("/templates/resources/subnetRouteTableAssociation.groovy")
         def actual = ResourcesDSL.load(input)
         assert actual == [
                 new SubnetRouteTableAssociation(
@@ -103,7 +107,7 @@ class ResourcesDSLTest {
 
     @Test
     void "load securityGroup.groovy"() {
-        Path input = Paths.get("cfn/resources/securityGroup.groovy")
+        Path input = getPath("/templates/resources/securityGroup.groovy")
         def actual = ResourcesDSL.load(input)
         assert actual == [
                 new SecurityGroup(id: 'PublicWeb', VpcId: [Ref: "VPC"], Description: "Allow web access from internet.",
@@ -116,7 +120,7 @@ class ResourcesDSLTest {
 
     @Test
     void "load volume.groovy"() {
-        Path input = Paths.get("cfn/resources/volume.groovy")
+        Path input = getPath("/templates/resources/volume.groovy")
         def actual = ResourcesDSL.load(input)
         assert actual == [
             new Volume(id: "WebVolume", Size: "40", VolumeType: "gp2", AvailabilityZone: "ap-northeast-1a")
@@ -126,7 +130,7 @@ class ResourcesDSLTest {
 
     @Test
     void "load instance.groovy"() {
-        Path input = Paths.get("cfn/resources/instance.groovy")
+        Path input = getPath("/templates/resources/instance.groovy")
         def actual = ResourcesDSL.load(input)
         def userData = '''/
 #!/bin/sh
@@ -156,7 +160,7 @@ yum -y update
 
     @Test
     void "load eip.groovy"() {
-        Path input = Paths.get("cfn/resources/eip.groovy")
+        Path input = getPath("/templates/resources/eip.groovy")
         def actual = ResourcesDSL.load(input)
         assert actual == [
             new EIP(id: 'PublicIP'),
@@ -166,7 +170,7 @@ yum -y update
 
     @Test
     void "load role.groovy"() {
-        Path input = Paths.get("cfn/resources/role.groovy")
+        Path input = getPath("/templates/resources/role.groovy")
         def actual = ResourcesDSL.load(input)
         assert actual == [
             new Role(id: 'Role')
@@ -175,7 +179,7 @@ yum -y update
 
     @Test
     void "load policy.groovy"() {
-        Path input = Paths.get("cfn/resources/policy.groovy")
+        Path input = getPath("/templates/resources/policy.groovy")
         def actual = ResourcesDSL.load(input)
         def doc  = [
             "Version" : "2012-10-17",
@@ -191,7 +195,7 @@ yum -y update
 
     @Test
     void "load instanceProfile.groovy"() {
-        Path input = Paths.get("cfn/resources/instanceProfile.groovy")
+        Path input = getPath("/templates/resources/instanceProfile.groovy")
         def actual = ResourcesDSL.load(input)
         def expected = [
             new InstanceProfile(id: 'EC2InstanceProfile', Path: "/", Roles: [[Ref: "EC2Role"]])
@@ -201,7 +205,7 @@ yum -y update
 
     @Test
     void "load dbSubnetGroup.groovy"() {
-        Path input = Paths.get("cfn/resources/dbSubnetGroup.groovy")
+        Path input = getPath("/templates/resources/dbSubnetGroup.groovy")
         def actual = ResourcesDSL.load(input)
         def expected = [
             new DBSubnetGroup(id: 'DBSubnetGroup', DBSubnetGroupDescription: "DB subnet group", SubnetIds: ["Ref:PrivateA", "Ref:PrivateA"])
@@ -211,7 +215,7 @@ yum -y update
 
     @Test
     void "load dbInstance.groovy"() {
-        Path input = Paths.get("cfn/resources/dbInstance.groovy")
+        Path input = getPath("/templates/resources/dbInstance.groovy")
         def actual = ResourcesDSL.load(input)
         def expected = [
             new DBInstance(id: 'DbPrd', DBSubnetGroupName: [Ref: "DbSubnetGroup"], MultiAZ: true,
@@ -228,7 +232,7 @@ yum -y update
 
     @Test
     void "load elasticLoadBalancing.groovy"() {
-        Path input = Paths.get("cfn/resources/elasticLoadBalancing.groovy")
+        Path input = getPath("/templates/resources/elasticLoadBalancing.groovy")
         def actual = ResourcesDSL.load(input)
         def expected = [
             new ElasticLoadBalancing(id: 'ELB',  LoadBalancerName: "ELB",
@@ -248,7 +252,7 @@ yum -y update
 
     @Test
     void "load waitConditionHandle.groovy"() {
-        Path input = Paths.get("cfn/resources/waitConditionHandle.groovy")
+        Path input = getPath("/templates/resources/waitConditionHandle.groovy")
         def actual = ResourcesDSL.load(input)
         def expected = [
             new WaitConditionHandle(id: 'WebServerWaitConditionHandle')
@@ -258,7 +262,7 @@ yum -y update
 
     @Test
     void "load waitCondition.groovy"() {
-        Path input = Paths.get("cfn/resources/waitCondition.groovy")
+        Path input = getPath("/templates/resources/waitCondition.groovy")
         def actual = ResourcesDSL.load(input)
         def expected = [
             new WaitCondition(id: 'WebServerWaitCondition', Handle: [Ref: "WebServerWaitHandle"], Timeout: "1000")

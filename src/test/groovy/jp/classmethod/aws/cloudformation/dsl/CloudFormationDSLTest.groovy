@@ -26,9 +26,13 @@ import java.nio.file.Paths
  */
 class CloudFormationDSLTest {
 
+    private Path getPath(String resource) {
+        Paths.get(getClass().getResource(resource).getPath())
+    }
+
     @Test
     void "load empty.groovy"() {
-        Path input = Paths.get("cfn/empty.groovy")
+        Path input = getPath("/templates/empty.groovy")
         def actual = CloudFormationDSL.load(input)
         assert actual == new CloudFormation(Description: "a cloudformation template.")
     }
@@ -36,7 +40,7 @@ class CloudFormationDSLTest {
 
     @Test
     void "load mappings.groovy"() {
-        Path input = Paths.get("cfn/mappings.groovy")
+        Path input = getPath("/templates/mappings.groovy")
         def actual = CloudFormationDSL.load(input)
         assert actual == new CloudFormation(
             Mappings: [
@@ -55,7 +59,7 @@ class CloudFormationDSLTest {
 
     @Test
     void "load parameters.groovy"() {
-        Path input = Paths.get("cfn/parameters.groovy")
+        Path input = getPath("/templates/parameters.groovy")
         def actual = CloudFormationDSL.load(input)
         assert actual == new CloudFormation(
             Parameters: [
@@ -66,7 +70,7 @@ class CloudFormationDSLTest {
 
         @Test
     void "load vpc.groovy"() {
-        Path input = Paths.get("cfn/vpc.groovy")
+        Path input = getPath("/templates/vpc.groovy")
         def actual = CloudFormationDSL.load(input)
         def expected = new CloudFormation(
             Description: "a vpc template.",
@@ -98,13 +102,13 @@ class CloudFormationDSLTest {
 
     @Test
     void "load ec2.groovy"() {
-        Path input = Paths.get("cfn/ec2.groovy")
+        Path input = getPath("/templates/ec2.groovy")
         def actual = CloudFormationDSL.load(input)
         def expected = new CloudFormation(
             Description: "a ec2 template.",
             Resources: [
                 new WaitConditionHandle(id: 'WebWaitConditionHandle'),
-                new WaitCondition(id: 'WebWaitCondition', Handle: [Ref: "WebServerWaitHandle"], Timeout: "1000"),
+                new WaitCondition(id: 'WebWaitCondition', Handle: [Ref: "WebWaitConditionHandle"], Timeout: "1000"),
                 new EIP(id: "WebIP", InstanceId: [Ref: "Web"]),
             ]
         )
@@ -113,7 +117,7 @@ class CloudFormationDSLTest {
 
     @Test
     void "load iam.groovy"() {
-        Path input = Paths.get("cfn/iam.groovy")
+        Path input = getPath("/templates/iam.groovy")
         def actual = CloudFormationDSL.load(input)
         def doc  = [
                 "Version" : "2012-10-17",

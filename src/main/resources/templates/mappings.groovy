@@ -1,3 +1,5 @@
+package templates
+
 cloudformation {
     mappings {
         "RegionMap" "us-northeast-1": ["AvailabilityZoneA": "ap-northeast-1a", "AvailabilityZoneC": "ap-northeast-1c"]
