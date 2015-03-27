@@ -1,5 +1,3 @@
-package templates
-
 def vpcId = [Ref: "VPC"]
 
 cloudformation {

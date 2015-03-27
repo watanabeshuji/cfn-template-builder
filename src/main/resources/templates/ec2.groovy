@@ -1,5 +1,3 @@
-package templates
-
 cloudformation {
     description "a ec2 template."
     resources {
