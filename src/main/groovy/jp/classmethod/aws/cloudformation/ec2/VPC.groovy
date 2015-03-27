@@ -19,6 +19,8 @@ class VPC extends Resource {
     def doValidate() {
         logicalId(this.id)
         require("CidrBlock", this.CidrBlock)
+        bool("EnableDnsSupport", EnableDnsSupport)
+        bool("EnableDnsHostnames", EnableDnsHostnames)
     }
 
     def toResourceMap() {

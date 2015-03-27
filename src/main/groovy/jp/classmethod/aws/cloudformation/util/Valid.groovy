@@ -11,5 +11,10 @@ class Valid {
     static void require(String name, Object value) {
         if (value == null) throw new ValidErrorException("$name can't be null.")
     }
+
+    static void bool(String name, Object value) {
+        if (value == null) return
+        if (!(value instanceof Boolean)) throw new ValidErrorException("$name must be boolean value (or maybe null).")
+    }
 }
 

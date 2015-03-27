@@ -74,4 +74,16 @@ class VPCTest extends ResourceTestBase {
         def sut = new VPC(id: "vpc")
         sut.doValidate()
     }
+
+    @Test(expected = ValidErrorException)
+    void "doValidate: EnableDnsSupport bool"() {
+        def sut = new VPC(id: "vpc", CidrBlock: '10.0.0.0/16', EnableDnsSupport: "yes")
+        sut.doValidate()
+    }
+
+    @Test(expected = ValidErrorException)
+    void "doValidate: EnableDnsHostnames bool"() {
+        def sut = new VPC(id: "vpc", CidrBlock: '10.0.0.0/16', EnableDnsHostnames: "yes")
+        sut.doValidate()
+    }
 }
