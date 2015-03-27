@@ -1,12 +1,13 @@
 package jp.classmethod.aws.cloudformation.elasticloadbalancing
 
 import groovy.transform.Canonical
+import jp.classmethod.aws.cloudformation.Resource
 
 /**
  * Created by watanabeshuji on 2014/10/09.
  */
 @Canonical
-class ElasticLoadBalancing {
+class ElasticLoadBalancing extends Resource {
 
     def id
     def LoadBalancerName
@@ -22,13 +23,13 @@ class ElasticLoadBalancing {
 
     def toResourceMap() {
         def map = [
-            'Type': 'AWS::ElasticLoadBalancing::LoadBalancer',
+            'Type'      : 'AWS::ElasticLoadBalancing::LoadBalancer',
             'Properties': [
                 'LoadBalancerName': this.LoadBalancerName,
-                'Subnets': this.Subnets,
-                'SecurityGroups': this.SecurityGroups,
-                'Instances': this.Instances,
-                'Listeners': this.Listeners.collect { it.toResourceMap() }
+                'Subnets'         : this.Subnets,
+                'SecurityGroups'  : this.SecurityGroups,
+                'Instances'       : this.Instances,
+                'Listeners'       : this.Listeners.collect { it.toResourceMap() }
             ]
         ]
         if (this.HealthCheck) map['Properties']['HealthCheck'] = HealthCheck.toResourceMap()
@@ -46,10 +47,10 @@ class ElasticLoadBalancing {
 
         def toResourceMap() {
             def map = [
-                Protocol: this.Protocol,
+                Protocol        : this.Protocol,
                 LoadBalancerPort: this.LoadBalancerPort,
                 InstanceProtocol: this.InstanceProtocol,
-                InstancePort: this.InstancePort,
+                InstancePort    : this.InstancePort,
             ]
             if (SSLCertificateId) map['SSLCertificateId'] = SSLCertificateId
             map
@@ -66,11 +67,11 @@ class ElasticLoadBalancing {
 
         def toResourceMap() {
             [
-                Target: this.Target,
-                Timeout: this.Timeout,
-                Interval: this.Interval,
+                Target            : this.Target,
+                Timeout           : this.Timeout,
+                Interval          : this.Interval,
                 UnhealthyThreshold: this.UnhealthyThreshold,
-                HealthyThreshold: this.HealthyThreshold,
+                HealthyThreshold  : this.HealthyThreshold,
             ]
         }
     }
@@ -84,10 +85,10 @@ class ElasticLoadBalancing {
 
         def toResourceMap() {
             def map = [
-                Enabled: this.Enabled,
-                S3BucketName: this.S3BucketName,
+                Enabled       : this.Enabled,
+                S3BucketName  : this.S3BucketName,
                 S3BucketPrefix: this.S3BucketPrefix,
-                EmitInterval: this.EmitInterval
+                EmitInterval  : this.EmitInterval
             ]
             map
         }

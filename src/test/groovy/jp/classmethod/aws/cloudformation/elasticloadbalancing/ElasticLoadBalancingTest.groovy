@@ -1,6 +1,5 @@
 package jp.classmethod.aws.cloudformation.elasticloadbalancing
 
-import jp.classmethod.aws.cloudformation.elasticloadbalancing.ElasticLoadBalancing
 import org.junit.Test
 
 /**
@@ -11,15 +10,14 @@ class ElasticLoadBalancingTest {
     @Test
     void "dev toResourceMap"() {
         def sut = new ElasticLoadBalancing(
-            id: 'Elb',
-            name: 'elb',
+            id: 'ELB',
             LoadBalancerName: 'elb-blue',
             Subnets: [['Fn::FindInMap': ['Resources', 'Subnet', 'FrontA']], ['Fn::FindInMap': ['Resources', 'Subnet', 'FrontC']]],
             Listeners: [
-                ['Protocol': 'HTTP', 'LoadBalancerPort': '80', 'InstanceProtocol': 'HTTP' ,'InstancePort':'80'],
-                ['Protocol': 'HTTPS','LoadBalancerPort': '443','InstanceProtocol': 'HTTP' ,'InstancePort':'80', 'SSLCertificateId': [
+                new ElasticLoadBalancing.Listener('Protocol': 'HTTP', 'LoadBalancerPort': '80', 'InstanceProtocol': 'HTTP', 'InstancePort': '80'),
+                new ElasticLoadBalancing.Listener('Protocol': 'HTTPS', 'LoadBalancerPort': '443', 'InstanceProtocol': 'HTTP', 'InstancePort': '80', 'SSLCertificateId': [
                     ['Fn::FindInMap': ['Resources', 'SSLCertificateId', 'ExampleCom']]
-                ]],
+                ])
             ],
             SecurityGroups: [
                 ['Fn::FindInMap': ['Resources', 'SecurityGroup', 'Internal']],
@@ -29,39 +27,39 @@ class ElasticLoadBalancingTest {
                 ['Fn::FindInMap': ['Resources', 'Instance', 'Web1']],
                 ['Fn::FindInMap': ['Resources', 'Instance', 'Web2']],
             ],
-            Target: 'HTTP:80/index.html',
-            Timeout: '5',
-            Interval: '30',
-            UnhealthyThreshold: '2',
-            HealthyThreshold: '10',
+            HealthCheck: new ElasticLoadBalancing.HealthCheck(
+                Target: 'HTTP:80/index.html',
+                Timeout: '5',
+                Interval: '30',
+                UnhealthyThreshold: '2',
+                HealthyThreshold: '10'
+            )
         )
         def expected = [
-            "Elb": [
-                'Type': 'AWS::ElasticLoadBalancing::LoadBalancer',
-                'Properties': [
-                    'LoadBalancerName': 'elb-blue',
-                    'Subnets': [['Fn::FindInMap': ['Resources', 'Subnet', 'FrontA']], ['Fn::FindInMap': ['Resources', 'Subnet', 'FrontC']]],
-                    'Listeners': [
-                        ['Protocol': 'HTTP', 'LoadBalancerPort': '80', 'InstanceProtocol': 'HTTP' ,'InstancePort':'80'],
-                        ['Protocol': 'HTTPS','LoadBalancerPort': '443','InstanceProtocol': 'HTTP' ,'InstancePort':'80', 'SSLCertificateId': [
-                                ['Fn::FindInMap': ['Resources', 'SSLCertificateId', 'ExampleCom']]
-                        ]],
-                    ],
-                    SecurityGroups: [
-                        ['Fn::FindInMap': ['Resources', 'SecurityGroup', 'Internal']],
-                        ['Fn::FindInMap': ['Resources', 'SecurityGroup', 'FrontWeb']],
-                    ],
-                    Instances: [
-                        ['Fn::FindInMap': ['Resources', 'Instance', 'Web1']],
-                        ['Fn::FindInMap': ['Resources', 'Instance', 'Web2']],
-                    ],
-                    'HealthCheck': [
-                        Target: 'HTTP:80/index.html',
-                        Timeout: '5',
-                        Interval: '30',
-                        UnhealthyThreshold: '2',
-                        HealthyThreshold: '10',
-                    ]
+            'Type'      : 'AWS::ElasticLoadBalancing::LoadBalancer',
+            'Properties': [
+                'LoadBalancerName': 'elb-blue',
+                'Subnets'         : [['Fn::FindInMap': ['Resources', 'Subnet', 'FrontA']], ['Fn::FindInMap': ['Resources', 'Subnet', 'FrontC']]],
+                'Listeners'       : [
+                    ['Protocol': 'HTTP', 'LoadBalancerPort': '80', 'InstanceProtocol': 'HTTP', 'InstancePort': '80'],
+                    ['Protocol': 'HTTPS', 'LoadBalancerPort': '443', 'InstanceProtocol': 'HTTP', 'InstancePort': '80', 'SSLCertificateId': [
+                        ['Fn::FindInMap': ['Resources', 'SSLCertificateId', 'ExampleCom']]
+                    ]],
+                ],
+                SecurityGroups    : [
+                    ['Fn::FindInMap': ['Resources', 'SecurityGroup', 'Internal']],
+                    ['Fn::FindInMap': ['Resources', 'SecurityGroup', 'FrontWeb']],
+                ],
+                Instances         : [
+                    ['Fn::FindInMap': ['Resources', 'Instance', 'Web1']],
+                    ['Fn::FindInMap': ['Resources', 'Instance', 'Web2']],
+                ],
+                'HealthCheck'     : [
+                    Target            : 'HTTP:80/index.html',
+                    Timeout           : '5',
+                    Interval          : '30',
+                    UnhealthyThreshold: '2',
+                    HealthyThreshold  : '10',
                 ]
             ]
         ]
@@ -72,60 +70,61 @@ class ElasticLoadBalancingTest {
     @Test
     void "AccessLoggingPolicy toResourceMap"() {
         def sut = new ElasticLoadBalancing(
-                id: 'Elb',
-                name: 'elb',
-                LoadBalancerName: 'elb',
-                Subnets: [['Fn::FindInMap': ['Resources', 'Subnet', 'FrontA']]],
-                Listeners: [],
-                SecurityGroups: [
-                        ['Fn::FindInMap': ['Resources', 'SecurityGroup', 'Internal']],
-                        ['Fn::FindInMap': ['Resources', 'SecurityGroup', 'FrontWeb']],
-                ],
-                Instances: [
-                        ['Fn::FindInMap': ['Resources', 'Instance', 'Web1']],
-                        ['Fn::FindInMap': ['Resources', 'Instance', 'Web2']],
-                ],
-                Target: 'HTTP:80/index.html',
-                Timeout: '5',
-                Interval: '30',
+            id: 'ELB',
+            LoadBalancerName: 'elb',
+            Subnets: [['Fn::FindInMap': ['Resources', 'Subnet', 'FrontA']]],
+            Listeners: [],
+            SecurityGroups: [
+                ['Fn::FindInMap': ['Resources', 'SecurityGroup', 'Internal']],
+                ['Fn::FindInMap': ['Resources', 'SecurityGroup', 'FrontWeb']],
+            ],
+            Instances: [
+                ['Fn::FindInMap': ['Resources', 'Instance', 'Web1']],
+                ['Fn::FindInMap': ['Resources', 'Instance', 'Web2']],
+            ],
+            HealthCheck: new ElasticLoadBalancing.HealthCheck(
+                Target            : 'HTTP:80/index.html',
+                Timeout           : '5',
+                Interval          : '30',
                 UnhealthyThreshold: '2',
-                HealthyThreshold: '10',
-                AccessLoggingPolicyEnabled: 'true',
-                AccessLoggingPolicyS3BucketName: 'logs.classmethod.jp',
-                AccessLoggingPolicyS3BucketPrefix: 'elb/prd',
-                AccessLoggingPolicyEmitInterval: '60',
+                HealthyThreshold  : '10',
+            ),
+            AccessLoggingPolicy: new ElasticLoadBalancing.AccessLoggingPolicy(
+                Enabled: 'true',
+                S3BucketName: 'logs.classmethod.jp',
+                S3BucketPrefix: 'elb/prd',
+                EmitInterval: '60'
+            )
         )
         def expected = [
-                "Elb": [
-                        'Type': 'AWS::ElasticLoadBalancing::LoadBalancer',
-                        'Properties': [
-                                'LoadBalancerName': 'elb',
-                                'Subnets': [['Fn::FindInMap': ['Resources', 'Subnet', 'FrontA']]],
-                                'Listeners': [
-                                ],
-                                SecurityGroups: [
-                                        ['Fn::FindInMap': ['Resources', 'SecurityGroup', 'Internal']],
-                                        ['Fn::FindInMap': ['Resources', 'SecurityGroup', 'FrontWeb']],
-                                ],
-                                Instances: [
-                                        ['Fn::FindInMap': ['Resources', 'Instance', 'Web1']],
-                                        ['Fn::FindInMap': ['Resources', 'Instance', 'Web2']],
-                                ],
-                                'HealthCheck': [
-                                        Target: 'HTTP:80/index.html',
-                                        Timeout: '5',
-                                        Interval: '30',
-                                        UnhealthyThreshold: '2',
-                                        HealthyThreshold: '10',
-                                ],
-                                'AccessLoggingPolicy': [
-                                    'Enabled': 'true',
-                                    'S3BucketName': 'logs.classmethod.jp',
-                                    'S3BucketPrefix': 'elb/prd',
-                                    'EmitInterval': '60',
-                                ]
-                        ]
+            'Type'      : 'AWS::ElasticLoadBalancing::LoadBalancer',
+            'Properties': [
+                'LoadBalancerName'   : 'elb',
+                'Subnets'            : [['Fn::FindInMap': ['Resources', 'Subnet', 'FrontA']]],
+                'Listeners'          : [
+                ],
+                SecurityGroups       : [
+                    ['Fn::FindInMap': ['Resources', 'SecurityGroup', 'Internal']],
+                    ['Fn::FindInMap': ['Resources', 'SecurityGroup', 'FrontWeb']],
+                ],
+                Instances            : [
+                    ['Fn::FindInMap': ['Resources', 'Instance', 'Web1']],
+                    ['Fn::FindInMap': ['Resources', 'Instance', 'Web2']],
+                ],
+                'HealthCheck'        : [
+                    Target            : 'HTTP:80/index.html',
+                    Timeout           : '5',
+                    Interval          : '30',
+                    UnhealthyThreshold: '2',
+                    HealthyThreshold  : '10',
+                ],
+                'AccessLoggingPolicy': [
+                    'Enabled'       : 'true',
+                    'S3BucketName'  : 'logs.classmethod.jp',
+                    'S3BucketPrefix': 'elb/prd',
+                    'EmitInterval'  : '60',
                 ]
+            ]
         ]
         assert sut.toResourceMap() == expected
     }
