@@ -1,6 +1,7 @@
 package jp.classmethod.aws.cloudformation.ec2
 
 import groovy.transform.Canonical
+import jp.classmethod.aws.cloudformation.Resource
 
 /**
  * AWS::EC2::Volume
@@ -8,25 +9,23 @@ import groovy.transform.Canonical
  *
  */
 @Canonical
-class Volume {
+class Volume extends Resource {
+
     def id
     def Size
     def VolumeType
     def AvailabilityZone
 
-    def Volume() {
-    }
-
     def toResourceMap() {
         [
-            'Type': 'AWS::EC2::Volume',
+            'Type'      : 'AWS::EC2::Volume',
             'Properties': [
                 'AvailabilityZone': AvailabilityZone,
-                'Size': Size,
-                'VolumeType': VolumeType,
-                'Tags': [
-                    ['Key': 'Name', 'Value': Name],
-                    ['Key': 'Application', 'Value': ['Ref': 'AWS::StackId' ]]
+                'Size'            : Size,
+                'VolumeType'      : VolumeType,
+                'Tags'            : [
+                    ['Key': 'Name', 'Value': id],
+                    ['Key': 'Application', 'Value': ['Ref': 'AWS::StackId']]
                 ]
             ]
         ]

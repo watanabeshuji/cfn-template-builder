@@ -1,6 +1,5 @@
 package jp.classmethod.aws.cloudformation.rds
 
-import jp.classmethod.aws.cloudformation.rds.DBSubnetGroup
 import org.junit.Test
 
 /**
@@ -8,30 +7,18 @@ import org.junit.Test
  */
 class DBSubnetGroupTest {
 
-    @Test
-    void "default.csvのload"() {
-        File input = new File(getClass().getResource("DBSubnetGroupTest_default.csv").getFile())
-        def actual = DBSubnetGroup.load(input)
-        assert actual == [
-                new DBSubnetGroup(id: 'DbSubnet',    Name: 'db-subnet',     DBSubnetGroupDescription:'DB Subnet',                 SubnetNames: ['SubnetA', 'SubnetC']),
-                new DBSubnetGroup(id: 'DbSubnetDev', Name: 'db-subnet-dev', DBSubnetGroupDescription:'DB Subnet for development', SubnetNames: ['SubnetDevA', 'SubnetDevC'])
-        ]
-    }
-
 
     @Test
     void "toResourceMap"() {
-        def sut = new DBSubnetGroup(id: 'DbSubnet',    Name: 'db-subnet',  DBSubnetGroupDescription:'DB Subnet', SubnetNames: ['SubnetA', 'SubnetC'])
+        def sut = new DBSubnetGroup(id: 'DbSubnet', DBSubnetGroupDescription: 'DB Subnet', SubnetIds: [['Ref': 'SubnetA'], ['Ref': 'SubnetC']])
         def expected = [
-            "DbSubnet": [
-                'Type': 'AWS::RDS::DBSubnetGroup',
-                'Properties': [
-                    'DBSubnetGroupDescription': 'DB Subnet',
-                    'SubnetIds': [['Ref': 'SubnetA'], ['Ref': 'SubnetC']],
-                    'Tags': [
-                        ['Key': 'Name', 'Value': 'db-subnet'],
-                        ['Key': 'Application', 'Value': ['Ref': 'AWS::StackId' ]]
-                    ]
+            'Type'      : 'AWS::RDS::DBSubnetGroup',
+            'Properties': [
+                'DBSubnetGroupDescription': 'DB Subnet',
+                'SubnetIds'               : [['Ref': 'SubnetA'], ['Ref': 'SubnetC']],
+                'Tags'                    : [
+                    ['Key': 'Name', 'Value': 'DbSubnet'],
+                    ['Key': 'Application', 'Value': ['Ref': 'AWS::StackId']]
                 ]
             ]
         ]
