@@ -1,2 +1,0 @@
-Name           ,RouteTable            ,DestinationCidrBlock    ,Gateway  ,Instance
-public-route   ,public-route-table    ,0.0.0.0/0               ,igw      ,-

@@ -1,3 +1,0 @@
-Key,            Name,           Value
-KeyPair,        Ec2KeyName,     default-key
-Role,           Ec2Role,        ec2-user

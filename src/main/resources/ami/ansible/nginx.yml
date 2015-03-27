@@ -1,9 +1,0 @@
-- hosts: localhost
-  sudo: yes
-  tasks:
-   - name: install nginx
-     yum: name={{item}} state=latest
-     with_items:
-      - nginx
-   - name: enable service nginx
-     service: name=nginx enabled=yes

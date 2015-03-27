@@ -1,1 +1,0 @@
-Description=Template for VPC and EC2 Instance with EIP
