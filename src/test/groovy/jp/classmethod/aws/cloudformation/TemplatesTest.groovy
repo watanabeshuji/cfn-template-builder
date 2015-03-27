@@ -9,11 +9,11 @@ import java.nio.file.Paths
 /**
  * Created by watanabeshuji on 2015/03/27.
  */
-class CloudFormationTest {
+class TemplatesTest {
 
     @Test
     void "empty.groovy toPrettyString"() {
-        Path input = Paths.get("cfn/empty.groovy")
+        Path input = Paths.get(getClass().getResource("/templates/empty.groovy").getPath())
         def actual = CloudFormation.load(input).toPrettyString()
         def expected = getClass().getResource("/templates/empty.json").text
         assert actual == expected
@@ -21,7 +21,7 @@ class CloudFormationTest {
 
     @Test
     void "vpc.groovy toPrettyString"() {
-        Path input = Paths.get("cfn/vpc.groovy")
+        Path input = Paths.get(getClass().getResource("/templates/vpc.groovy").getPath())
         def actual = CloudFormation.load(input).toPrettyString()
         def expected = getClass().getResource("/templates/vpc.json").text
         println actual

@@ -183,16 +183,16 @@
         "GroupDescription": "Allow web access from internet.",
         "SecurityGroupIngress": [
           {
-            "IpProtocol": "tcp",
-            "FromPort": 80,
-            "ToPort": 80,
-            "CidrIp": "0.0.0.0/0"
+            "cidrIp": "0.0.0.0/0",
+            "fromPort": 80,
+            "ipProtocol": "tcp",
+            "toPort": 80
           },
           {
-            "IpProtocol": "tcp",
-            "FromPort": 443,
-            "ToPort": 443,
-            "CidrIp": "0.0.0.0/0"
+            "cidrIp": "0.0.0.0/0",
+            "fromPort": 443,
+            "ipProtocol": "tcp",
+            "toPort": 443
           }
         ],
         "Tags": [

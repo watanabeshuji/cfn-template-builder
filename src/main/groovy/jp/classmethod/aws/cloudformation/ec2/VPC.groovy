@@ -1,26 +1,24 @@
 package jp.classmethod.aws.cloudformation.ec2
 
 import groovy.transform.Canonical
-import jp.classmethod.aws.cloudformation.util.Valid
+import jp.classmethod.aws.cloudformation.Resource
+import static jp.classmethod.aws.cloudformation.util.Valid.*
 
 /**
  * AWS::EC2::VPC
  * http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-ec2-vpc.html
  */
 @Canonical
-class VPC {
+class VPC extends Resource {
 
     String id
     def CidrBlock
     def EnableDnsSupport
     def EnableDnsHostnames
 
-    def VPC() {
-    }
-
     def doValidate() {
-        Valid.logicalId(this.id)
-        Valid.require("CidrBlock", this.CidrBlock)
+        logicalId(this.id)
+        require("CidrBlock", this.CidrBlock)
     }
 
     def toResourceMap() {

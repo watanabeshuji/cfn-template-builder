@@ -35,16 +35,6 @@ class ResourcesDSLTest {
     }
 
     @Test
-    void "load vpc.groovy"() {
-        Path input = getPath("/templates/resources/vpc.groovy")
-        def actual = ResourcesDSL.load(input)
-        assert actual == [
-            new VPC(id: 'vpc1', CidrBlock: "10.0.0.0/16"),
-            new VPC(id: 'vpc2', CidrBlock: "10.0.0.0/16", EnableDnsSupport: true, EnableDnsHostnames: true),
-        ]
-    }
-
-    @Test
     void "load internetGateway.groovy"() {
         Path input = getPath("/templates/resources/internetGateway.groovy")
         def actual = ResourcesDSL.load(input)
