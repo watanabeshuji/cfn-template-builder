@@ -1,6 +1,5 @@
 package jp.classmethod.aws.cloudformation.cloudformation
 
-import jp.classmethod.aws.cloudformation.cloudformation.WaitCondition
 import org.junit.Test
 
 /**
@@ -10,15 +9,12 @@ class WaitConditionTest {
 
     @Test
     void "toResourceMap"() {
-        def sut = new WaitCondition(id: 'WebServerWaitCondition',   Name: 'WebServerWaitCondition'  ,Handle: 'WebServerWaitHandle'  ,Timeout: '1000', DependsOn: ['WebServer'])
+        def sut = new WaitCondition(id: 'WebServerWaitCondition', Handle: [Ref: 'WebServerWaitHandle'], Timeout: '1000')
         def expected = [
-            "WebServerWaitCondition": [
-                'Type': 'AWS::CloudFormation::WaitCondition',
-                'DependsOn': ['WebServer'],
-                'Properties': [
-                    'Handle': ['Ref': 'WebServerWaitHandle'],
-                    'Timeout': '1000'
-                ]
+            'Type'      : 'AWS::CloudFormation::WaitCondition',
+            'Properties': [
+                'Handle' : ['Ref': 'WebServerWaitHandle'],
+                'Timeout': '1000'
             ]
         ]
         assert sut.toResourceMap() == expected

@@ -1,6 +1,7 @@
 package jp.classmethod.aws.cloudformation.cloudformation
 
 import groovy.transform.Canonical
+import jp.classmethod.aws.cloudformation.Resource
 
 /**
  * AWS::CloudFormation::WaitCondition
@@ -9,7 +10,7 @@ import groovy.transform.Canonical
  * Created by watanabeshuji on 2014/10/24.
  */
 @Canonical
-class WaitCondition {
+class WaitCondition extends Resource {
 
     def id
     def Handle
@@ -18,10 +19,10 @@ class WaitCondition {
     def WaitCondition() {}
 
     def toResourceMap() {
-        def result =[
-            'Type': 'AWS::CloudFormation::WaitCondition',
+        def result = [
+            'Type'      : 'AWS::CloudFormation::WaitCondition',
             'Properties': [
-                'Handle': Handle,
+                'Handle' : Handle,
                 'Timeout': this.Timeout
             ]
         ]

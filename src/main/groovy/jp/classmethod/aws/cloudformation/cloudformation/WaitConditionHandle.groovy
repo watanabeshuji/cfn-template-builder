@@ -1,6 +1,7 @@
 package jp.classmethod.aws.cloudformation.cloudformation
 
 import groovy.transform.Canonical
+import jp.classmethod.aws.cloudformation.Resource
 
 /**
  * AWS::CloudFormation::WaitConditionHandle
@@ -8,7 +9,7 @@ import groovy.transform.Canonical
  * Created by watanabeshuji on 2014/10/24.
  */
 @Canonical
-class WaitConditionHandle {
+class WaitConditionHandle extends Resource {
 
     def id
 
