@@ -1,3 +1,0 @@
-Name,           RouteTable,            DestinationCidrBlock,    GatewayId,     InstanceId
-public-route,   public-route-table,    0.0.0.0/0,               igw,           -
-private-route,  private-route-table,   0.0.0.0/0,               -,             bastion

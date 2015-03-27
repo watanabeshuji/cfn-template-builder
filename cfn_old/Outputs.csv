@@ -1,3 +1,0 @@
-Name                       ,Value                                                  ,Description
-WebServerIpAddress         ,BastionEIP                                             ,IP Address of Web Server
-WebServerAvailabilityZone  ,A[Bastion|AvailabilityZone]                            ,Availability Zone of Web Server
