@@ -1,6 +1,7 @@
 package jp.classmethod.aws.cloudformation.ec2
 
 import groovy.transform.Canonical
+import jp.classmethod.aws.cloudformation.Resource
 
 /**
  * AWS::EC2::Instance
@@ -9,9 +10,8 @@ import groovy.transform.Canonical
  * Created by watanabeshuji on 2014/08/13.
  */
 @Canonical
-class Instance {
+class Instance extends Resource {
     def id
-    def Name
     def InstanceType
     def KeyName
     def SubnetId
@@ -29,7 +29,7 @@ class Instance {
 
     def toResourceMap() {
         def result = [
-            'Type': 'AWS::EC2::Instance',
+            'Type'      : 'AWS::EC2::Instance',
             'Properties': [:]
         ]
         if (InstanceType) result['Properties']['InstanceType'] = InstanceType
@@ -41,14 +41,13 @@ class Instance {
         result['Properties']['SecurityGroupIds'] = SecurityGroupIds
         if (PrivateIpAddress) result['Properties']['PrivateIpAddress'] = PrivateIpAddress
         result['Properties']['Tags'] = [
-            ['Key': 'Name', 'Value': Name],
-            ['Key': 'Application', 'Value': ['Ref': 'AWS::StackId' ]]
+            ['Key': 'Name', 'Value': id],
+            ['Key': 'Application', 'Value': ['Ref': 'AWS::StackId']]
         ]
-        if(UserData) {
-            def userData = UserData.split("\n")
+        if (UserData) {
             result['Properties']['UserData'] = [
                 'Fn::Base64': [
-                    'Fn::Join': ['', userData]
+                    'Fn::Join': ['', UserData.split("\n").collect { "${it}\\n" }]
                 ]
             ]
         }
@@ -70,7 +69,7 @@ class Instance {
         def toResourceMap() {
             [
                 'VolumeId': VolumeId,
-                'Device': Device
+                'Device'  : Device
             ]
         }
     }
