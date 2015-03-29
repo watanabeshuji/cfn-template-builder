@@ -1,17 +1,18 @@
 package jp.classmethod.aws.cloudformation.iam
 
 import groovy.transform.Canonical
+import jp.classmethod.aws.cloudformation.Resource
 
 /**
  * Created by watanabeshuji on 2015/02/02.
  */
 @Canonical
-class Role {
+class Role extends Resource {
 
     def id
     def Path = '/'
     def AssumeRolePolicyDocument = [
-        Version: '2012-10-17',
+        Version  : '2012-10-17',
         Statement: [
             [Effect: 'Allow', Principal: [Service: ['ec2.amazonaws.com']], Action: ['sts:AssumeRole']]
         ]
@@ -22,10 +23,10 @@ class Role {
 
     def toResourceMap() {
         [
-            'Type': 'AWS::IAM::Role',
+            'Type'      : 'AWS::IAM::Role',
             'Properties': [
                 'AssumeRolePolicyDocument': AssumeRolePolicyDocument,
-                'Path': Path
+                'Path'                    : Path
             ]
         ]
     }

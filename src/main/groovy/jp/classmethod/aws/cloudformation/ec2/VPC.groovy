@@ -2,6 +2,7 @@ package jp.classmethod.aws.cloudformation.ec2
 
 import groovy.transform.Canonical
 import jp.classmethod.aws.cloudformation.Resource
+
 import static jp.classmethod.aws.cloudformation.util.Valid.*
 
 /**
@@ -26,12 +27,12 @@ class VPC extends Resource {
     def toResourceMap() {
         doValidate()
         def map = [
-            'Type': 'AWS::EC2::VPC',
+            'Type'      : 'AWS::EC2::VPC',
             'Properties': [
                 'CidrBlock': CidrBlock,
-                'Tags': [
+                'Tags'     : [
                     ['Key': 'Name', 'Value': id],
-                    ['Key': 'Application', 'Value': ['Ref': 'AWS::StackId' ]]
+                    ['Key': 'Application', 'Value': ['Ref': 'AWS::StackId']]
                 ]
             ]
         ]

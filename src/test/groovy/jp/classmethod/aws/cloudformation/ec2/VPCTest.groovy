@@ -1,21 +1,20 @@
 package jp.classmethod.aws.cloudformation.ec2
 
-import jp.classmethod.aws.cloudformation.ResourceTestBase
-import jp.classmethod.aws.cloudformation.dsl.ResourcesDSL
 import jp.classmethod.aws.cloudformation.util.ValidErrorException
 import org.junit.Test
+import static jp.classmethod.aws.cloudformation.testing.TestSupport.*
 
 import java.nio.file.Path
 
 /**
  * Test for VPC
  */
-class VPCTest extends ResourceTestBase {
+class VPCTest {
 
     @Test
     void "load vpc.groovy"() {
         Path input = getPath("/templates/resources/vpc.groovy")
-        def actual = ResourcesDSL.load(input)
+        def actual = VPC.load(input)
         def expected = [
             new VPC(id: 'vpc1', CidrBlock: "10.0.0.0/16"),
             new VPC(id: 'vpc2', CidrBlock: "10.0.0.0/16", EnableDnsSupport: true, EnableDnsHostnames: true),

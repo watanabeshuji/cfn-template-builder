@@ -1,3 +1,5 @@
 .gradle/
 cfn-template-builder.iml
-examples/test.*
+examples/_dev
+templates/_dev.*
+

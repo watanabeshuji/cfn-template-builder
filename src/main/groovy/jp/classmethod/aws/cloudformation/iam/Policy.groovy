@@ -1,6 +1,7 @@
 package jp.classmethod.aws.cloudformation.iam
 
 import groovy.transform.Canonical
+import jp.classmethod.aws.cloudformation.Resource
 
 /**
  * AWS::IAM::Policy
@@ -9,7 +10,7 @@ import groovy.transform.Canonical
  * Created by watanabeshuji on 2015/02/02.
  */
 @Canonical
-class Policy {
+class Policy extends Resource {
 
     def id
     def PolicyName
@@ -23,7 +24,7 @@ class Policy {
 
     def toResourceMap() {
         def result = [
-            'Type': 'AWS::IAM::Policy',
+            'Type'      : 'AWS::IAM::Policy',
             'Properties': [
                 'PolicyName'    : PolicyName,
                 'PolicyDocument': PolicyDocument

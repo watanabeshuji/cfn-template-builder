@@ -2,11 +2,25 @@ package jp.classmethod.aws.cloudformation.cloudformation
 
 import org.junit.Test
 
+import java.nio.file.Path
+
+import static jp.classmethod.aws.cloudformation.testing.TestSupport.getPath
+
 /**
  * Created by watanabeshuji on 2014/10/24.
  */
 class WaitConditionHandleTest {
 
+
+    @Test
+    void "load waitConditionHandle.groovy"() {
+        Path input = getPath("/templates/resources/waitConditionHandle.groovy")
+        def actual = WaitConditionHandle.load(input)
+        def expected = [
+            new WaitConditionHandle(id: 'WebServerWaitConditionHandle')
+        ]
+        assert actual == expected
+    }
 
     @Test
     void "toResourceMap"() {

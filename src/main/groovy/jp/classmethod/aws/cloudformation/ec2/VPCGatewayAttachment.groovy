@@ -1,6 +1,10 @@
 package jp.classmethod.aws.cloudformation.ec2
 
 import groovy.transform.Canonical
+import jp.classmethod.aws.cloudformation.DSLSupport
+import jp.classmethod.aws.cloudformation.Resource
+
+import java.nio.file.Path
 
 /**
  * AWS::EC2::VPCGatewayAttachment
@@ -9,7 +13,7 @@ import groovy.transform.Canonical
  * Created by watanabeshuji on 2015/03/27.
  */
 @Canonical
-class VPCGatewayAttachment {
+class VPCGatewayAttachment extends Resource {
 
     def id
     def VpcId
@@ -20,11 +24,12 @@ class VPCGatewayAttachment {
 
     def toResourceMap() {
         [
-            'Type': 'AWS::EC2::VPCGatewayAttachment',
+            'Type'      : 'AWS::EC2::VPCGatewayAttachment',
             'Properties': [
-                'VpcId': this.VpcId,
+                'VpcId'            : this.VpcId,
                 'InternetGatewayId': InternetGatewayId
             ]
         ]
     }
+
 }

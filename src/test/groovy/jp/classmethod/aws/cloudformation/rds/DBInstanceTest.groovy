@@ -2,10 +2,32 @@ package jp.classmethod.aws.cloudformation.rds
 
 import org.junit.Test
 
+import java.nio.file.Path
+
+import static jp.classmethod.aws.cloudformation.testing.TestSupport.getPath
+
 /**
  * Created by watanabeshuji on 2014/09/11.
  */
 class DBInstanceTest {
+
+
+    @Test
+    void "load dbInstance.groovy"() {
+        Path input = getPath("/templates/resources/dbInstance.groovy")
+        def actual = DBInstance.load(input)
+        def expected = [
+            new DBInstance(id: 'DbPrd', DBSubnetGroupName: [Ref: "DbSubnetGroup"], MultiAZ: true,
+                DBInstanceClass: "db.m3.xlarge", AllocatedStorage: "200", Iops: 1000, Engine: "mysql", EngineVersion: "5.6.19", Port: "3306",
+                DBParameterGroupName: "default.mysql5.6", DBName: "app", MasterUsername: "root", MasterUserPassword: "pass1234",
+                VPCSecurityGroups: [[Ref: "Internal"]]),
+            new DBInstance(id: "DbDev", DBSubnetGroupName: [Ref: "DbSubnetGroup"], MultiAZ: false, AvailabilityZone: "ap-northeast-1a",
+                DBInstanceClass: "db.m1.small", AllocatedStorage: "50", Engine: "mysql", EngineVersion: "5.6.19", Port: "3306",
+                DBParameterGroupName: "default.mysql5.6", DBName: "app", MasterUsername: "root", MasterUserPassword: "pass1234",
+                VPCSecurityGroups: [[Ref: "Internal"]], DBSnapshotIdentifier: "snapshot01")
+        ]
+        assert actual == expected
+    }
 
     @Test
     void "dev toResourceMap"() {

@@ -2,11 +2,46 @@ package jp.classmethod.aws.cloudformation.ec2
 
 import org.junit.Test
 
+import java.nio.file.Path
+
+import static jp.classmethod.aws.cloudformation.testing.TestSupport.getPath
+
 /**
  * Created by watanabeshuji on 2014/08/20.
  */
 class InstanceTest {
 
+
+
+    @Test
+    void "load instance.groovy"() {
+        Path input = getPath("/templates/resources/instance.groovy")
+        def actual = Instance.load(input)
+        def userData = '''/
+#!/bin/sh
+yum -y update
+'''
+        def excepted = [
+            new Instance(id: "Web", InstanceType: "t2.small", KeyName: "web-key", SubnetId: [Ref: "PublicSubnet"],
+                ImageId: "FindInMap:AMI:AmazonLinux:201503", IamInstanceProfile: [Ref: "WebInstanceProfile"],
+                SourceDestCheck: true, SecurityGroupIds: [[Ref: "Internal"], [Ref: "PublicWeb"]],
+                UserData: userData),
+            new Instance(id: "Batch", InstanceType: "t2.small", KeyName: "web-key", SubnetId: [Ref: "PrivateSubnet"],
+                ImageId: "FindInMap:AMI:AmazonLinux:201503", IamInstanceProfile: [Ref: "WebInstanceProfile"],
+                SourceDestCheck: true, SecurityGroupIds: [[Ref: "Internal"]],
+                Volumes: [
+                    new Instance.Volume(VolumeId: [Ref: "BatchVolume"], Device: "/dev/sdk")
+                ]
+            ),
+            new Instance(id: "Server", InstanceType: "t2.small", KeyName: "web-key", SubnetId: [Ref: "PrivateSubnet"],
+                ImageId: "FindInMap:AMI:AmazonLinux:201503",
+                BlockDeviceMappings: [
+                    new Instance.BlockDeviceMapping(DeviceName: "/dev/xvda", Ebs: new Instance.Ebs(VolumeType: "gp2", VolumeSize: "200", DeleteOnTermination: true)),
+                    new Instance.BlockDeviceMapping(DeviceName: "/dev/xvdb", Ebs: new Instance.Ebs(VolumeType: "gp2", VolumeSize: "100"))
+                ]),
+        ]
+        assert actual == excepted
+    }
 
     @Test
     void "toResourceMap"() {

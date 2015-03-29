@@ -3,10 +3,26 @@ package jp.classmethod.aws.cloudformation.ec2
 import jp.classmethod.aws.cloudformation.ec2.Route
 import org.junit.Test
 
+import java.nio.file.Path
+
+import static jp.classmethod.aws.cloudformation.testing.TestSupport.getPath
+
 /**
  * Created by watanabeshuji on 2014/08/19.
  */
 class RouteTest {
+
+
+    @Test
+    void "load route.groovy"() {
+        Path input = getPath("/templates/resources/route.groovy")
+        def actual = Route.load(input)
+        assert actual == [
+            new Route(id: 'PublicRoute', DestinationCidrBlock: '0.0.0.0/0', GatewayId: [Ref: "IGW"]),
+            new Route(id: 'NatRoute', DestinationCidrBlock: '0.0.0.0/0', InstanceId: [Ref: "NAT"]),
+            new Route(id: 'DirectConnectRoute', DestinationCidrBlock: '10.226.0.0/16', VpcPeeringConnectionId: "pcx-xxxxxxxx"),
+        ]
+    }
 
     @Test
     void "IGWでのtoResourceMap"() {

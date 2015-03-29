@@ -1,6 +1,7 @@
 package jp.classmethod.aws.cloudformation.ec2
 
 import groovy.transform.Canonical
+import jp.classmethod.aws.cloudformation.Resource
 
 /**
  * AWS::EC2::SecurityGroup
@@ -9,7 +10,7 @@ import groovy.transform.Canonical
  * Created by watanabeshuji on 2014/08/13.
  */
 @Canonical
-class SecurityGroup {
+class SecurityGroup extends Resource {
 
     def id
     def VpcId

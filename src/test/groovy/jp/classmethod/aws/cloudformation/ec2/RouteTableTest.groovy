@@ -1,7 +1,10 @@
 package jp.classmethod.aws.cloudformation.ec2
 
-import jp.classmethod.aws.cloudformation.ec2.RouteTable
 import org.junit.Test
+
+import java.nio.file.Path
+
+import static jp.classmethod.aws.cloudformation.testing.TestSupport.getPath
 
 /**
  * Created by watanabeshuji on 2014/08/19.
@@ -9,15 +12,25 @@ import org.junit.Test
 class RouteTableTest {
 
     @Test
+    void "load routeTable.groovy"() {
+        Path input = getPath("/templates/resources/routeTable.groovy")
+        def actual = RouteTable.load(input)
+        assert actual == [
+            new RouteTable(id: 'PublicRouteTable', VpcId: [Ref: "vpc"]),
+        ]
+    }
+
+
+    @Test
     void "toResourceMap"() {
         def sut = new RouteTable(id: 'PublicRouteTable', VpcId: [Ref: 'VPC'])
         def expected = [
-            'Type': 'AWS::EC2::RouteTable',
+            'Type'      : 'AWS::EC2::RouteTable',
             'Properties': [
                 'VpcId': ['Ref': 'VPC'],
-                'Tags': [
+                'Tags' : [
                     ['Key': 'Name', 'Value': 'PublicRouteTable'],
-                    ['Key': 'Application', 'Value': ['Ref': 'AWS::StackId' ]]
+                    ['Key': 'Application', 'Value': ['Ref': 'AWS::StackId']]
                 ]
             ]
         ]

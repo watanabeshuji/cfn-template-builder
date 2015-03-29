@@ -1,4 +1,4 @@
-package jp.classmethod.aws.cloudformation.dsl
+package jp.classmethod.aws.cloudformation
 
 import jp.classmethod.aws.cloudformation.CloudFormation
 import jp.classmethod.aws.cloudformation.cloudformation.WaitCondition
@@ -24,7 +24,7 @@ import java.nio.file.Paths
 /**
  * Created by watanabeshuji on 2015/03/26.
  */
-class CloudFormationDSLTest {
+class CloudFormationTest {
 
     private Path getPath(String resource) {
         Paths.get(getClass().getResource(resource).getPath())
@@ -33,7 +33,7 @@ class CloudFormationDSLTest {
     @Test
     void "load empty.groovy"() {
         Path input = getPath("/templates/empty.groovy")
-        def actual = CloudFormationDSL.load(input)
+        def actual = CloudFormation.load(input)
         assert actual == new CloudFormation(Description: "a cloudformation template.")
     }
 
@@ -41,7 +41,7 @@ class CloudFormationDSLTest {
     @Test
     void "load mappings.groovy"() {
         Path input = getPath("/templates/mappings.groovy")
-        def actual = CloudFormationDSL.load(input)
+        def actual = CloudFormation.load(input)
         assert actual == new CloudFormation(
             Mappings: [
                 RegionMap: [
@@ -60,7 +60,7 @@ class CloudFormationDSLTest {
     @Test
     void "load parameters.groovy"() {
         Path input = getPath("/templates/parameters.groovy")
-        def actual = CloudFormationDSL.load(input)
+        def actual = CloudFormation.load(input)
         assert actual == new CloudFormation(
             Parameters: [
                 InstanceTypeParameter: [Type: "String", Default: "t1.micro", AllowedValues: ["t1.micro", "m1.small", "m1.large"], Description: "Enter t1.micro, m1.small, or m1.large. Default is t1.micro."]
@@ -71,7 +71,7 @@ class CloudFormationDSLTest {
         @Test
     void "load vpc.groovy"() {
         Path input = getPath("/templates/vpc.groovy")
-        def actual = CloudFormationDSL.load(input)
+        def actual = CloudFormation.load(input)
         def expected = new CloudFormation(
             Description: "a vpc template.",
             Mappings: [
@@ -103,7 +103,7 @@ class CloudFormationDSLTest {
     @Test
     void "load ec2.groovy"() {
         Path input = getPath("/templates/ec2.groovy")
-        def actual = CloudFormationDSL.load(input)
+        def actual = CloudFormation.load(input)
         def expected = new CloudFormation(
             Description: "a ec2 template.",
             Resources: [
@@ -118,7 +118,7 @@ class CloudFormationDSLTest {
     @Test
     void "load iam.groovy"() {
         Path input = getPath("/templates/iam.groovy")
-        def actual = CloudFormationDSL.load(input)
+        def actual = CloudFormation.load(input)
         def doc  = [
                 "Version" : "2012-10-17",
                 "Statement": [

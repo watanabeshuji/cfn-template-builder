@@ -1,6 +1,5 @@
 package jp.classmethod.aws.cloudformation
 
-import jp.classmethod.aws.cloudformation.dsl.CloudFormationDSL
 import org.junit.Test
 
 import java.nio.file.Path

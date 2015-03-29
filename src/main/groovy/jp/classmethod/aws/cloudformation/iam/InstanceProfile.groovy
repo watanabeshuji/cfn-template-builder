@@ -1,6 +1,7 @@
 package jp.classmethod.aws.cloudformation.iam
 
 import groovy.transform.Canonical
+import jp.classmethod.aws.cloudformation.Resource
 
 /**
  * AWS::IAM::InstanceProfile
@@ -8,7 +9,7 @@ import groovy.transform.Canonical
  * Created by watanabeshuji on 2015/02/02.
  */
 @Canonical
-class InstanceProfile {
+class InstanceProfile extends Resource {
 
     def id
     def Path
@@ -16,9 +17,9 @@ class InstanceProfile {
 
     def toResourceMap() {
         def result = [
-            'Type': 'AWS::IAM::InstanceProfile',
+            'Type'      : 'AWS::IAM::InstanceProfile',
             'Properties': [
-                'Path': Path,
+                'Path' : Path,
                 'Roles': Roles
             ]
         ]

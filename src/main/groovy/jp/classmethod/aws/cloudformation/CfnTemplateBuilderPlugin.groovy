@@ -25,7 +25,8 @@ class CfnTemplateBuilderPlugin implements Plugin<Project> {
                 return
             }
             Files.createDirectory(Paths.get(cfnDir))
-            Files.copy(CfnTemplateBuilderPlugin.class.getResourceAsStream('/templates/vpc.template'), Paths.get(cfnDir, 'cfn.groovy'))
+            println CfnTemplateBuilderPlugin.class.getResourceAsStream('/templates/vpc.groovy')
+            Files.copy(CfnTemplateBuilderPlugin.class.getResourceAsStream('/templates/vpc.groovy'), Paths.get(cfnDir, 'cfn.groovy'))
         }
         project.task('cfnBuild') << {
             println 'CloudFormation Builder'
