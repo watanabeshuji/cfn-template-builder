@@ -15,9 +15,6 @@ class SecurityGroupIngress {
     def ToPort
     def CidrIp
 
-    SecurityGroupIngress() {
-    }
-
     def toInlineMap() {
         [
             'IpProtocol': this.IpProtocol,

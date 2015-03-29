@@ -14,7 +14,7 @@ class SecurityGroup {
     def id
     def VpcId
     def Description
-    List SecurityGroupIngress = []
+    List<SecurityGroupIngress> SecurityGroupIngress = []
 
     def SecurityGroup() {
     }
@@ -25,7 +25,7 @@ class SecurityGroup {
             'Properties': [
                 'VpcId'               : VpcId,
                 'GroupDescription'    : Description,
-                'SecurityGroupIngress': SecurityGroupIngress,
+                'SecurityGroupIngress': SecurityGroupIngress.collect { it.toInlineMap() },
                 'Tags'                : [
                     ['Key': 'Name', 'Value': id],
                     ['Key': 'Application', 'Value': ['Ref': 'AWS::StackId']]
