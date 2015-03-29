@@ -1,5 +1,3 @@
-package templates.resources
-
 resources {
     elasticLoadBalancing id: "ELB", LoadBalancerName: "ELB",
             Subnets: [[Ref: "FrontA"], [Ref: "FrontC"]], SecurityGroups: [[Ref: "PublicWeb"]],

@@ -1,5 +1,3 @@
-package templates.resources
-
 resources {
     route id: "PublicRoute",        DestinationCidrBlock: "0.0.0.0/0"     ,GatewayId: [Ref: "IGW"]
     route id: "NatRoute",           DestinationCidrBlock: "0.0.0.0/0"     ,InstanceId: [Ref: "NAT"]
