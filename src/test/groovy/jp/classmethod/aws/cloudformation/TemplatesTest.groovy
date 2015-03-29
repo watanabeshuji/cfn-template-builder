@@ -15,7 +15,7 @@ class TemplatesTest {
     void "empty.groovy toPrettyString"() {
         Path input = Paths.get(getClass().getResource("/templates/empty.groovy").getPath())
         def actual = CloudFormation.load(input).toPrettyString()
-        def expected = getClass().getResource("/templates/empty.json").text
+        def expected = getClass().getResource("/templates/empty.expected").text
         assert actual == expected
     }
 
@@ -23,8 +23,8 @@ class TemplatesTest {
     void "vpc.groovy toPrettyString"() {
         Path input = Paths.get(getClass().getResource("/templates/vpc.groovy").getPath())
         def actual = CloudFormation.load(input).toPrettyString()
-        def expected = getClass().getResource("/templates/vpc.json").text
-        println actual
+        def expected = getClass().getResource("/templates/vpc.expected").text
         assert actual == expected
     }
+
 }
