@@ -1,6 +1,3 @@
 .gradle/
-out/
-projects/
 cfn-template-builder.iml
-cfn-template-builder.ipr
-cfn-template-builder.iws
+examples/test.*
