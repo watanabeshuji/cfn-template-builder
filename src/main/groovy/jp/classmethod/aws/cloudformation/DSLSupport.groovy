@@ -13,7 +13,7 @@ class DSLSupport {
 
     static CloudFormation load(Path dsl) {
         CloudFormation cfn = new CloudFormation()
-        _load(dsl, { ExpandoMetaClass emc ->
+        _load(dsl.toFile(), { ExpandoMetaClass emc ->
             emc.cloudformation = { Closure cl ->
                 cl.delegate = new CloudFormationDelegate(cfn)
                 cl.resolveStrategy = Closure.DELEGATE_FIRST
@@ -23,9 +23,9 @@ class DSLSupport {
         cfn
     }
 
-    static List loadResources(Path dsl) {
+    static List loadResources(URI uri) {
         List resources = []
-        _load(dsl, { ExpandoMetaClass emc ->
+        _load(uri, { ExpandoMetaClass emc ->
             emc.resources = { Closure cl ->
                 cl.delegate = new ResourcesDelegate(resources)
                 cl.resolveStrategy = Closure.DELEGATE_FIRST
@@ -35,8 +35,26 @@ class DSLSupport {
         resources
     }
 
-    private static _load(Path dsl, Closure cls) {
-        Script dslScript = new GroovyShell().parse(dsl.toFile())
+    static List loadResources(Path dsl) {
+        List resources = []
+        _load(dsl.toFile(), { ExpandoMetaClass emc ->
+            emc.resources = { Closure cl ->
+                cl.delegate = new ResourcesDelegate(resources)
+                cl.resolveStrategy = Closure.DELEGATE_FIRST
+                cl()
+            }
+        })
+        resources
+    }
+
+    private static _load(URI uri, Closure cls) {
+        Script dslScript = new GroovyShell().parse(uri)
+        dslScript.metaClass = _createEMC(dslScript.class, cls)
+        dslScript.run()
+    }
+
+    private static _load(File file, Closure cls) {
+        Script dslScript = new GroovyShell().parse(file)
         dslScript.metaClass = _createEMC(dslScript.class, cls)
         dslScript.run()
     }

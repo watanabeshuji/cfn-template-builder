@@ -1,18 +1,8 @@
 package jp.classmethod.aws.cloudformation
 
-import jp.classmethod.aws.cloudformation.CloudFormation
 import jp.classmethod.aws.cloudformation.cloudformation.WaitCondition
 import jp.classmethod.aws.cloudformation.cloudformation.WaitConditionHandle
-import jp.classmethod.aws.cloudformation.ec2.EIP
-import jp.classmethod.aws.cloudformation.ec2.InternetGateway
-import jp.classmethod.aws.cloudformation.ec2.Route
-import jp.classmethod.aws.cloudformation.ec2.RouteTable
-import jp.classmethod.aws.cloudformation.ec2.SecurityGroup
-import jp.classmethod.aws.cloudformation.ec2.SecurityGroupIngress
-import jp.classmethod.aws.cloudformation.ec2.Subnet
-import jp.classmethod.aws.cloudformation.ec2.SubnetRouteTableAssociation
-import jp.classmethod.aws.cloudformation.ec2.VPC
-import jp.classmethod.aws.cloudformation.ec2.VPCGatewayAttachment
+import jp.classmethod.aws.cloudformation.ec2.*
 import jp.classmethod.aws.cloudformation.iam.InstanceProfile
 import jp.classmethod.aws.cloudformation.iam.Policy
 import jp.classmethod.aws.cloudformation.iam.Role
@@ -44,7 +34,7 @@ class CloudFormationTest {
         def actual = CloudFormation.load(input)
         assert actual == new CloudFormation(
             Mappings: [
-                RegionMap: [
+                RegionMap : [
                     "us-northeast-1": ["AvailabilityZoneA": "ap-northeast-1a", "AvailabilityZoneC": "ap-northeast-1c"]
                 ],
                 AddressMap: [
@@ -68,7 +58,7 @@ class CloudFormationTest {
         )
     }
 
-        @Test
+    @Test
     void "load vpc.groovy"() {
         Path input = getPath("/templates/vpc.groovy")
         def actual = CloudFormation.load(input)
@@ -92,9 +82,9 @@ class CloudFormationTest {
                 new SubnetRouteTableAssociation(id: 'SubnetRouteTableAssociationC', SubnetId: [Ref: "SubnetC"], RouteTableId: [Ref: "PublicRouteTable"]),
                 new SecurityGroup(id: 'PublicWeb', VpcId: [Ref: "VPC"], Description: "Allow web access from internet.",
                     SecurityGroupIngress: [
-                            new SecurityGroupIngress(IpProtocol: "tcp", FromPort: 80,  ToPort:  80, CidrIp: "0.0.0.0/0"),
-                            new SecurityGroupIngress(IpProtocol: "tcp", FromPort: 443,  ToPort:  443, CidrIp: "0.0.0.0/0")
-                ]),
+                        new SecurityGroupIngress(IpProtocol: "tcp", FromPort: 80, ToPort: 80, CidrIp: "0.0.0.0/0"),
+                        new SecurityGroupIngress(IpProtocol: "tcp", FromPort: 443, ToPort: 443, CidrIp: "0.0.0.0/0")
+                    ]),
             ]
         )
         assert actual == expected
@@ -119,11 +109,11 @@ class CloudFormationTest {
     void "load iam.groovy"() {
         Path input = getPath("/templates/iam.groovy")
         def actual = CloudFormation.load(input)
-        def doc  = [
-                "Version" : "2012-10-17",
-                "Statement": [
-                        ["Effect": "Allow", "Action": "*", "Resource": "*" ]
-                ]
+        def doc = [
+            "Version"  : "2012-10-17",
+            "Statement": [
+                ["Effect": "Allow", "Action": "*", "Resource": "*"]
+            ]
         ]
         def expected = new CloudFormation(
             Description: "a iam template.",
@@ -135,6 +125,33 @@ class CloudFormationTest {
         )
         assert actual == expected
     }
+
+
+    @Test
+    void "load separated.groovy"() {
+        Path input = getPath("/templates/separated.groovy")
+        def actual = CloudFormation.load(input)
+        def expected = new CloudFormation(
+            Description: "a separated template.",
+            Resources: [
+                new VPC(id: 'VPC', CidrBlock: "10.0.0.0/16"),
+                new Subnet(id: 'Subnet1', CidrBlock: "10.0.0.0/24", VpcId: [Ref: "VPC"]),
+                new Subnet(id: 'Subnet2', CidrBlock: "10.0.1.0/24", VpcId: [Ref: "VPC"], AvailabilityZone: "ap-northeast-1a"),
+                new SecurityGroup(id: 'PublicWeb', VpcId: [Ref: "VPC"], Description: "Allow web access from internet.",
+                    SecurityGroupIngress: [
+                        new SecurityGroupIngress(IpProtocol: "tcp", FromPort: 80, ToPort: 80, CidrIp: "0.0.0.0/0"),
+                        new SecurityGroupIngress(IpProtocol: "tcp", FromPort: 443, ToPort: 443, CidrIp: "0.0.0.0/0")
+                    ]),
+                new SecurityGroup(id: 'MyMainte', VpcId: [Ref: "VPC"], Description: "Allow ssh access from specific ip address.",
+                    SecurityGroupIngress: [
+                        new SecurityGroupIngress(IpProtocol: "tcp", FromPort: 22, ToPort: 22, CidrIp: "1.2.3.4/32"),
+                        new SecurityGroupIngress(IpProtocol: "tcp", FromPort: 22, ToPort: 22, CidrIp: "1.2.3.5/32")
+                    ]),
+            ]
+        )
+        assert actual == expected
+    }
+
 
     @Test(expected = InvalidResourceException)
     void "doValidteで重複idはエラー"() {

@@ -1,4 +1,4 @@
 resources {
-    subnet id: "subnet1", VpcId: [Ref: 'vpc'], CidrBlock: "10.0.0.0/24"
-    subnet id: "subnet2", VpcId: [Ref: 'vpc'], CidrBlock: "10.0.1.0/24", "AvailabilityZone": "ap-northeast-1a"
+    subnet id: "Subnet1", VpcId: [Ref: 'VPC'], CidrBlock: "10.0.0.0/24"
+    subnet id: "Subnet2", VpcId: [Ref: 'VPC'], CidrBlock: "10.0.1.0/24", "AvailabilityZone": "ap-northeast-1a"
 }

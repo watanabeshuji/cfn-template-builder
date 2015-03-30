@@ -17,8 +17,8 @@ class SubnetTest {
         Path input = getPath("/templates/resources/subnet.groovy")
         def actual = Subnet.load(input)
         assert actual == [
-            new Subnet(id: 'subnet1', CidrBlock: "10.0.0.0/24", VpcId: [Ref: "vpc"]),
-            new Subnet(id: 'subnet2', CidrBlock: "10.0.1.0/24", VpcId: [Ref: "vpc"], AvailabilityZone: "ap-northeast-1a")
+            new Subnet(id: 'Subnet1', CidrBlock: "10.0.0.0/24", VpcId: [Ref: "VPC"]),
+            new Subnet(id: 'Subnet2', CidrBlock: "10.0.1.0/24", VpcId: [Ref: "VPC"], AvailabilityZone: "ap-northeast-1a")
         ]
     }
 
