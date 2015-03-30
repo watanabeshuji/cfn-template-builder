@@ -28,10 +28,34 @@ class TemplatesTest {
     }
 
     @Test
-    void "vpc_standard_simple.groovy toPrettyString"() {
-        Path input = Paths.get(getClass().getResource("/templates/vpc_standard_simple.groovy").getPath())
+    void "vpc_standard_multi_az.groovy toPrettyString"() {
+        Path input = Paths.get(getClass().getResource("/templates/vpc_standard_multi_az.groovy").getPath())
         def actual = toJsonObject(CloudFormation.load(input).toPrettyString())
-        def expected = getExpected("vpc_standard_simple")
+        def expected = getExpected("vpc_standard_multi_az")
+        assert actual == expected
+    }
+
+    @Test
+    void "vpc_standard_multi_az_public_only.groovy toPrettyString"() {
+        Path input = Paths.get(getClass().getResource("/templates/vpc_standard_multi_az_public_only.groovy").getPath())
+        def actual = toJsonObject(CloudFormation.load(input).toPrettyString())
+        def expected = getExpected("vpc_standard_multi_az_public_only")
+        assert actual == expected
+    }
+
+    @Test
+    void "vpc_standard_single_az.groovy toPrettyString"() {
+        Path input = Paths.get(getClass().getResource("/templates/vpc_standard_single_az.groovy").getPath())
+        def actual = toJsonObject(CloudFormation.load(input).toPrettyString())
+        def expected = getExpected("vpc_standard_single_az")
+        assert actual == expected
+    }
+
+    @Test
+    void "vpc_standard_single_az_pucblic_only.groovy toPrettyString"() {
+        Path input = Paths.get(getClass().getResource("/templates/vpc_standard_single_az_pucblic_only.groovy").getPath())
+        def actual = toJsonObject(CloudFormation.load(input).toPrettyString())
+        def expected = getExpected("vpc_standard_single_az_pucblic_only")
         assert actual == expected
     }
 

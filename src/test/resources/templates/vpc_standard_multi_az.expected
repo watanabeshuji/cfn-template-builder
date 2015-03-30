@@ -1,0 +1,236 @@
+{
+    "AWSTemplateFormatVersion": "2010-09-09",
+    "Description": "a standard vpc template.",
+    "Resources": {
+        "DevVPC": {
+            "Type": "AWS::EC2::VPC",
+            "Properties": {
+                "CidrBlock": "10.0.0.0/16",
+                "Tags": [
+                    {
+                        "Key": "Name",
+                        "Value": "DevVPC"
+                    },
+                    {
+                        "Key": "Application",
+                        "Value": {
+                            "Ref": "AWS::StackId"
+                        }
+                    }
+                ]
+            }
+        },
+        "InternetGateway": {
+            "Type": "AWS::EC2::InternetGateway",
+            "Properties": {
+                "Tags": [
+                    {
+                        "Key": "Name",
+                        "Value": "InternetGateway"
+                    },
+                    {
+                        "Key": "Application",
+                        "Value": {
+                            "Ref": "AWS::StackId"
+                        }
+                    }
+                ]
+            }
+        },
+        "InternetGatewayAttach": {
+            "Type": "AWS::EC2::VPCGatewayAttachment",
+            "Properties": {
+                "VpcId": {
+                    "Ref": "DevVPC"
+                },
+                "InternetGatewayId": {
+                    "Ref": "InternetGateway"
+                }
+            }
+        },
+        "DevPublicSubnetA": {
+            "Type": "AWS::EC2::Subnet",
+            "Properties": {
+                "VpcId": {
+                    "Ref": "DevVPC"
+                },
+                "CidrBlock": "10.0.10.0/24",
+                "Tags": [
+                    {
+                        "Key": "Name",
+                        "Value": "DevPublicSubnetA"
+                    },
+                    {
+                        "Key": "Application",
+                        "Value": {
+                            "Ref": "AWS::StackId"
+                        }
+                    }
+                ],
+                "AvailabilityZone": "ap-northeast-1a"
+            }
+        },
+        "DevPublicSubnetC": {
+            "Type": "AWS::EC2::Subnet",
+            "Properties": {
+                "VpcId": {
+                    "Ref": "DevVPC"
+                },
+                "CidrBlock": "10.0.20.0/24",
+                "Tags": [
+                    {
+                        "Key": "Name",
+                        "Value": "DevPublicSubnetC"
+                    },
+                    {
+                        "Key": "Application",
+                        "Value": {
+                            "Ref": "AWS::StackId"
+                        }
+                    }
+                ],
+                "AvailabilityZone": "ap-northeast-1c"
+            }
+        },
+        "DevPrivateSubnetA": {
+            "Type": "AWS::EC2::Subnet",
+            "Properties": {
+                "VpcId": {
+                    "Ref": "DevVPC"
+                },
+                "CidrBlock": "10.0.11.0/24",
+                "Tags": [
+                    {
+                        "Key": "Name",
+                        "Value": "DevPrivateSubnetA"
+                    },
+                    {
+                        "Key": "Application",
+                        "Value": {
+                            "Ref": "AWS::StackId"
+                        }
+                    }
+                ],
+                "AvailabilityZone": "ap-northeast-1a"
+            }
+        },
+        "DevPrivateSubnetC": {
+            "Type": "AWS::EC2::Subnet",
+            "Properties": {
+                "VpcId": {
+                    "Ref": "DevVPC"
+                },
+                "CidrBlock": "10.0.21.0/24",
+                "Tags": [
+                    {
+                        "Key": "Name",
+                        "Value": "DevPrivateSubnetC"
+                    },
+                    {
+                        "Key": "Application",
+                        "Value": {
+                            "Ref": "AWS::StackId"
+                        }
+                    }
+                ],
+                "AvailabilityZone": "ap-northeast-1c"
+            }
+        },
+        "PublicRouteTable": {
+            "Type": "AWS::EC2::RouteTable",
+            "Properties": {
+                "VpcId": {
+                    "Ref": "DevVPC"
+                },
+                "Tags": [
+                    {
+                        "Key": "Name",
+                        "Value": "PublicRouteTable"
+                    },
+                    {
+                        "Key": "Application",
+                        "Value": {
+                            "Ref": "AWS::StackId"
+                        }
+                    }
+                ]
+            }
+        },
+        "PrivateRouteTable": {
+            "Type": "AWS::EC2::RouteTable",
+            "Properties": {
+                "VpcId": {
+                    "Ref": "DevVPC"
+                },
+                "Tags": [
+                    {
+                        "Key": "Name",
+                        "Value": "PrivateRouteTable"
+                    },
+                    {
+                        "Key": "Application",
+                        "Value": {
+                            "Ref": "AWS::StackId"
+                        }
+                    }
+                ]
+            }
+        },
+        "PublicRoute": {
+            "Type": "AWS::EC2::Route",
+            "Properties": {
+                "RouteTableId": {
+                    "Ref": "PublicRouteTable"
+                },
+                "DestinationCidrBlock": "0.0.0.0/0",
+                "GatewayId": {
+                    "Ref": "InternetGateway"
+                }
+            }
+        },
+        "SubnetRouteTableAssociationPublicSubnetA": {
+            "Type": "AWS::EC2::SubnetRouteTableAssociation",
+            "Properties": {
+                "SubnetId": {
+                    "Ref": "DevPublicSubnetA"
+                },
+                "RouteTableId": {
+                    "Ref": "PublicRouteTable"
+                }
+            }
+        },
+        "SubnetRouteTableAssociationPublicSubnetC": {
+            "Type": "AWS::EC2::SubnetRouteTableAssociation",
+            "Properties": {
+                "SubnetId": {
+                    "Ref": "DevPublicSubnetC"
+                },
+                "RouteTableId": {
+                    "Ref": "PublicRouteTable"
+                }
+            }
+        },
+        "SubnetRouteTableAssociationPrivateSubnetA": {
+            "Type": "AWS::EC2::SubnetRouteTableAssociation",
+            "Properties": {
+                "SubnetId": {
+                    "Ref": "DevPrivateSubnetA"
+                },
+                "RouteTableId": {
+                    "Ref": "PublicRouteTable"
+                }
+            }
+        },
+        "SubnetRouteTableAssociationPrivateSubnetC": {
+            "Type": "AWS::EC2::SubnetRouteTableAssociation",
+            "Properties": {
+                "SubnetId": {
+                    "Ref": "DevPrivateSubnetC"
+                },
+                "RouteTableId": {
+                    "Ref": "PublicRouteTable"
+                }
+            }
+        }
+    }
+}

@@ -1,11 +1,11 @@
 # CloudFormation Template Builder
 
 ## これは何？
-CSV形式びCloudFormationの定義ファイルをJSONに整形するGradleのPluginです。
+Groovy DSLからCloudFormationの定義ファイルをJSONに整形するGradleのPluginです。
 
 ## 動作環境
 - Java 1.8以上
-- Gradle 2系
+- Gradle 2.3以上
 
 ## Quick Start
 build.gradle を作成します。

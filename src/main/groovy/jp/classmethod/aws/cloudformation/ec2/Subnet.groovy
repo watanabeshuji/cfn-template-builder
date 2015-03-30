@@ -19,18 +19,19 @@ class Subnet extends Resource {
     }
 
     def toResourceMap() {
-        [
+        def map = [
             'Type'      : 'AWS::EC2::Subnet',
             'Properties': [
                 'VpcId'           : VpcId,
                 'CidrBlock'       : CidrBlock,
-                'AvailabilityZone': AvailabilityZone,
                 'Tags'            : [
                     ['Key': 'Name', 'Value': id],
                     ['Key': 'Application', 'Value': ['Ref': 'AWS::StackId']]
                 ]
             ]
         ]
+        if (AvailabilityZone) map['Properties']['AvailabilityZone'] = AvailabilityZone
+        map
     }
 
 

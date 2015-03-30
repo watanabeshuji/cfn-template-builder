@@ -2,14 +2,14 @@
     "AWSTemplateFormatVersion": "2010-09-09",
     "Description": "a standard vpc template.",
     "Resources": {
-        "VPC": {
+        "WebVPC": {
             "Type": "AWS::EC2::VPC",
             "Properties": {
                 "CidrBlock": "10.0.0.0/16",
                 "Tags": [
                     {
                         "Key": "Name",
-                        "Value": "VPC"
+                        "Value": "WebVPC"
                     },
                     {
                         "Key": "Application",
@@ -41,25 +41,24 @@
             "Type": "AWS::EC2::VPCGatewayAttachment",
             "Properties": {
                 "VpcId": {
-                    "Ref": "VPC"
+                    "Ref": "WebVPC"
                 },
                 "InternetGatewayId": {
                     "Ref": "InternetGateway"
                 }
             }
         },
-        "SubnetA": {
+        "WebSubnetA": {
             "Type": "AWS::EC2::Subnet",
             "Properties": {
                 "VpcId": {
-                    "Ref": "VPC"
+                    "Ref": "WebVPC"
                 },
-                "CidrBlock": "10.0.0.0/24",
-                "AvailabilityZone": "ap-northeast-1a",
+                "CidrBlock": "10.0.10.0/24",
                 "Tags": [
                     {
                         "Key": "Name",
-                        "Value": "SubnetA"
+                        "Value": "WebSubnetA"
                     },
                     {
                         "Key": "Application",
@@ -67,21 +66,21 @@
                             "Ref": "AWS::StackId"
                         }
                     }
-                ]
+                ],
+                "AvailabilityZone": "ap-northeast-1a"
             }
         },
-        "SubnetC": {
+        "WebSubnetC": {
             "Type": "AWS::EC2::Subnet",
             "Properties": {
                 "VpcId": {
-                    "Ref": "VPC"
+                    "Ref": "WebVPC"
                 },
-                "CidrBlock": "10.0.1.0/24",
-                "AvailabilityZone": "ap-northeast-1c",
+                "CidrBlock": "10.0.20.0/24",
                 "Tags": [
                     {
                         "Key": "Name",
-                        "Value": "SubnetC"
+                        "Value": "WebSubnetC"
                     },
                     {
                         "Key": "Application",
@@ -89,39 +88,20 @@
                             "Ref": "AWS::StackId"
                         }
                     }
-                ]
+                ],
+                "AvailabilityZone": "ap-northeast-1c"
             }
         },
         "PublicRouteTable": {
             "Type": "AWS::EC2::RouteTable",
             "Properties": {
                 "VpcId": {
-                    "Ref": "VPC"
+                    "Ref": "WebVPC"
                 },
                 "Tags": [
                     {
                         "Key": "Name",
                         "Value": "PublicRouteTable"
-                    },
-                    {
-                        "Key": "Application",
-                        "Value": {
-                            "Ref": "AWS::StackId"
-                        }
-                    }
-                ]
-            }
-        },
-        "PrivateRouteTable": {
-            "Type": "AWS::EC2::RouteTable",
-            "Properties": {
-                "VpcId": {
-                    "Ref": "VPC"
-                },
-                "Tags": [
-                    {
-                        "Key": "Name",
-                        "Value": "PrivateRouteTable"
                     },
                     {
                         "Key": "Application",
@@ -144,22 +124,22 @@
                 }
             }
         },
-        "SubnetRouteTableAssociationA": {
+        "SubnetRouteTableAssociationSubnetA": {
             "Type": "AWS::EC2::SubnetRouteTableAssociation",
             "Properties": {
                 "SubnetId": {
-                    "Ref": "SubnetA"
+                    "Ref": "WebSubnetA"
                 },
                 "RouteTableId": {
                     "Ref": "PublicRouteTable"
                 }
             }
         },
-        "SubnetRouteTableAssociationC": {
+        "SubnetRouteTableAssociationSubnetC": {
             "Type": "AWS::EC2::SubnetRouteTableAssociation",
             "Properties": {
                 "SubnetId": {
-                    "Ref": "SubnetC"
+                    "Ref": "WebSubnetC"
                 },
                 "RouteTableId": {
                     "Ref": "PublicRouteTable"
