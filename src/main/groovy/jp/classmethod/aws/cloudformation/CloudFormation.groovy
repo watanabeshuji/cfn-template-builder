@@ -25,7 +25,7 @@ class CloudFormation {
         summary
     }
 
-    def toPrettyString() {
+    def toJson() {
         def json = new JsonBuilder()
         json {
             'AWSTemplateFormatVersion' '2010-09-09'
@@ -34,7 +34,16 @@ class CloudFormation {
             if (!Parameters.isEmpty()) 'Parameters' Parameters
             if (!resources.isEmpty()) 'Resources' Resources.collectEntries { [it.id, it.toResourceMap()] }
         }
-        json.toPrettyString()
+        json
+    }
+
+    @Override
+    def String toString() {
+        toJson().toString()
+    }
+
+    def toPrettyString() {
+        toJson().toPrettyString()
     }
 
     def doValidate() {

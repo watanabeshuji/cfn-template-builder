@@ -15,6 +15,9 @@ class CfnTemplateBuilderPlugin implements Plugin<Project> {
 
     void apply(Project project) {
         project.ext.cfnDir = (project.hasProperty('cfnDir')) ? project.getProperty('cfnDir') : "./cfn"
+        def dir = project.ext.cfnDir
+        def output = (project.hasProperty('output')) ? project.getProperty('output') as Boolean : true
+        def dryRun = (project.hasProperty('dryRun')) ? project.getProperty('dryRun') as Boolean : false
         project.task('cfnInit') << {
             println 'CloudFormation Builder'
             def cfnDir = project.ext.cfnDir
@@ -28,13 +31,16 @@ class CfnTemplateBuilderPlugin implements Plugin<Project> {
             println CfnTemplateBuilderPlugin.class.getResourceAsStream('/templates/vpc.groovy')
             Files.copy(CfnTemplateBuilderPlugin.class.getResourceAsStream('/templates/vpc.groovy'), Paths.get(cfnDir, 'cfn.groovy'))
         }
+        project.task('cfnValidate') << {
+            println 'CloudFormation Builder'
+            println 'Validate DSL as template....'
+            CloudFormation cfn = load(dir)
+            validateTemplate(cfn)
+            println "Success!"
+        }
         project.task('cfnBuild') << {
             println 'CloudFormation Builder'
-            def dir = project.ext.cfnDir
-            def output = (project.hasProperty('output')) ? project.getProperty('output') as Boolean : true
-            def dryRun = (project.hasProperty('dryRun')) ? project.getProperty('dryRun') as Boolean : false
-            println "Load from $dir"
-            def cfn = CloudFormation.load(Paths.get(dir, "cfn.groovy"))
+            CloudFormation cfn = load(dir)
             cfn.doValidate()
             def json = cfn.toPrettyString()
             if (output) println json
@@ -52,10 +58,22 @@ class CfnTemplateBuilderPlugin implements Plugin<Project> {
         }
         project.tasks.cfnInit.group = TASK_NAME
         project.tasks.cfnClean.group = TASK_NAME
+        project.tasks.cfnValidate.group = TASK_NAME
         project.tasks.cfnBuild.group = TASK_NAME
         project.tasks.cfnInit.description = "Initialize cfn-template-builder. Create cfn directory. Option: -PcfnDir=[cfnDir]."
-        project.tasks.cfnBuild.description = "Build CloudFormation Template file. Option: -PcfnDir=[cfnDir]."
+        project.tasks.cfnValidate.description = "Validate CloudFormation DSL. Option: -PcfnDir=[cfnDir]."
+        project.tasks.cfnBuild.description = "Build CloudFormation DSL. Option: -PcfnDir=[cfnDir]."
         project.tasks.cfnClean.description = "Cleanup cfn directory. Option: -PcfnDir=[cfnDir]."
+    }
+
+    def CloudFormation load(String dir) {
+        println "Load from $dir"
+        CloudFormation.load(Paths.get(dir, "cfn.groovy"))
+    }
+
+    def validateTemplate(CloudFormation cfn) {
+        CloudFormationClient client = new CloudFormationClient()
+        client.validateTemplate(cfn.toString())
     }
 }
 
