@@ -2,6 +2,9 @@ package jp.classmethod.aws.cloudformation.ec2
 
 import jp.classmethod.aws.cloudformation.util.ValidErrorException
 import org.junit.Test
+
+import java.nio.file.Paths
+
 import static jp.classmethod.aws.cloudformation.testing.TestSupport.*
 
 import java.nio.file.Path
@@ -13,14 +16,35 @@ class VPCTest {
 
     @Test
     void "load vpc.groovy"() {
-        Path input = getPath("/templates/resources/vpc.groovy")
+        Path input = Paths.get(getClass().getResource("/templates/resources/vpc.groovy").getPath())
         def actual = VPC.load(input)
         def expected = [
-            new VPC(id: 'vpc1', CidrBlock: "10.0.0.0/16"),
-            new VPC(id: 'vpc2', CidrBlock: "10.0.0.0/16", EnableDnsSupport: true, EnableDnsHostnames: true),
+            new VPC(id: 'VPC', CidrBlock: "10.0.0.0/16")
         ]
         assert actual == expected
     }
+
+    @Test
+    void "load vpc_EnableDns.groovy"() {
+        Path input = Paths.get(getClass().getResource("vpc_EnableDns.groovy").getPath())
+        def actual = VPC.load(input)
+        def expected = [
+            new VPC(id: 'VPC', CidrBlock: "10.0.0.0/16", EnableDnsSupport: true, EnableDnsHostnames: true),
+        ]
+        assert actual == expected
+    }
+
+
+    @Test
+    void "load vpc_withRef.groovy"() {
+        Path input = Paths.get(getClass().getResource("vpc_withRef.groovy").getPath())
+        def actual = VPC.load(input)
+        def expected = [
+            new VPC(id: 'DevVPC', CidrBlock: [Ref: "VPCRange"]),
+        ]
+        assert actual == expected
+    }
+
 
     @Test
     void "toResourceMap"() {

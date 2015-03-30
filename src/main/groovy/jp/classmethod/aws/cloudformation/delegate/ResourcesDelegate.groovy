@@ -177,9 +177,19 @@ class ResourcesDelegate {
 
     private Map convert(Map params) {
         params.each { k, v ->
+            if (needsConvertRef(v)) params[k] = toRef(v)
             if (needsConvertFindMap(v)) params[k] = toFindMap(v)
         }
         params
+    }
+
+    private boolean needsConvertRef(v) {
+        String.class.isInstance(v) && v.startsWith("Ref:")
+    }
+
+    private Map toRef(String v) {
+        def keys = v.split(":")
+        [Ref: keys[1]]
     }
 
     private boolean needsConvertFindMap(v) {
