@@ -135,4 +135,12 @@ class CloudFormationTest {
         )
         assert actual == expected
     }
+
+    @Test(expected = InvalidResourceException)
+    void "doValidteで重複idはエラー"() {
+        CloudFormation sut = new CloudFormation()
+        sut.Resources << new VPC(id: "VPC")
+        sut.Resources << new VPC(id: "VPC")
+        sut.doValidate()
+    }
 }

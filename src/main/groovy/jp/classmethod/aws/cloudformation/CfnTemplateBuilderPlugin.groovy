@@ -35,6 +35,7 @@ class CfnTemplateBuilderPlugin implements Plugin<Project> {
             def dryRun = (project.hasProperty('dryRun')) ? project.getProperty('dryRun') as Boolean : false
             println "Load from $dir"
             def cfn = CloudFormation.load(Paths.get(dir, "cfn.groovy"))
+            cfn.doValidate()
             def json = cfn.toPrettyString()
             if (output) println json
             def out = new File(dir, "cfn.template")

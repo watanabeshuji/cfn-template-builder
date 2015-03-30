@@ -29,6 +29,15 @@ class CloudFormation {
         json.toPrettyString()
     }
 
+    def doValidate() {
+        Map resources = [:]
+        Resources.each { r ->
+            def id = r.id
+            if (resources.containsKey(id)) throw new InvalidResourceException("'$id' not unique in templates.")
+            resources[id] = r
+        }
+    }
+
     static CloudFormation load(Path path) {
         DSLSupport.load(path)
     }
