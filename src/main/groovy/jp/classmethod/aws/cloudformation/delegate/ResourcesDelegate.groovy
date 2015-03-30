@@ -20,6 +20,26 @@ class ResourcesDelegate {
         this.resources = resources
     }
 
+    void standardVpc(Map params) {
+        if (params == null) params = [:]
+        def vpcName = params.containsKey("name") ? params["name"] : "VPC"
+        boolean multiAZ = params.containsKey("multiAZ") ? params["multiAZ"] : true
+        boolean publicSubnetOnly = params.containsKey("publicSubnetOnly") ? params["multiAZ"] : false
+        String cidrBlock = params.containsKey("cidrBlock") ? params["cidrBlock"] : "10.0.0.0/16"
+        def vpcId = [Ref: vpcName]
+
+        vpc id: vpcName, CidrBlock: cidrBlock
+        internetGateway id: "InternetGateway"
+        vpcGatewayAttachment id: "InternetGatewayAttach", VpcId: vpcId, InternetGatewayId: [Ref: "InternetGateway"]
+        subnet id: "SubnetA", VpcId: vpcId, CidrBlock: "10.0.0.0/24", AvailabilityZone: "ap-northeast-1a"
+        subnet id: "SubnetC", VpcId: vpcId, CidrBlock: "10.0.1.0/24", AvailabilityZone: "ap-northeast-1c"
+        routeTable id: "PublicRouteTable",  VpcId: vpcId
+        routeTable id: "PrivateRouteTable", VpcId: vpcId
+        route id: "PublicRoute", RouteTableId: [Ref: "PublicRouteTable"], DestinationCidrBlock: "0.0.0.0/0", GatewayId: [Ref: "InternetGateway"]
+        subnetRouteTableAssociation id: "SubnetRouteTableAssociationA", SubnetId: [Ref: "SubnetA"], RouteTableId: [Ref: "PublicRouteTable"]
+        subnetRouteTableAssociation id: "SubnetRouteTableAssociationC", SubnetId: [Ref: "SubnetC"], RouteTableId: [Ref: "PublicRouteTable"]
+    }
+
     void vpc(Map params) {
         this.resources << new VPC(convert(params))
     }
