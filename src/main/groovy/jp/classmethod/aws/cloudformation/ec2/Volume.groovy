@@ -11,6 +11,7 @@ import jp.classmethod.aws.cloudformation.Resource
 @Canonical
 class Volume extends Resource {
 
+    final def Type = 'AWS::EC2::Volume'
     def id
     def Size
     def VolumeType
@@ -18,7 +19,7 @@ class Volume extends Resource {
 
     def toResourceMap() {
         [
-            'Type'      : 'AWS::EC2::Volume',
+            'Type'      : Type,
             'Properties': [
                 'AvailabilityZone': AvailabilityZone,
                 'Size'            : Size,

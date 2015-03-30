@@ -9,6 +9,8 @@ import jp.classmethod.aws.cloudformation.Resource
  */
 @Canonical
 class EIP extends Resource {
+
+    final def Type = 'AWS::EC2::EIP'
     def id
     def InstanceId
 
@@ -17,7 +19,7 @@ class EIP extends Resource {
 
     def toResourceMap() {
         def result = [
-            'Type'      : 'AWS::EC2::EIP',
+            'Type'      : Type,
             'Properties': [
                 'Domain': 'vpc'
             ]

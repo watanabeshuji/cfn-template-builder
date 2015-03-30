@@ -11,6 +11,7 @@ import jp.classmethod.aws.cloudformation.Resource
 class DBSubnetGroup extends Resource {
 
     def id
+    final def Type = 'AWS::RDS::DBSubnetGroup'
     def DBSubnetGroupDescription
     def SubnetIds
 
@@ -19,7 +20,7 @@ class DBSubnetGroup extends Resource {
 
     def toResourceMap() {
         [
-            'Type'      : 'AWS::RDS::DBSubnetGroup',
+            'Type'      : Type,
             'Properties': [
                 'DBSubnetGroupDescription': DBSubnetGroupDescription,
                 'SubnetIds'               : SubnetIds,

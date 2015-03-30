@@ -10,6 +10,7 @@ import groovy.transform.Canonical
 @Canonical
 class SecurityGroupIngress {
 
+    final def Type = 'AWS::EC2::SecurityGroupIngress'
     def IpProtocol
     def FromPort
     def ToPort

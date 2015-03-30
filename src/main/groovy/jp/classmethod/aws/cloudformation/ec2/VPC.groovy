@@ -12,6 +12,7 @@ import static jp.classmethod.aws.cloudformation.util.Valid.*
 @Canonical
 class VPC extends Resource {
 
+    final def Type = 'AWS::EC2::VPC'
     String id
     def CidrBlock
     def EnableDnsSupport
@@ -27,7 +28,7 @@ class VPC extends Resource {
     def toResourceMap() {
         doValidate()
         def map = [
-            'Type'      : 'AWS::EC2::VPC',
+            'Type'      : Type,
             'Properties': [
                 'CidrBlock': CidrBlock,
                 'Tags'     : [

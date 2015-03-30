@@ -10,6 +10,7 @@ import jp.classmethod.aws.cloudformation.Resource
 class ElasticLoadBalancing extends Resource {
 
     def id
+    final def Type = 'AWS::ElasticLoadBalancing::LoadBalancer'
     def LoadBalancerName
     def Subnets
     def Listeners = []
@@ -23,7 +24,7 @@ class ElasticLoadBalancing extends Resource {
 
     def toResourceMap() {
         def map = [
-            'Type'      : 'AWS::ElasticLoadBalancing::LoadBalancer',
+            'Type'      : Type,
             'Properties': [
                 'LoadBalancerName': this.LoadBalancerName,
                 'Subnets'         : this.Subnets,

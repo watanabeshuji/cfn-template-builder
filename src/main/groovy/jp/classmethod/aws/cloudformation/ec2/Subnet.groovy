@@ -10,6 +10,7 @@ import jp.classmethod.aws.cloudformation.Resource
 @Canonical
 class Subnet extends Resource {
 
+    final def Type = 'AWS::EC2::Subnet'
     String id
     def VpcId
     def CidrBlock
@@ -20,7 +21,7 @@ class Subnet extends Resource {
 
     def toResourceMap() {
         def map = [
-            'Type'      : 'AWS::EC2::Subnet',
+            'Type'      : Type,
             'Properties': [
                 'VpcId'           : VpcId,
                 'CidrBlock'       : CidrBlock,

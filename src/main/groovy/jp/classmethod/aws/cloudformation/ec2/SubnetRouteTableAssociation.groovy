@@ -10,6 +10,7 @@ import jp.classmethod.aws.cloudformation.Resource
 @Canonical
 class SubnetRouteTableAssociation extends Resource {
 
+    final def Type = 'AWS::EC2::SubnetRouteTableAssociation'
     String id
     def SubnetId
     def RouteTableId
@@ -19,7 +20,7 @@ class SubnetRouteTableAssociation extends Resource {
 
     def toResourceMap() {
         [
-            'Type'      : 'AWS::EC2::SubnetRouteTableAssociation',
+            'Type'      : Type,
             'Properties': [
                 'SubnetId'    : SubnetId,
                 'RouteTableId': RouteTableId

@@ -41,6 +41,8 @@ class CfnTemplateBuilderPlugin implements Plugin<Project> {
             def out = new File(dir, "cfn.template")
             out.write(json)
             println "File generated:  ${out.absolutePath}"
+            println "Name\tType"
+            cfn.resourcesSummary.each { println "${it.Name}\t${it.Type}" }
         }
         project.task('cfnClean') << {
             println 'CloudFormation Builder'

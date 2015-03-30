@@ -13,6 +13,7 @@ import jp.classmethod.aws.cloudformation.Resource
 class Policy extends Resource {
 
     def id
+    final def Type = 'AWS::IAM::Policy'
     def PolicyName
     def PolicyDocument
     def Roles
@@ -24,7 +25,7 @@ class Policy extends Resource {
 
     def toResourceMap() {
         def result = [
-            'Type'      : 'AWS::IAM::Policy',
+            'Type'      : Type,
             'Properties': [
                 'PolicyName'    : PolicyName,
                 'PolicyDocument': PolicyDocument

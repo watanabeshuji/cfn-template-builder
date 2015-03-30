@@ -17,6 +17,14 @@ class CloudFormation {
     Map Parameters = [:]
     List Resources = []
 
+    def getResourcesSummary() {
+        def summary = []
+        Resources.each {
+            summary << [Name: it.id, Type: it.Type]
+        }
+        summary
+    }
+
     def toPrettyString() {
         def json = new JsonBuilder()
         json {

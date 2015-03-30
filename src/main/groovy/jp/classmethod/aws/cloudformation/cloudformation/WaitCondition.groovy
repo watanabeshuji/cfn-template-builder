@@ -12,6 +12,7 @@ import jp.classmethod.aws.cloudformation.Resource
 @Canonical
 class WaitCondition extends Resource {
 
+    final def Type = 'AWS::CloudFormation::WaitCondition'
     def id
     def Handle
     def Timeout
@@ -20,7 +21,7 @@ class WaitCondition extends Resource {
 
     def toResourceMap() {
         def result = [
-            'Type'      : 'AWS::CloudFormation::WaitCondition',
+            'Type'      : Type,
             'Properties': [
                 'Handle' : Handle,
                 'Timeout': this.Timeout

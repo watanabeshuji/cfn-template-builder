@@ -11,13 +11,14 @@ import jp.classmethod.aws.cloudformation.Resource
 @Canonical
 class WaitConditionHandle extends Resource {
 
+    final def Type = 'AWS::CloudFormation::WaitConditionHandle'
     def id
 
     def WaitConditionHandle() {}
 
     def toResourceMap() {
         [
-            'Type': 'AWS::CloudFormation::WaitConditionHandle'
+            'Type': Type
         ]
     }
 

@@ -10,6 +10,7 @@ import jp.classmethod.aws.cloudformation.Resource
 @Canonical
 class InternetGateway extends Resource {
 
+    final def Type = 'AWS::EC2::InternetGateway'
     def id
 
     def InternetGateway() {
@@ -17,7 +18,7 @@ class InternetGateway extends Resource {
 
     def toResourceMap() {
         [
-            'Type'      : 'AWS::EC2::InternetGateway',
+            'Type'      : Type,
             'Properties': [
                 'Tags': [
                     ['Key': 'Name', 'Value': this.id],

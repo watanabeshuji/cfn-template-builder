@@ -15,6 +15,7 @@ import java.nio.file.Path
 @Canonical
 class VPCGatewayAttachment extends Resource {
 
+    final def Type = 'AWS::EC2::VPCGatewayAttachment'
     def id
     def VpcId
     def InternetGatewayId
@@ -24,7 +25,7 @@ class VPCGatewayAttachment extends Resource {
 
     def toResourceMap() {
         [
-            'Type'      : 'AWS::EC2::VPCGatewayAttachment',
+            'Type'      : Type,
             'Properties': [
                 'VpcId'            : this.VpcId,
                 'InternetGatewayId': InternetGatewayId

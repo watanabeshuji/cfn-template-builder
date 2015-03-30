@@ -6,6 +6,7 @@ import jp.classmethod.aws.cloudformation.Resource
 @Canonical
 class Route extends Resource {
 
+    final def Type = 'AWS::EC2::Route'
     def id
     def RouteTableId
     def DestinationCidrBlock
@@ -17,7 +18,7 @@ class Route extends Resource {
 
     def toResourceMap() {
         def obj = [
-            'Type'      : 'AWS::EC2::Route',
+            'Type'      : Type,
             'Properties': [
                 'RouteTableId'        : RouteTableId,
                 'DestinationCidrBlock': DestinationCidrBlock

@@ -10,6 +10,7 @@ import jp.classmethod.aws.cloudformation.Resource
 @Canonical
 class RouteTable extends Resource {
 
+    final def Type = 'AWS::EC2::RouteTable'
     String id
     def VpcId
 
@@ -18,7 +19,7 @@ class RouteTable extends Resource {
 
     def toResourceMap() {
         [
-            'Type'      : 'AWS::EC2::RouteTable',
+            'Type'      : Type,
             'Properties': [
                 'VpcId': VpcId,
                 'Tags' : [

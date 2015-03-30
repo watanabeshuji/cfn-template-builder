@@ -11,6 +11,8 @@ import jp.classmethod.aws.cloudformation.Resource
  */
 @Canonical
 class Instance extends Resource {
+
+    final def Type = 'AWS::EC2::Instance'
     def id
     def InstanceType
     def KeyName
@@ -29,7 +31,7 @@ class Instance extends Resource {
 
     def toResourceMap() {
         def result = [
-            'Type'      : 'AWS::EC2::Instance',
+            'Type'      : Type,
             'Properties': [:]
         ]
         if (InstanceType) result['Properties']['InstanceType'] = InstanceType

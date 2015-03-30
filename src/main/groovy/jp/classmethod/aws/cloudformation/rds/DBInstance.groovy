@@ -13,6 +13,7 @@ import jp.classmethod.aws.cloudformation.Resource
 class DBInstance extends Resource {
 
     def id
+    final def Type = 'AWS::RDS::DBInstance'
     def DBSubnetGroupName
     def MultiAZ
     def AvailabilityZone
@@ -34,7 +35,7 @@ class DBInstance extends Resource {
 
     def toResourceMap() {
         def map = [
-            'Type': 'AWS::RDS::DBInstance',
+            'Type': Type,
             'Properties': [
                 'DBSubnetGroupName': DBSubnetGroupName,
                 'MultiAZ': MultiAZ,

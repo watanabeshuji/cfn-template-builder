@@ -12,6 +12,7 @@ import jp.classmethod.aws.cloudformation.Resource
 @Canonical
 class SecurityGroup extends Resource {
 
+    final def Type = 'AWS::EC2::SecurityGroup'
     def id
     def VpcId
     def Description
@@ -22,7 +23,7 @@ class SecurityGroup extends Resource {
 
     def toResourceMap() {
         [
-            'Type'      : 'AWS::EC2::SecurityGroup',
+            'Type'      : Type,
             'Properties': [
                 'VpcId'               : VpcId,
                 'GroupDescription'    : Description,
