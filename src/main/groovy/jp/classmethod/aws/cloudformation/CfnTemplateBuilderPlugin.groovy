@@ -1,5 +1,6 @@
 package jp.classmethod.aws.cloudformation
 
+import jp.classmethod.aws.cloudformation.ec2.VPC
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 
@@ -15,7 +16,9 @@ class CfnTemplateBuilderPlugin implements Plugin<Project> {
 
     void apply(Project project) {
         project.ext.cfnDir = (project.hasProperty('cfnDir')) ? project.getProperty('cfnDir') : "./cfn"
+        project.ext.cfnType = (project.hasProperty('cfnType')) ? project.getProperty('cfnType') : "EC2::VPC"
         def dir = project.ext.cfnDir
+        def type = project.ext.cfnType
         def output = (project.hasProperty('output')) ? project.getProperty('output') as Boolean : true
         def dryRun = (project.hasProperty('dryRun')) ? project.getProperty('dryRun') as Boolean : false
         project.task('cfnInit') << {
@@ -41,14 +44,7 @@ class CfnTemplateBuilderPlugin implements Plugin<Project> {
         project.task('cfnBuild') << {
             println 'CloudFormation Builder'
             CloudFormation cfn = load(dir)
-            cfn.doValidate()
-            def json = cfn.toPrettyString()
-            if (output) println json
-            def out = new File(dir, "cfn.template")
-            out.write(json)
-            println "File generated:  ${out.absolutePath}"
-            println "Name\tType"
-            cfn.resourcesSummary.each { println "${it.Name}\t${it.Type}" }
+            build(cfn, output, dir)
         }
         project.task('cfnClean') << {
             println 'CloudFormation Builder'
@@ -56,14 +52,20 @@ class CfnTemplateBuilderPlugin implements Plugin<Project> {
             def cfnDir = project.ext.cfnDir
             Paths.get(cfnDir).toFile().deleteDir()
         }
+        project.task('cfnHelp') << {
+            println 'CloudFormation Builder'
+            help(type)
+        }
         project.tasks.cfnInit.group = TASK_NAME
         project.tasks.cfnClean.group = TASK_NAME
         project.tasks.cfnValidate.group = TASK_NAME
         project.tasks.cfnBuild.group = TASK_NAME
+        project.tasks.cfnHelp.group = TASK_NAME
         project.tasks.cfnInit.description = "Initialize cfn-template-builder. Create cfn directory. Option: -PcfnDir=[cfnDir]."
         project.tasks.cfnValidate.description = "Validate CloudFormation DSL. Option: -PcfnDir=[cfnDir]."
         project.tasks.cfnBuild.description = "Build CloudFormation DSL. Option: -PcfnDir=[cfnDir]."
         project.tasks.cfnClean.description = "Cleanup cfn directory. Option: -PcfnDir=[cfnDir]."
+        project.tasks.cfnHelp.description = "Show documents and samples. Option: -PcfnType=[Type]."
     }
 
     def CloudFormation load(String dir) {
@@ -74,6 +76,28 @@ class CfnTemplateBuilderPlugin implements Plugin<Project> {
     def validateTemplate(CloudFormation cfn) {
         CloudFormationClient client = new CloudFormationClient()
         client.validateTemplate(cfn.toString())
+    }
+
+    def build(CloudFormation cfn, output, dir) {
+        cfn.doValidate()
+        def json = cfn.toPrettyString()
+        if (output) println json
+        def out = new File(dir, "cfn.template")
+        out.write(json)
+        println "File generated:  ${out.absolutePath}"
+        println "Name\tType"
+        cfn.resourcesSummary.each { println "${it.Name}\t${it.Type}" }
+    }
+
+    def help(String type) {
+        println "------"
+        switch (type.toUpperCase()) {
+            case "EC2::VPC":
+                println VPC.DESC
+                break
+            default:
+                break
+        }
     }
 }
 

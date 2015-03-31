@@ -12,6 +12,31 @@ import static jp.classmethod.aws.cloudformation.util.Valid.*
 @Canonical
 class VPC extends Resource {
 
+    static def DESC = '''\
+AWS::EC2::VPC
+http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-ec2-vpc.html
+
+[Required Params]
+- id
+- CidrBlock
+
+[Optional Params]
+- EnableDnsSupport
+- Tags
+- EnableDnsHostnames
+
+[Sample: Simple VPC]
+resources {
+    vpc id: "VPC", CidrBlock: "10.0.0.0/16"
+}
+
+[Sample: Enable DNS Hostname and Name tag]
+resources {
+    vpc id: "VPC", CidrBlock: "192.168.0.0/16", EnableDnsSupport: true, EnableDnsHostnames: true, Tags: [Name: 'my-vpc']
+}
+
+'''
+
     final def Type = 'AWS::EC2::VPC'
     String id
     def CidrBlock
