@@ -60,13 +60,13 @@ resources {
                 'Tags'     : []
             ]
         ]
+        if (EnableDnsSupport != null) map['Properties']['EnableDnsSupport'] = EnableDnsSupport
+        if (EnableDnsHostnames != null) map['Properties']['EnableDnsHostnames'] = EnableDnsHostnames
         Tags.each {key, value ->
             map['Properties']['Tags'] << ['Key': key, 'Value': value]
         }
         if (Tags['Name'] == null) map['Properties']['Tags'] << ['Key': 'Name', 'Value': id]
         if (Tags['Application'] == null) map['Properties']['Tags'] << ['Key': 'Application', 'Value': ['Ref': 'AWS::StackId']]
-        if (EnableDnsSupport != null) map['Properties']['EnableDnsSupport'] = EnableDnsSupport
-        if (EnableDnsHostnames != null) map['Properties']['EnableDnsHostnames'] = EnableDnsHostnames
         map
     }
 }

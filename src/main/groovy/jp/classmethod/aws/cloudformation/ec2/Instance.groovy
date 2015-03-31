@@ -25,41 +25,45 @@ class Instance extends Resource {
     List Volumes = []
     def BlockDeviceMappings = []
     def UserData
+    def Tags = [:]
 
     def Instance() {
     }
 
     def toResourceMap() {
-        def result = [
+        def map = [
             'Type'      : Type,
-            'Properties': [:]
+            'Properties': [
+                'Tags': []
+            ]
         ]
-        if (InstanceType) result['Properties']['InstanceType'] = InstanceType
-        if (KeyName) result['Properties']['KeyName'] = KeyName
-        result['Properties']['SubnetId'] = SubnetId
-        result['Properties']['ImageId'] = ImageId
-        if (IamInstanceProfile) result['Properties']['IamInstanceProfile'] = IamInstanceProfile
-        if (SourceDestCheck != null) result['Properties']['SourceDestCheck'] = SourceDestCheck
-        result['Properties']['SecurityGroupIds'] = SecurityGroupIds
-        if (PrivateIpAddress) result['Properties']['PrivateIpAddress'] = PrivateIpAddress
-        result['Properties']['Tags'] = [
-            ['Key': 'Name', 'Value': id],
-            ['Key': 'Application', 'Value': ['Ref': 'AWS::StackId']]
-        ]
+        if (InstanceType) map['Properties']['InstanceType'] = InstanceType
+        if (KeyName) map['Properties']['KeyName'] = KeyName
+        map['Properties']['SubnetId'] = SubnetId
+        map['Properties']['ImageId'] = ImageId
+        if (IamInstanceProfile) map['Properties']['IamInstanceProfile'] = IamInstanceProfile
+        if (SourceDestCheck != null) map['Properties']['SourceDestCheck'] = SourceDestCheck
+        map['Properties']['SecurityGroupIds'] = SecurityGroupIds
+        if (PrivateIpAddress) map['Properties']['PrivateIpAddress'] = PrivateIpAddress
         if (UserData) {
-            result['Properties']['UserData'] = [
+            map['Properties']['UserData'] = [
                 'Fn::Base64': [
                     'Fn::Join': ['', UserData.split("\n").collect { "${it}\\n" }]
                 ]
             ]
         }
         if (!BlockDeviceMappings.isEmpty()) {
-            result['Properties']['BlockDeviceMappings'] = BlockDeviceMappings.collect { it.toResourceMap() }
+            map['Properties']['BlockDeviceMappings'] = BlockDeviceMappings.collect { it.toResourceMap() }
         }
         if (!Volumes.isEmpty()) {
-            result['Properties']['Volumes'] = Volumes.collect { it.toResourceMap() }
+            map['Properties']['Volumes'] = Volumes.collect { it.toResourceMap() }
         }
-        result
+        Tags.each {key, value ->
+            map['Properties']['Tags'] << ['Key': key, 'Value': value]
+        }
+        if (Tags['Name'] == null) map['Properties']['Tags'] << ['Key': 'Name', 'Value': id]
+        if (Tags['Application'] == null) map['Properties']['Tags'] << ['Key': 'Application', 'Value': ['Ref': 'AWS::StackId']]
+        map
     }
 
     @Canonical

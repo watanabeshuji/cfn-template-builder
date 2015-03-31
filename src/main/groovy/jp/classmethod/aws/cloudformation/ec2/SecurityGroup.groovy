@@ -17,23 +17,27 @@ class SecurityGroup extends Resource {
     def VpcId
     def Description
     List<SecurityGroupIngress> SecurityGroupIngress = []
+    def Tags = [:]
 
     def SecurityGroup() {
     }
 
     def toResourceMap() {
-        [
+        def map = [
             'Type'      : Type,
             'Properties': [
                 'VpcId'               : VpcId,
                 'GroupDescription'    : Description,
                 'SecurityGroupIngress': SecurityGroupIngress.collect { it.toInlineMap() },
-                'Tags'                : [
-                    ['Key': 'Name', 'Value': id],
-                    ['Key': 'Application', 'Value': ['Ref': 'AWS::StackId']]
-                ]
+                'Tags'                : []
             ]
         ]
+        Tags.each {key, value ->
+            map['Properties']['Tags'] << ['Key': key, 'Value': value]
+        }
+        if (Tags['Name'] == null) map['Properties']['Tags'] << ['Key': 'Name', 'Value': id]
+        if (Tags['Application'] == null) map['Properties']['Tags'] << ['Key': 'Application', 'Value': ['Ref': 'AWS::StackId']]
+        map
     }
 
 }

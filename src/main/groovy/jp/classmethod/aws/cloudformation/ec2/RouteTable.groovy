@@ -13,21 +13,25 @@ class RouteTable extends Resource {
     final def Type = 'AWS::EC2::RouteTable'
     String id
     def VpcId
+    def Tags = [:]
 
     def RouteTable() {
     }
 
     def toResourceMap() {
-        [
+        def map = [
             'Type'      : Type,
             'Properties': [
                 'VpcId': VpcId,
-                'Tags' : [
-                    ['Key': 'Name', 'Value': id],
-                    ['Key': 'Application', 'Value': ['Ref': 'AWS::StackId']]
-                ]
+                'Tags' : []
             ]
         ]
+        Tags.each {key, value ->
+            map['Properties']['Tags'] << ['Key': key, 'Value': value]
+        }
+        if (Tags['Name'] == null) map['Properties']['Tags'] << ['Key': 'Name', 'Value': id]
+        if (Tags['Application'] == null) map['Properties']['Tags'] << ['Key': 'Application', 'Value': ['Ref': 'AWS::StackId']]
+        map
     }
 
 }

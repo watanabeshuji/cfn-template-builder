@@ -18,14 +18,14 @@ class EIP extends Resource {
     }
 
     def toResourceMap() {
-        def result = [
+        def map = [
             'Type'      : Type,
             'Properties': [
                 'Domain': 'vpc'
             ]
         ]
-        if (InstanceId) result['Properties']['InstanceId'] = [Ref: InstanceId]
-        result
+        if (InstanceId) map['Properties']['InstanceId'] = [Ref: InstanceId]
+        map
     }
 
 }
