@@ -47,6 +47,16 @@ class VPCTest {
 
 
     @Test
+    void "load vpc_withTags.groovy"() {
+        Path input = Paths.get(getClass().getResource("vpc_withTags.groovy").getPath())
+        def actual = VPC.load(input)
+        def expected = [
+            new VPC(id: 'DevVPC', CidrBlock: "10.0.0.0/16", Tags: [Name: 'dev-vpc', Env: 'Development']),
+        ]
+        assert actual == expected
+    }
+
+    @Test
     void "toResourceMap"() {
         def sut = new VPC(id: 'VPC', CidrBlock: '10.0.0.0/16')
         def expected = [
@@ -63,7 +73,7 @@ class VPCTest {
     }
 
     @Test
-    void "toResourceMap_EnableDnsSupportのload"() {
+    void "toResourceMap_EnableDnsSupport"() {
         def sut = new VPC(id: 'VPC', CidrBlock: ['Ref': 'VpcCidrBlock'], EnableDnsSupport: true, EnableDnsHostnames: false)
         def expected = [
             'Type'      : 'AWS::EC2::VPC',
@@ -73,6 +83,24 @@ class VPCTest {
                 'EnableDnsHostnames': false,
                 'Tags'              : [
                     ['Key': 'Name', 'Value': 'VPC'],
+                    ['Key': 'Application', 'Value': ['Ref': 'AWS::StackId']]
+                ]
+            ]
+        ]
+        assert sut.toResourceMap() == expected
+    }
+
+
+    @Test
+    void "toResourceMap Tags"() {
+        def sut = new VPC(id: 'DevVPC', CidrBlock: "10.0.0.0/16", Tags: [Name: 'dev-vpc', Env: 'Development'])
+        def expected = [
+            'Type'      : 'AWS::EC2::VPC',
+            'Properties': [
+                'CidrBlock'         : "10.0.0.0/16",
+                'Tags'              : [
+                    ['Key': 'Name', 'Value': 'dev-vpc'],
+                    ['Key': 'Env', 'Value': 'Development'],
                     ['Key': 'Application', 'Value': ['Ref': 'AWS::StackId']]
                 ]
             ]
