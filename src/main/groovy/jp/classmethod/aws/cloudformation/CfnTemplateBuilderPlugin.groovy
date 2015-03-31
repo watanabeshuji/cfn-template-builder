@@ -1,5 +1,6 @@
 package jp.classmethod.aws.cloudformation
 
+import jp.classmethod.aws.cloudformation.ec2.InternetGateway
 import jp.classmethod.aws.cloudformation.ec2.VPC
 import org.gradle.api.Plugin
 import org.gradle.api.Project
@@ -16,7 +17,7 @@ class CfnTemplateBuilderPlugin implements Plugin<Project> {
 
     void apply(Project project) {
         project.ext.cfnDir = (project.hasProperty('cfnDir')) ? project.getProperty('cfnDir') : "./cfn"
-        project.ext.cfnType = (project.hasProperty('cfnType')) ? project.getProperty('cfnType') : "EC2::VPC"
+        project.ext.cfnType = (project.hasProperty('cfnType')) ? project.getProperty('cfnType') : ""
         def dir = project.ext.cfnDir
         def type = project.ext.cfnType
         def output = (project.hasProperty('output')) ? project.getProperty('output') as Boolean : true
@@ -91,11 +92,22 @@ class CfnTemplateBuilderPlugin implements Plugin<Project> {
 
     def help(String type) {
         println "------"
-        switch (type.toUpperCase()) {
+        switch (type) {
             case "EC2::VPC":
                 println VPC.DESC
                 break
+            case "EC2::InternetGateway":
+                println InternetGateway.DESC
+                break
             default:
+                println '''\
+[Usage]
+gradle -PcfnType=[Type] cfnHelp
+Type list
+- EC2::VPC
+- EC2::InternetGateway
+
+'''
                 break
         }
     }
