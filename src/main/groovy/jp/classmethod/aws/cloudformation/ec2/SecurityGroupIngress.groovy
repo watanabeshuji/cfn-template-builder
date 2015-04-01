@@ -17,12 +17,13 @@ class SecurityGroupIngress {
     def CidrIp
 
     def toInlineMap() {
-        [
-            'IpProtocol': this.IpProtocol,
-            'FromPort': this.FromPort,
-            'ToPort': this.ToPort,
-            'CidrIp': this.CidrIp
+        def map = [
+            'IpProtocol': this.IpProtocol
         ]
+        if (this.FromPort) map['FromPort'] = this.FromPort
+        if (this.ToPort) map['ToPort'] = this.ToPort
+        if (this.CidrIp) map['CidrIp'] = this.CidrIp
+        map
     }
 
 }
