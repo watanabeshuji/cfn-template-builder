@@ -31,9 +31,10 @@ class CfnTemplateBuilderPlugin implements Plugin<Project> {
                 println "Already exist cfn directory: " + cfnDir
                 return
             }
+            def out = Paths.get(cfnDir, 'cfn.groovy')
             Files.createDirectory(Paths.get(cfnDir))
-            println CfnTemplateBuilderPlugin.class.getResourceAsStream('/templates/vpc.groovy')
-            Files.copy(CfnTemplateBuilderPlugin.class.getResourceAsStream('/templates/vpc.groovy'), Paths.get(cfnDir, 'cfn.groovy'))
+            Files.copy(CfnTemplateBuilderPlugin.class.getResourceAsStream('/templates/cfn.groovy'), out)
+            println "create CloudFormation DSL file: $out"
         }
         project.task('cfnValidate') << {
             println 'CloudFormation Builder'

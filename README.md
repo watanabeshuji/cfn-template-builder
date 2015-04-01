@@ -29,48 +29,35 @@ cfnInitタスクを実行します。
 ```
 $ gradle cfnInit
 ```
-cfnディレクトリが作成され、最小限のファイルとMappingsのサンプルファイルが作成されます。
+cfnディレクトリが作成され、定義ファイルcfn.groovyが作成されます。
 
 cfnBuildタスクを実行し、テンプレートファイルを作成します。
 ```
 $ gradle cfnBuild
 ```
-cfn.template がテンプレートファイルです。
+cfn.groovy がテンプレートファイルです。
 
-cfnNewタスクを実行し、デフォルト構成を追加します。
-```
-$ gradle cfnNew
-```
-作成可能なテンプレートはオプションで指定可能です。
-
-再度、cfnBuildタスクを実行し、テンプレートファイルを再生成します。
-```
-$ gradle cfnBuild
-```
 
 ## タスク
 Task         |Desc
 -----------  |-------------------------------------------------------------------------------------------------------------------------
-cfnClean     |cfnディレクトリを削除します                
-cfnInit      |cfnディレクトリを作成し、最小限のファイルを作成します                
-cfnNew       |テンプレートファイルを追加します。-PcfnTypeで追加する種別を個別に指定するか、指定しない場合はデフォルト構成（ALL）を追加します
+cfnClean     |cfnディレクトリを削除します
+cfnInit      |cfnディレクトリを作成し、最小限のファイルを作成します
 cfnBuild     |cfnテンプレートを作成します                
-amiClean     |amiディレクトリを削除します
-amiInit      |amiディレクトリを作成し、Ansible/Packer用テンプレートを作成します
-amiPlaybook  |Ansibleのplaybookを追加します
-amiValid     |Packerの定義ファイルを検証します
-amiBuild     |Packerのビルドインスタンスを起動し、AMIを作成します
+cfnHelp      |ヘルプを表示します                
 
 ### オプション
 Gradleの環境変数としてオプションを指定。
 
 Option       |Default Value  |Task                  |Desc
 ------------ |-------------  |--------------------  |------------------------------------------------------------
-cfnDir       |cfn            |cfn*                  |CloudFormationの定義ファイルを置くディレクトリ名
-cfnType      |ALL            |cfnNew                |CloudFormationの定義ファイル種別
-amiDir       |ami            |ami*                  ||amiを作成するディレクトリ名
-ami          |Example        |ami*                  |ami名、WebなどEC2の名前に合わせる
-amiPlaybook  |setup          |amiInit, amiPlaybook  |Ansible Playbook名
+cfnDir       |cfn            |cfn*                  |CloudFormation DSLを配置するディレクトリ
+cfnType      |ALL            |cfnHelp               |CloudFormation DSLの種別
+
+### cfnType
+- EC2::VPC
+- EC2::InternetGateway
+（追加中）
 
 ## 設定
 Gradleプロジェクトを作成し、以下の内容に従ってプラグインを設定します。
@@ -101,7 +88,8 @@ buildscript {
 }
 ```
 
-Versionは、常に最新版を利用したいのであれば+を、特定のバージョンを指定したいのであれば特定のバージョン（例: 0.1.1）を指定してください。
+Versionは、常に最新版を利用したいのであれば+を、特定のバージョンを指定したいのであれば特定のバージョン（例: 0.5.0）を指定してください。
+なお、0.5.0以降とそれ以前ではフォーマットが全く異なり、一切の互換性はありません。
 
 ### build.gradleのサンプル
 
@@ -125,128 +113,146 @@ buildscript {
 }
 ```
 
-## 環境定義ファイル
-環境定義ファイルは、CSV形式で、cfnディレクトリ以下に配置します。
-ファイル名のフォーマットは、 XX_Instance.csv など、先頭に数字を付与したリソース名です。
-各リソースで設定できる項目は、随時対応しています。
+## DSLファイル
+DSLファイルは、groovy DSL形式、cfnディレクトリ以下に配置します。
+cfn-template-builderは、cfnディレクトリ以下のcfn.groovyを読み込みます。
+必要に応じてDSLを分割し、cfn.groovyからインクルードすることができます。
 
-基本的にはサンプルに含まれていない項目は対応していません（PRください）。
+# DSL
+cfn-template-builderはGroovy DSLで記述します。
+したがって、Groovyで記述できる範囲で柔軟な記述や、分岐やループといったプログラム的な定義が可能です
+（ただし、複雑なロジックは可読性を損ねるのでオススメしません）。
 
-### Meta.txt
-Key=Valueの形式で記述します。
-現在対応している項目は、Descriptionのみです。
-
-Key          |Desc                           |Sample
------------  |-------------------------------|----------------------------------
-Description  |テンプレートの説明                |Template for VPC with NAT instance
-
-Meta.txt
+## Ref
+参照（Ref）を指定する場合は、次のようにキーをRefとしたMapを指定します。
+```groovy
+cloudformation {
+    resources {
+        vpcGatewayAttachment id: "InternetGatewayAttach", VpcId: [Ref: "VPC"], InternetGatewayId: [Ref: "InternetGateway"]
+    }
+}
 ```
-Description=Template for VPC with NAT instance
-```
-
-### Mappings
-CfnのMappingsに対応。
-Mappingsディレクトリを作成し、テキストファイルを配置する。
-
-Mappings/Common
-```
-Key,            Name,           Value
-KeyPair,        Ec2KeyName,     default-key
-Role,           Ec2Role,        ec2-user
-```
-
-この場合、Common/KeyPair/Ec2KeyName = default-key というMappingが定義される。
-各種リソースから、Mappingを参照する場合は、「Common:KeyPair:Ec2KeyName」のようにコロンで区切って指定すること。
-
-### Parameters.csv
-CfnのParametersに対応。
-
-Parameters.csv
-```
-Name          ,Type     ,Default      ,AllowedValues      ,Description
-InstanceType  ,String   ,t2.small     ,t2.small|m3.large  ,Instance type for EC2 Instance
-Env           ,String   ,-            ,blue|green         ,Environment for deployment(Blue/Green)
-```
-
-各種リソースから、Parameters、「P[InstanceType]」のようにP[パラメータ名]の書式とすること。
-
-
-### VPC
-AWS::EC2::VPC リソースを定義します。
-
-Key          |Required  |Properties                     |Desc
--------------|----------|-------------------------------|----------------------------------
-Name         |YES       |Tags/Name                      |VPC名
-CidrBlock    |YES       |CidrBlock                      |CIDR Block
-
-XX_VPC.csv
-```
-Name,         CidrBlock
-vpc,          10.0.0.0/16
-```
-
-template
-```json
-"Vpc": {
-    "Type": "AWS::EC2::VPC",
-    "Properties": {
-        "CidrBlock": "10.0.0.0/16",
-        "Tags": [
-            {
-                "Key": "Name",
-                "Value": "vpc"
-            },
-            {
-                "Key": "Application",
-                "Value": {
-                    "Ref": "AWS::StackId"
-                }
-            }
-        ]
+また、次のように文字列として"Ref:参照名"と記述した場合は、ビルド時に参照として展開します。
+```groovy
+cloudformation {
+    resources {
+        vpcGatewayAttachment id: "InternetGatewayAttach", VpcId: "Ref:VPC", InternetGatewayId: "Ref:InternetGateway"]
     }
 }
 ```
 
-### InternetGateway
-TODO
+## FindInMap
+Mappingからの参照を得たい場合は、’Fn::FindInMap’をキーとしたMapを作成し、値に参照するMappingに対応するリストを指定します。
+```groovy
+cloudformation {
+    resources {
+        vpc id: "VPC", CidrBlock: ['Fn::FindInMap': ['Common', 'KeyPair', 'Ec2KeyName']]
+    }
+}
+```
 
-### Subnet
-TODO
-
-
-### RouteTable
-TODO
-
-### Route
-TODO
-
-### SubnetRouteTableAssociation
-TODO
-
-### SecurityGroup
-TODO
-
-### Volume
-TODO
-
-### Instance
-TODO
+Refと同様に次のように記述できます。
+```groovy
+cloudformation {
+    resources {
+        vpc id: "VPC", CidrBlock: "FindInMap:AddressMap:IpRange:VPC"
+    }
+}
+```
 
 
-## 使い方
-cfnディレクトリ下に設定ファイルを定義します。
-書き方はなんとなく・・・で
-
-対応しないパラメータがあると思うので、それは要望するかPRしてください。
-
-./gradlew
-
-### オプション
-
--PcfnDir=[ベースディレクトリ]  cfn以外のディレクトリを指定する場合はパラメータを指定してください。
--Poutput=[true|false]  標準出力にJSONを表示したくない場合はfalseを指定してください（デフォルト: true）
+```groovy
+cloudformation {
+    resources {
+        vpc id: "VPC", CidrBlock: "FindInMap:AddressMap:IpRange:VPC"
+    }
+}
+```
 
 
+## resources
+resourcesブロックには、AWSのリソースを定義します。
+
+基本フォーマットは、次のようにresourceブロックにリソース名と、パラメータを指定します。
+```groovy
+resources {
+    [リソース名（メソッド）] id: "ResourceId"
+}
+```
+
+### resourcesのインクルード
+複数のテンプレートで共通して利用するセキュリティグループや定番パターンのテンプレートは、共通部分を抽出して外部定義することができます。
+```groovy
+resources "commonSecurityGroups.groovy"
+```
+ファイルの参照は、cfnディレクトリからの相対パスです。
+
+絶対パスには対応していません。
+絶対パスは、ライブラリのリソースを参照します。
 
 
+### EC2::VPC
+AWS::EC2::VPC リソースを定義します。
+
+Key                 |Required  |Default     |Example                        |Desc
+--------------------|----------|------------|-------------------------------|----------------------------------
+id                  |YES       |-           |"VPC"                          |VPC名
+CidrBlock           |YES       |-           |"10.0.0.0/16"                  |CIDR Block
+EnableDnsSupport    |NO        |false       |true                           |DNSサポートの有無
+EnableDnsHostnames  |NO        |false       |true                           |DBSホスト名解決の有無
+Tags                |NO        |[:]         |[Name: "vpc-dev"]              |リソースに定義するタグ、Mapで定義
+
+#### Simple VPC
+```groovy
+resources {
+    vpc id: "VPC", CidrBlock: "10.0.0.0/16"
+}
+```
+#### Enable DNS Hostname and Name tag
+```groovy
+resources {
+    vpc id: "VPC", CidrBlock: "192.168.0.0/16", EnableDnsSupport: true, EnableDnsHostnames: true, Tags: [Name: 'my-vpc']
+}
+```
+
+## Groovy DSLの記法
+Groovy DSLでは、ブロックはクロージャとして実行されます。
+リソース名部分はメソッド呼び出し扱いとなり、<リソース名>メソッドが名前付き引数で呼び出されます。
+名前付き引数は、Mapを渡していると考えれば良いでしょう。
+複数のパラメータを渡す場合は、次のようにカンマ区切りで、Key:Valueを並べてください。
+
+```groovy
+resources {
+    vpc id: "VPC", CidrBlock: "10.0.0.0/16"
+}
+```
+
+省略されているメソッド呼び出しの括弧を記述すると、次のようになります。
+```groovy
+resources {
+    vpc (id: "VPC", CidrBlock: "10.0.0.0/16")
+}
+```
+
+Mapは省略された記法となっているので、次のように記述するのが省略しない形式です。
+```groovy
+resources {
+    vpc ([id: "VPC", CidrBlock: "10.0.0.0/16"])
+}
+```
+
+結局のところ、vpcメソッドにMapを渡せばいいので、次のように書いてもOKです。
+```groovy
+def vpcConf = [id: "VPC", CidrBlock: "10.0.0.0/16"]
+resources {
+    vpc vpcConf
+}
+```
+
+一部の値を変数として展開することも容易です。
+```groovy
+def cidrBlock = "10.0.0.0/16"
+resources {
+    vpc id: "VPC", CidrBlock: cidrBlock
+}
+```
