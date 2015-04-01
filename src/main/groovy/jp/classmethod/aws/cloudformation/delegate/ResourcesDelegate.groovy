@@ -84,31 +84,31 @@ class ResourcesDelegate {
     }
 
     void internetGateway(Map params) {
-        this.resources << new InternetGateway(params)
+        this.resources << new InternetGateway(convert(params))
     }
 
     void vpcGatewayAttachment(Map params) {
-        this.resources << new VPCGatewayAttachment(params)
+        this.resources << new VPCGatewayAttachment(convert(params))
     }
 
     void subnet(Map params) {
-        this.resources << new Subnet(params)
+        this.resources << new Subnet(convert(params))
     }
 
     void routeTable(Map params) {
-        this.resources << new RouteTable(params)
+        this.resources << new RouteTable(convert(params))
     }
 
     void route(Map params) {
-        this.resources << new Route(params)
+        this.resources << new Route(convert(params))
     }
 
     void subnetRouteTableAssociation(Map params) {
-        this.resources << new SubnetRouteTableAssociation(params)
+        this.resources << new SubnetRouteTableAssociation(convert(params))
     }
 
     void securityGroup(Map params, Closure cl) {
-        def securityGroup = new SecurityGroup(params)
+        def securityGroup = new SecurityGroup(convert(params))
         cl.delegate = new SecurityGroupDelegate(securityGroup)
         cl.resolveStrategy = Closure.DELEGATE_FIRST
         cl()
@@ -116,15 +116,15 @@ class ResourcesDelegate {
     }
 
     void volume(Map params) {
-        this.resources << new Volume(params)
+        this.resources << new Volume(convert(params))
     }
 
     void instance(Map params) {
-        this.resources << new Instance(params)
+        this.resources << new Instance(convert(params))
     }
 
     void instance(Map params, Closure cl) {
-        def instance = new Instance(params)
+        def instance = new Instance(convert(params))
         cl.delegate = new InstanceDelegate(instance)
         cl.resolveStrategy = Closure.DELEGATE_FIRST
         cl()
@@ -132,35 +132,35 @@ class ResourcesDelegate {
     }
 
     void eip(Map params) {
-        this.resources << new EIP(params)
+        this.resources << new EIP(convert(params))
     }
 
     void role(Map params) {
-        this.resources << new Role(params)
+        this.resources << new Role(convert(params))
     }
 
     void policy(Map params) {
-        this.resources << new Policy(params)
+        this.resources << new Policy(convert(params))
     }
 
     void instanceProfile(Map params) {
-        this.resources << new InstanceProfile(params)
+        this.resources << new InstanceProfile(convert(params))
     }
 
     void dbSubnetGroup(Map params) {
-        this.resources << new DBSubnetGroup(params)
+        this.resources << new DBSubnetGroup(convert(params))
     }
 
     void dbInstance(Map params) {
-        this.resources << new DBInstance(params)
+        this.resources << new DBInstance(convert(params))
     }
 
     void elasticLoadBalancing(Map params) {
-        this.resources << new ElasticLoadBalancing(params)
+        this.resources << new ElasticLoadBalancing(convert(params))
     }
 
     void elasticLoadBalancing(Map params, Closure cl) {
-        def elasticLoadBalancing = new ElasticLoadBalancing(params)
+        def elasticLoadBalancing = new ElasticLoadBalancing(convert(params))
         cl.delegate = new ElasticLoadBalancingDelegate(elasticLoadBalancing)
         cl.resolveStrategy = Closure.DELEGATE_FIRST
         cl()
@@ -168,11 +168,11 @@ class ResourcesDelegate {
     }
 
     void waitConditionHandle(Map params) {
-        this.resources << new WaitConditionHandle(params)
+        this.resources << new WaitConditionHandle(convert(params))
     }
 
     void waitCondition(Map params) {
-        this.resources << new WaitCondition(params)
+        this.resources << new WaitCondition(convert(params))
     }
 
     private Map convert(Map params) {
