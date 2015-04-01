@@ -16,9 +16,9 @@ class Policy extends Resource {
     final def Type = 'AWS::IAM::Policy'
     def PolicyName
     def PolicyDocument
-    def Roles
-    def Groups
-    def Users
+    def Roles = []
+    def Groups = []
+    def Users = []
 
     def Policy() {
     }

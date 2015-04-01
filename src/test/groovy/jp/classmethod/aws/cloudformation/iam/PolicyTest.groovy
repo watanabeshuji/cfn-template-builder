@@ -36,7 +36,7 @@ class PolicyTest {
                                 [Action: '*', Effect: 'Allow', Resource: '*']
                         ]
                 ],
-                Roles: [[Ref: 'Web']], Groups:[], Users: [[Ref:'Admin'],[Ref: 'PowerUser']]
+                Roles: [[Ref: 'Web']], Users: [[Ref:'Admin'],[Ref: 'PowerUser']]
         )
         def expected = [
             'Type': 'AWS::IAM::Policy',
