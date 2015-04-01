@@ -177,10 +177,16 @@ class ResourcesDelegate {
 
     private Map convert(Map params) {
         params.each { k, v ->
-            if (needsConvertRef(v)) params[k] = toRef(v)
-            if (needsConvertFindMap(v)) params[k] = toFindMap(v)
+            params[k] = convertValue(v)
         }
         params
+    }
+
+    private def convertValue(value) {
+        if (value instanceof List) return value.collect { convertValue(it) }
+        if (needsConvertRef(value)) return toRef(value)
+        if (needsConvertFindMap(value)) return toFindMap(value)
+        value
     }
 
     private boolean needsConvertRef(v) {

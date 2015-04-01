@@ -17,7 +17,7 @@ class DBSubnetGroupTest {
         Path input = getPath("/templates/resources/dbSubnetGroup.groovy")
         def actual = DBSubnetGroup.load(input)
         def expected = [
-            new DBSubnetGroup(id: 'DBSubnetGroup', DBSubnetGroupDescription: "DB subnet group", SubnetIds: ["Ref:PrivateA", "Ref:PrivateA"])
+            new DBSubnetGroup(id: 'DBSubnetGroup', DBSubnetGroupDescription: "DB subnet group", SubnetIds: [[Ref: "PrivateA"], [Ref: "PrivateC"]])
         ]
         assert actual == expected
     }
