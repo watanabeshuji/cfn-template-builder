@@ -1,7 +1,12 @@
 package jp.classmethod.aws.cloudformation
 
 import jp.classmethod.aws.cloudformation.ec2.InternetGateway
+import jp.classmethod.aws.cloudformation.ec2.Route
+import jp.classmethod.aws.cloudformation.ec2.RouteTable
+import jp.classmethod.aws.cloudformation.ec2.Subnet
+import jp.classmethod.aws.cloudformation.ec2.SubnetRouteTableAssociation
 import jp.classmethod.aws.cloudformation.ec2.VPC
+import jp.classmethod.aws.cloudformation.ec2.VPCGatewayAttachment
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 
@@ -100,6 +105,21 @@ class CfnTemplateBuilderPlugin implements Plugin<Project> {
             case "EC2::InternetGateway":
                 println InternetGateway.DESC
                 break
+            case "EC2::VPCGatewayAttachment":
+                println VPCGatewayAttachment.DESC
+                break
+            case "EC2::Subnet":
+                println Subnet.DESC
+                break
+            case "EC2::RouteTable":
+                println RouteTable.DESC
+                break
+            case "EC2::Route":
+                println Route.DESC
+                break
+            case "EC2::SubnetRouteTableAssociation":
+                println SubnetRouteTableAssociation.DESC
+                break
             default:
                 println '''\
 [Usage]
@@ -107,7 +127,11 @@ gradle -PcfnType=[Type] cfnHelp
 Type list
 - EC2::VPC
 - EC2::InternetGateway
-
+- EC2::VPCGatewayAttachment
+- EC2::Subnet
+- EC2::RouteTable
+- EC2::Route
+- EC2::SubnetRouteTableAssociation
 '''
                 break
         }
