@@ -89,7 +89,7 @@ class ResourcesDelegate {
     }
 
     void vpcGatewayAttachment(Map params) {
-        this.resources << new VPCGatewayAttachment(convert(params))
+        this.resources << VPCGatewayAttachment.newInstance(params)
     }
 
     void subnet(Map params) {

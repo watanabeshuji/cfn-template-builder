@@ -110,8 +110,8 @@ class VPCTest {
 
     @Test
     void "refIds"() {
-        def sut = new VPC(id: 'VPC', CidrBlock: '10.0.0.0/16')
-        assert sut.refIds() == []
+        def sut = VPC.newInstance(id: 'VPC', CidrBlock: '10.0.0.0/16')
+        assert sut.refIds == []
     }
 
     @Test(expected = ValidErrorException)

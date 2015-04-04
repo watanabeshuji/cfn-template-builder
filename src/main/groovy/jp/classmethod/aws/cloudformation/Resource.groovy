@@ -10,18 +10,15 @@ import java.nio.file.Path
 @Canonical
 class Resource {
 
-    def List refIdParams() {
-        []
-    }
+    def refIds = []
 
-    def List refIds() {
-        refIdParams().findAll{
+    def addRefIds(List values) {
+        values.findAll{
             (it instanceof Map) && it.containsKey('Ref')
-        }.collect {
-            it['Ref']
+        }.forEach() {
+            refIds << it['Ref']
         }
     }
-
 
     static List load(Path dsl) {
         DSLSupport.loadResources(dsl)

@@ -38,8 +38,8 @@ class InternetGatewayTest {
 
     @Test
     void "refIds"() {
-        def sut = new InternetGateway(id: 'InternetGateway')
-        assert sut.refIds() == []
+        def sut = InternetGateway.newInstance(id: 'InternetGateway')
+        assert sut.refIds == []
     }
 
     @Test(expected = ValidErrorException)

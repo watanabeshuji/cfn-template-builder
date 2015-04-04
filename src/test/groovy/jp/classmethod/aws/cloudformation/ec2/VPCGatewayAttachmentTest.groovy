@@ -36,7 +36,10 @@ class VPCGatewayAttachmentTest {
 
     @Test
     void "refIds"() {
-        def sut = new VPCGatewayAttachment(id: 'InternetGatewayAttachment', VpcId: [Ref: 'VPC'], InternetGatewayId: [Ref: 'InternetGateway'])
-        assert sut.refIds() == ['VPC', 'InternetGateway']
+        def sut = VPCGatewayAttachment.newInstance(
+            id: 'InternetGatewayAttachment',
+            VpcId: [Ref: 'VPC'],
+            InternetGatewayId: [Ref: 'InternetGateway'])
+        assert sut.refIds == ['VPC', 'InternetGateway']
     }
 }
