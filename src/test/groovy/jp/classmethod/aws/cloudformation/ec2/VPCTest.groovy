@@ -108,6 +108,12 @@ class VPCTest {
         assert sut.toResourceMap() == expected
     }
 
+    @Test
+    void "refIds"() {
+        def sut = new VPC(id: 'VPC', CidrBlock: '10.0.0.0/16')
+        assert sut.refIds() == []
+    }
+
     @Test(expected = ValidErrorException)
     void "doValidate: id必須"() {
         def sut = new VPC(CidrBlock: '10.0.0.0/16')

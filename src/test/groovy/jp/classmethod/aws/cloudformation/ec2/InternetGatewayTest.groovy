@@ -35,5 +35,10 @@ class InternetGatewayTest {
         assert sut.toResourceMap() == expected
     }
 
+    @Test
+    void "refIds"() {
+        def sut = new InternetGateway(id: 'InternetGateway')
+        assert sut.refIds() == []
+    }
 }
 

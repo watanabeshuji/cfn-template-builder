@@ -33,4 +33,10 @@ class VPCGatewayAttachmentTest {
         ]
         assert sut.toResourceMap() == expected
     }
+
+    @Test
+    void "refIds"() {
+        def sut = new VPCGatewayAttachment(id: 'InternetGatewayAttachment', VpcId: [Ref: 'VPC'], InternetGatewayId: [Ref: 'InternetGateway'])
+        assert sut.refIds() == ['VPC', 'InternetGateway']
+    }
 }

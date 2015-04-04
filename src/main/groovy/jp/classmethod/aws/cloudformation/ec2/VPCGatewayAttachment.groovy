@@ -23,6 +23,11 @@ class VPCGatewayAttachment extends Resource {
     def VPCGatewayAttachment() {
     }
 
+    @Override
+    def List refIdParams() {
+        [VpcId, InternetGatewayId]
+    }
+
     def toResourceMap() {
         [
             'Type'      : Type,
