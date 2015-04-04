@@ -12,12 +12,13 @@ class Resource {
 
     def refIds = []
 
-    def addRefIds(List values) {
-        values.findAll{
+    def withRefIds(Map params) {
+        params.values().findAll{
             (it instanceof Map) && it.containsKey('Ref')
         }.forEach() {
             refIds << it['Ref']
         }
+        this
     }
 
     static List load(Path dsl) {

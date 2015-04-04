@@ -41,7 +41,7 @@ resources {
         convert(params)
         checkKeys(InternetGateway, params, ['id', 'Tags'])
         logicalId(InternetGateway, params)
-        new InternetGateway(params)
+        new InternetGateway(params).withRefIds(params)
     }
 
     def toResourceMap() {

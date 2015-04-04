@@ -46,9 +46,7 @@ resources {
         checkKeys(VPCGatewayAttachment, params, ['id', 'VpcId', 'InternetGatewayId', 'Tags'])
         logicalId(VPCGatewayAttachment, params)
         require(VPCGatewayAttachment, ['VpcId', 'InternetGatewayId'], params)
-        def instance = new VPCGatewayAttachment(params)
-        instance.addRefIds([params['VpcId'], params['InternetGatewayId']])
-        instance
+        new VPCGatewayAttachment(params).withRefIds(params)
     }
 
     def toResourceMap() {

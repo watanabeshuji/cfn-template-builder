@@ -51,7 +51,7 @@ resources {
         logicalId(VPC, params)
         require(VPC, "CidrBlock", params)
         bool(VPC, ["EnableDnsSupport", "EnableDnsHostnames"], params)
-        new VPC(params)
+        new VPC(params).withRefIds(params)
     }
 
     def toResourceMap() {

@@ -44,9 +44,7 @@ resources {
         checkKeys(Subnet, params, ['id', 'VpcId', 'CidrBlock', 'AvailabilityZone', 'Tags'])
         logicalId(Subnet, params)
         require(Subnet, ['VpcId', 'CidrBlock'], params)
-        def instance = new Subnet(params)
-        instance.addRefIds([params['VpcId']])
-        instance
+        new Subnet(params).withRefIds(params)
     }
 
     def toResourceMap() {

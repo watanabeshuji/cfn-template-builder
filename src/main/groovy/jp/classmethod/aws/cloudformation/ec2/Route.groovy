@@ -43,9 +43,7 @@ resources {
         logicalId(Route, params)
         require(Route, ['RouteTableId', 'DestinationCidrBlock'], params)
         // TODO conditonal
-        def instance = new Route(params)
-        instance.addRefIds([params['RouteTableId'], params['GatewayId'], params['InstanceId'], params['VpcPeeringConnectionId']])
-        instance
+        new Route(params).withRefIds(params)
     }
 
     def toResourceMap() {
