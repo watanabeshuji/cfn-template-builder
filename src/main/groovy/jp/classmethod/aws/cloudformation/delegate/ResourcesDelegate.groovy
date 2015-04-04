@@ -97,7 +97,7 @@ class ResourcesDelegate {
     }
 
     void routeTable(Map params) {
-        this.resources << new RouteTable(convert(params))
+        this.resources << RouteTable.newInstance(params)
     }
 
     void route(Map params) {

@@ -1,5 +1,6 @@
 package jp.classmethod.aws.cloudformation.ec2
 
+import jp.classmethod.aws.cloudformation.util.ValidErrorException
 import org.junit.Test
 
 import java.nio.file.Path
@@ -20,7 +21,6 @@ class RouteTableTest {
         ]
     }
 
-
     @Test
     void "toResourceMap"() {
         def sut = new RouteTable(id: 'PublicRouteTable', VpcId: [Ref: 'VPC'])
@@ -35,6 +35,23 @@ class RouteTableTest {
             ]
         ]
         assert sut.toResourceMap() == expected
+    }
+
+
+    @Test
+    void "refIds"() {
+        def sut = RouteTable.newInstance(id: 'PublicRouteTable', VpcId: "Ref:VPC")
+        assert sut.refIds == ['VPC']
+    }
+
+    @Test(expected = ValidErrorException)
+    void "id必須"() {
+        RouteTable.newInstance(VpcId: "Ref:VPC")
+    }
+
+    @Test(expected = ValidErrorException)
+    void "VpcId必須"() {
+        RouteTable.newInstance(id: 'PublicRouteTable')
     }
 
 }
