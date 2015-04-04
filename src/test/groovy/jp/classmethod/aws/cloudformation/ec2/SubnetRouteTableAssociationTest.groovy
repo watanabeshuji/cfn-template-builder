@@ -1,5 +1,6 @@
 package jp.classmethod.aws.cloudformation.ec2
 
+import jp.classmethod.aws.cloudformation.util.ValidErrorException
 import org.junit.Test
 
 import java.nio.file.Path
@@ -40,4 +41,34 @@ class SubnetRouteTableAssociationTest {
         assert sut.toResourceMap() == expected
     }
 
+
+    @Test
+    void "refIds"() {
+        def sut = SubnetRouteTableAssociation.newInstance(
+            id: 'PublicRouteAssociation',
+            SubnetId: 'Ref:PublicSubnet',
+            RouteTableId: 'Ref:PublicRouteTable')
+        assert sut.refIds == ['PublicSubnet', 'PublicRouteTable']
+    }
+
+    @Test(expected = ValidErrorException)
+    void "id 必須"() {
+        def sut = SubnetRouteTableAssociation.newInstance(
+            SubnetId: 'Ref:PublicSubnet',
+            RouteTableId: 'Ref:PublicRouteTable')
+    }
+
+    @Test(expected = ValidErrorException)
+    void "SubnetId 必須"() {
+        def sut = SubnetRouteTableAssociation.newInstance(
+            id: 'PublicRouteAssociation',
+            RouteTableId: 'Ref:PublicRouteTable')
+    }
+
+    @Test(expected = ValidErrorException)
+    void "RouteTableId 必須"() {
+        def sut = SubnetRouteTableAssociation.newInstance(
+            id: 'PublicRouteAssociation',
+            SubnetId: 'Ref:PublicSubnet')
+    }
 }

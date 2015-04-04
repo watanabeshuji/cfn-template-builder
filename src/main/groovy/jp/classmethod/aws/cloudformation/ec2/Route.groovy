@@ -22,7 +22,7 @@ http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-ec2-r
 
 [Optional Params]
 
-[Sample: InternetGateway]
+[Sample]
 resources {
     route id: "PublicRoute",        DestinationCidrBlock: "0.0.0.0/0"     ,RouteTableId: "Ref:RouteTable", GatewayId: [Ref: "IGW"]
     route id: "NatRoute",           DestinationCidrBlock: "0.0.0.0/0"     ,RouteTableId: "Ref:RouteTable", InstanceId: [Ref: "NAT"]

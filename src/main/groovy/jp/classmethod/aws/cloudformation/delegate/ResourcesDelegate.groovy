@@ -105,7 +105,7 @@ class ResourcesDelegate {
     }
 
     void subnetRouteTableAssociation(Map params) {
-        this.resources << new SubnetRouteTableAssociation(convert(params))
+        this.resources << SubnetRouteTableAssociation.newInstance(params)
     }
 
     void securityGroup(Map params, Closure cl) {
