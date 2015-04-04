@@ -47,11 +47,11 @@ resources {
 
     static VPC newInstance(Map params) {
         convert(params)
-        checkKeys(TYPE, params, ['id', 'CidrBlock', 'EnableDnsSupport', 'EnableDnsHostnames', 'Tags'])
-        logicalId(TYPE, params)
-        require(TYPE, "CidrBlock", params)
-        bool(TYPE, "EnableDnsSupport", params)
-        bool(TYPE, "EnableDnsHostnames", params)
+        checkKeys(VPC, params, ['id', 'CidrBlock', 'EnableDnsSupport', 'EnableDnsHostnames', 'Tags'])
+        logicalId(VPC, params)
+        require(VPC, "CidrBlock", params)
+        bool(VPC, "EnableDnsSupport", params)
+        bool(VPC, "EnableDnsHostnames", params)
         new VPC(params)
     }
 

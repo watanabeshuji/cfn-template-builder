@@ -41,10 +41,10 @@ resources {
 
     static Subnet newInstance(Map params) {
         convert(params)
-        checkKeys(TYPE, params, ['id', 'VpcId', 'CidrBlock', 'AvailabilityZone', 'Tags'])
-        logicalId(TYPE, params)
-        require(TYPE, 'VpcId', params)
-        require(TYPE, 'CidrBlock', params)
+        checkKeys(Subnet, params, ['id', 'VpcId', 'CidrBlock', 'AvailabilityZone', 'Tags'])
+        logicalId(Subnet, params)
+        require(Subnet, 'VpcId', params)
+        require(Subnet, 'CidrBlock', params)
         def instance = new Subnet(params)
         instance.addRefIds([params['VpcId']])
         instance

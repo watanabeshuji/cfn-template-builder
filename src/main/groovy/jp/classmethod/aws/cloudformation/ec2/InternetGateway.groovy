@@ -16,6 +16,8 @@ import static jp.classmethod.aws.cloudformation.util.Valid.require
  */
 @Canonical
 class InternetGateway extends Resource {
+
+    static final def TYPE = 'AWS::EC2::InternetGateway'
     static def DESC = '''\
 AWS::EC2::InternetGateway
 http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-ec2-internet-gateway.html
@@ -32,14 +34,13 @@ resources {
 }
 '''
 
-    static final def TYPE = 'AWS::EC2::InternetGateway'
     def id
     def Tags = [:]
 
     static InternetGateway newInstance(Map params) {
         convert(params)
-        checkKeys(TYPE, params, ['id', 'Tags'])
-        logicalId(TYPE, params)
+        checkKeys(InternetGateway, params, ['id', 'Tags'])
+        logicalId(InternetGateway, params)
         new InternetGateway(params)
     }
 

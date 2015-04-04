@@ -21,16 +21,32 @@ import static jp.classmethod.aws.cloudformation.util.Valid.require
 class VPCGatewayAttachment extends Resource {
 
     static final def TYPE = 'AWS::EC2::VPCGatewayAttachment'
+    static def DESC = '''\
+AWS::EC2::VPCGatewayAttachment
+http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-ec2-vpc-gateway-attachment.html
+
+[Required Params]
+- id
+- VpcId
+- InternetGatewayId
+
+[Optional Params]
+
+[Sample: InternetGateway]
+resources {
+    vpcGatewayAttachment id: "InternetGatewayAttach", VpcId: [Ref: "VPC"], InternetGatewayId: [Ref: "InternetGateway"]
+}
+'''
     def id
     def VpcId
     def InternetGatewayId
 
     static VPCGatewayAttachment newInstance(Map params) {
         convert(params)
-        checkKeys(TYPE, params, ['id', 'VpcId', 'InternetGatewayId', 'Tags'])
-        logicalId(TYPE, params)
-        require(TYPE, 'VpcId', params)
-        require(TYPE, 'InternetGatewayId', params)
+        checkKeys(VPCGatewayAttachment, params, ['id', 'VpcId', 'InternetGatewayId', 'Tags'])
+        logicalId(VPCGatewayAttachment, params)
+        require(VPCGatewayAttachment, 'VpcId', params)
+        require(VPCGatewayAttachment, 'InternetGatewayId', params)
         def instance = new VPCGatewayAttachment(params)
         instance.addRefIds([params['VpcId'], params['InternetGatewayId']])
         instance
