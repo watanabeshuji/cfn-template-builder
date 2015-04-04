@@ -1,5 +1,6 @@
 package jp.classmethod.aws.cloudformation.delegate
 
+import static jp.classmethod.aws.cloudformation.util.Params.convert
 import jp.classmethod.aws.cloudformation.cloudformation.WaitCondition
 import jp.classmethod.aws.cloudformation.cloudformation.WaitConditionHandle
 import jp.classmethod.aws.cloudformation.ec2.*
@@ -80,7 +81,7 @@ class ResourcesDelegate {
     }
 
     void vpc(Map params) {
-        this.resources << VPC.newInstance(convert(params))
+        this.resources << VPC.newInstance(params)
     }
 
     void internetGateway(Map params) {
@@ -175,35 +176,4 @@ class ResourcesDelegate {
         this.resources << new WaitCondition(convert(params))
     }
 
-    private Map convert(Map params) {
-        params.each { k, v ->
-            params[k] = convertValue(v)
-        }
-        params
-    }
-
-    private def convertValue(value) {
-        if (value instanceof List) return value.collect { convertValue(it) }
-        if (needsConvertRef(value)) return toRef(value)
-        if (needsConvertFindMap(value)) return toFindMap(value)
-        value
-    }
-
-    private boolean needsConvertRef(v) {
-        String.class.isInstance(v) && v.startsWith("Ref:")
-    }
-
-    private Map toRef(String v) {
-        def keys = v.split(":")
-        [Ref: keys[1]]
-    }
-
-    private boolean needsConvertFindMap(v) {
-        String.class.isInstance(v) && v.startsWith("FindInMap:")
-    }
-
-    private Map toFindMap(String v) {
-        def keys = v.split(":")
-        ["Fn::FindInMap": [keys[1], keys[2], keys[3]]]
-    }
 }

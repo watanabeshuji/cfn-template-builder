@@ -1,5 +1,6 @@
 package jp.classmethod.aws.cloudformation.ec2
 
+import static jp.classmethod.aws.cloudformation.util.Params.convert
 import groovy.transform.Canonical
 import jp.classmethod.aws.cloudformation.Resource
 
@@ -45,6 +46,7 @@ resources {
     def Tags = [:]
 
     static VPC newInstance(Map params) {
+        convert(params)
         checkKeys(TYPE, params, ['id', 'CidrBlock', 'EnableDnsSupport', 'EnableDnsHostnames', 'Tags'])
         logicalId(TYPE, params)
         require(TYPE, "CidrBlock", params)
