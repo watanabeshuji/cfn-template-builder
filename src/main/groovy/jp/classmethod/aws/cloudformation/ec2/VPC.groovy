@@ -12,7 +12,8 @@ import static jp.classmethod.aws.cloudformation.util.Valid.*
 @Canonical
 class VPC extends Resource {
 
-    static def DESC = '''\
+    static final def TYPE = 'AWS::EC2::VPC'
+    static final def DESC = '''\
 AWS::EC2::VPC
 http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-ec2-vpc.html
 
@@ -37,24 +38,24 @@ resources {
 
 '''
 
-    final def Type = 'AWS::EC2::VPC'
     String id
     def CidrBlock
     def EnableDnsSupport
     def EnableDnsHostnames
     def Tags = [:]
 
-    def doValidate() {
-        logicalId(this.id)
-        require("CidrBlock", this.CidrBlock)
-        bool("EnableDnsSupport", EnableDnsSupport)
-        bool("EnableDnsHostnames", EnableDnsHostnames)
+    static VPC newInstance(Map params) {
+        checkKeys(TYPE, params, ['id', 'CidrBlock', 'EnableDnsSupport', 'EnableDnsHostnames', 'Tags'])
+        logicalId(TYPE, params)
+        require(TYPE, "CidrBlock", params)
+        bool(TYPE, "EnableDnsSupport", params)
+        bool(TYPE, "EnableDnsHostnames", params)
+        new VPC(params)
     }
 
     def toResourceMap() {
-        doValidate()
         def map = [
-            'Type'      : Type,
+            'Type'      : TYPE,
             'Properties': [
                 'CidrBlock': CidrBlock,
                 'Tags'     : []

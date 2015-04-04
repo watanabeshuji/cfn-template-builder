@@ -80,7 +80,7 @@ class ResourcesDelegate {
     }
 
     void vpc(Map params) {
-        this.resources << new VPC(convert(params))
+        this.resources << VPC.newInstance(convert(params))
     }
 
     void internetGateway(Map params) {

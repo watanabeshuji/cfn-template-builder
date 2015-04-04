@@ -115,32 +115,32 @@ class VPCTest {
     }
 
     @Test(expected = ValidErrorException)
-    void "doValidate: id必須"() {
-        def sut = new VPC(CidrBlock: '10.0.0.0/16')
-        sut.doValidate()
+    void "未対応のパラメータを含む"() {
+        VPC.newInstance(id: "VPC", cidrblock: "10.0.0.0/24")
     }
 
     @Test(expected = ValidErrorException)
-    void "doValidate: idにハイフン"() {
-        def sut = new VPC(id: "vpc-dev", CidrBlock: '10.0.0.0/16')
-        sut.doValidate()
+    void "id必須"() {
+        VPC.newInstance(CidrBlock: '10.0.0.0/16')
     }
 
     @Test(expected = ValidErrorException)
-    void "doValidate: CidrBlock必須"() {
-        def sut = new VPC(id: "vpc")
-        sut.doValidate()
+    void "idにハイフン"() {
+        VPC.newInstance(id: "vpc-dev", CidrBlock: '10.0.0.0/16')
     }
 
     @Test(expected = ValidErrorException)
-    void "doValidate: EnableDnsSupport bool"() {
-        def sut = new VPC(id: "vpc", CidrBlock: '10.0.0.0/16', EnableDnsSupport: "yes")
-        sut.doValidate()
+    void "CidrBlock必須"() {
+        VPC.newInstance(id: "vpc")
     }
 
     @Test(expected = ValidErrorException)
-    void "doValidate: EnableDnsHostnames bool"() {
-        def sut = new VPC(id: "vpc", CidrBlock: '10.0.0.0/16', EnableDnsHostnames: "yes")
-        sut.doValidate()
+    void "EnableDnsSupport bool"() {
+        VPC.newInstance(id: "vpc", CidrBlock: '10.0.0.0/16', EnableDnsSupport: "yes")
+    }
+
+    @Test(expected = ValidErrorException)
+    void "EnableDnsHostnames bool"() {
+        VPC.newInstance(id: "vpc", CidrBlock: '10.0.0.0/16', EnableDnsHostnames: "yes")
     }
 }
