@@ -43,8 +43,7 @@ resources {
         convert(params)
         checkKeys(Subnet, params, ['id', 'VpcId', 'CidrBlock', 'AvailabilityZone', 'Tags'])
         logicalId(Subnet, params)
-        require(Subnet, 'VpcId', params)
-        require(Subnet, 'CidrBlock', params)
+        require(Subnet, ['VpcId', 'CidrBlock'], params)
         def instance = new Subnet(params)
         instance.addRefIds([params['VpcId']])
         instance

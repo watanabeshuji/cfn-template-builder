@@ -30,6 +30,10 @@ $type.DESC"
 """)
     }
 
+    static void require(Class type, List names,  Map params) {
+        for (String name: names) require(type, name, params)
+    }
+
     static void require(Class type, String name, Map params) {
         def value = params[name]
         if (value == null) throw new ValidErrorException("""\
@@ -37,6 +41,10 @@ ${type.TYPE}[$name] can't be null.
 --
 $type.DESC"
 """)
+    }
+
+    static void bool(Class type, List names,  Map params) {
+        for (String name: names) bool(type, name, params)
     }
 
     static void bool(Class type, String name,  Map params) {

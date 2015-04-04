@@ -50,8 +50,7 @@ resources {
         checkKeys(VPC, params, ['id', 'CidrBlock', 'EnableDnsSupport', 'EnableDnsHostnames', 'Tags'])
         logicalId(VPC, params)
         require(VPC, "CidrBlock", params)
-        bool(VPC, "EnableDnsSupport", params)
-        bool(VPC, "EnableDnsHostnames", params)
+        bool(VPC, ["EnableDnsSupport", "EnableDnsHostnames"], params)
         new VPC(params)
     }
 

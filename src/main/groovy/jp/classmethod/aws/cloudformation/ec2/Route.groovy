@@ -41,8 +41,7 @@ resources {
         convert(params)
         checkKeys(Route, params, ['id', 'RouteTableId', 'DestinationCidrBlock', 'GatewayId', 'InstanceId', 'VpcPeeringConnectionId'])
         logicalId(Route, params)
-        require(Route, 'RouteTableId', params)
-        require(Route, 'DestinationCidrBlock', params)
+        require(Route, ['RouteTableId', 'DestinationCidrBlock'], params)
         // TODO conditonal
         def instance = new Route(params)
         instance.addRefIds([params['RouteTableId'], params['GatewayId'], params['InstanceId'], params['VpcPeeringConnectionId']])
