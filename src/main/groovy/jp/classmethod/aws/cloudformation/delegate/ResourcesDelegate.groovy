@@ -85,7 +85,7 @@ class ResourcesDelegate {
     }
 
     void internetGateway(Map params) {
-        this.resources << new InternetGateway(convert(params))
+        this.resources << InternetGateway.newInstance(params)
     }
 
     void vpcGatewayAttachment(Map params) {

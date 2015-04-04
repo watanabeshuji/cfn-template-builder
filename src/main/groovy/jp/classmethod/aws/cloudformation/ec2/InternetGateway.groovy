@@ -3,6 +3,13 @@ package jp.classmethod.aws.cloudformation.ec2
 import groovy.transform.Canonical
 import jp.classmethod.aws.cloudformation.Resource
 
+import static jp.classmethod.aws.cloudformation.util.Params.convert
+import static jp.classmethod.aws.cloudformation.util.Valid.bool
+import static jp.classmethod.aws.cloudformation.util.Valid.bool
+import static jp.classmethod.aws.cloudformation.util.Valid.checkKeys
+import static jp.classmethod.aws.cloudformation.util.Valid.logicalId
+import static jp.classmethod.aws.cloudformation.util.Valid.require
+
 /**
  * AWS::EC2::InternetGateway
  * http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-ec2-internet-gateway.html
@@ -25,16 +32,20 @@ resources {
 }
 '''
 
-    final def Type = 'AWS::EC2::InternetGateway'
+    static final def TYPE = 'AWS::EC2::InternetGateway'
     def id
     def Tags = [:]
 
-    def InternetGateway() {
+    static InternetGateway newInstance(Map params) {
+        convert(params)
+        checkKeys(TYPE, params, ['id', 'Tags'])
+        logicalId(TYPE, params)
+        new InternetGateway(params)
     }
 
     def toResourceMap() {
         def map = [
-            'Type'      : Type,
+            'Type'      : TYPE,
             'Properties': [
                 'Tags': []
             ]

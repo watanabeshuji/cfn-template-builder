@@ -1,5 +1,6 @@
 package jp.classmethod.aws.cloudformation.ec2
 
+import jp.classmethod.aws.cloudformation.util.ValidErrorException
 import org.junit.Test
 
 import java.nio.file.Path
@@ -40,5 +41,16 @@ class InternetGatewayTest {
         def sut = new InternetGateway(id: 'InternetGateway')
         assert sut.refIds() == []
     }
+
+    @Test(expected = ValidErrorException)
+    void "未対応のパラメータを含む"() {
+        InternetGateway.newInstance(id: "InternetGateway", xxx: "X")
+    }
+
+    @Test(expected = ValidErrorException)
+    void "id必須"() {
+        InternetGateway.newInstance([:])
+    }
+
 }
 
