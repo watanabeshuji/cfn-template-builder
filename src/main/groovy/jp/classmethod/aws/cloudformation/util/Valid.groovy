@@ -30,8 +30,8 @@ $type.DESC"
 """)
     }
 
-    static void require(Class type, List names,  Map params) {
-        for (String name: names) require(type, name, params)
+    static void require(Class type, List names, Map params) {
+        for (String name : names) require(type, name, params)
     }
 
     static void require(Class type, String name, Map params) {
@@ -43,11 +43,11 @@ $type.DESC"
 """)
     }
 
-    static void bool(Class type, List names,  Map params) {
-        for (String name: names) bool(type, name, params)
+    static void bool(Class type, List names, Map params) {
+        for (String name : names) bool(type, name, params)
     }
 
-    static void bool(Class type, String name,  Map params) {
+    static void bool(Class type, String name, Map params) {
         def value = params[name]
         if (value == null) return
 
@@ -57,5 +57,16 @@ ${type.TYPE}[$name] must be boolean value (or maybe null).
 $type.DESC"
 """)
     }
+
+    static void requireOneOf(Class type, List names, Map params) {
+        for (String name : names) if (params[name] != null) return
+        throw new ValidErrorException("""\
+${type.TYPE}[${names.join(' or ')}] can't be null.
+--
+$type.DESC"
+""")
+    }
+
+
 }
 

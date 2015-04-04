@@ -42,7 +42,7 @@ resources {
         checkKeys(Route, params, ['id', 'RouteTableId', 'DestinationCidrBlock', 'GatewayId', 'InstanceId', 'VpcPeeringConnectionId'])
         logicalId(Route, params)
         require(Route, ['RouteTableId', 'DestinationCidrBlock'], params)
-        // TODO conditonal
+        requireOneOf(Route, ['GatewayId', 'InstanceId', 'VpcPeeringConnectionId'], params)
         new Route(params).withRefIds(params)
     }
 

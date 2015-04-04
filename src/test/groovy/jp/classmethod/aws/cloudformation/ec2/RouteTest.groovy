@@ -84,5 +84,9 @@ class RouteTest {
         Route.newInstance(id: 'PrivateRoute', DestinationCidrBlock: '0.0.0.0/0', InstanceId: [Ref: 'Bastion'])
     }
 
+    @Test(expected = ValidErrorException)
+    void "GatewayId,InstanceId,VpcPeeringConnectionId どれかが必須"() {
+        Route.newInstance(id: 'PrivateRoute', RouteTableId: "Ref:PrivateRouteTable", DestinationCidrBlock: '0.0.0.0/0')
+    }
 
 }
