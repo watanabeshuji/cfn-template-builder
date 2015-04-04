@@ -1,5 +1,6 @@
 package jp.classmethod.aws.cloudformation.ec2
 
+import jp.classmethod.aws.cloudformation.util.ValidErrorException
 import org.junit.Test
 
 import java.nio.file.Path
@@ -41,5 +42,15 @@ class VPCGatewayAttachmentTest {
             VpcId: [Ref: 'VPC'],
             InternetGatewayId: [Ref: 'InternetGateway'])
         assert sut.refIds == ['VPC', 'InternetGateway']
+    }
+
+    @Test(expected = ValidErrorException)
+    void "VpcId必須"() {
+        VPCGatewayAttachment.newInstance(id: "InternetGatewayAttachment", InternetGatewayId: [Ref: 'InternetGateway'])
+    }
+
+    @Test(expected = ValidErrorException)
+    void "InternetGateway必須"() {
+        VPCGatewayAttachment.newInstance(id: "InternetGatewayAttachment", VpcId: [Ref: 'VPC'])
     }
 }

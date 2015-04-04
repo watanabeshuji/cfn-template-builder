@@ -101,7 +101,7 @@ class ResourcesDelegate {
     }
 
     void route(Map params) {
-        this.resources << new Route(convert(params))
+        this.resources << Route.newInstance(params)
     }
 
     void subnetRouteTableAssociation(Map params) {

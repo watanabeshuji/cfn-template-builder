@@ -1,6 +1,7 @@
 package jp.classmethod.aws.cloudformation.ec2
 
 import jp.classmethod.aws.cloudformation.ec2.Route
+import jp.classmethod.aws.cloudformation.util.ValidErrorException
 import org.junit.Test
 
 import java.nio.file.Path
@@ -12,15 +13,14 @@ import static jp.classmethod.aws.cloudformation.testing.TestSupport.getPath
  */
 class RouteTest {
 
-
     @Test
     void "load route.groovy"() {
         Path input = getPath("/templates/resources/route.groovy")
         def actual = Route.load(input)
         assert actual == [
-            new Route(id: 'PublicRoute', DestinationCidrBlock: '0.0.0.0/0', GatewayId: [Ref: "IGW"]),
-            new Route(id: 'NatRoute', DestinationCidrBlock: '0.0.0.0/0', InstanceId: [Ref: "NAT"]),
-            new Route(id: 'DirectConnectRoute', DestinationCidrBlock: '10.226.0.0/16', VpcPeeringConnectionId: "pcx-xxxxxxxx"),
+            new Route(id: 'PublicRoute', DestinationCidrBlock: '0.0.0.0/0', RouteTableId: [Ref: "RouteTable"], GatewayId: [Ref: "IGW"]),
+            new Route(id: 'NatRoute', DestinationCidrBlock: '0.0.0.0/0', RouteTableId: [Ref: "RouteTable"], InstanceId: [Ref: "NAT"]),
+            new Route(id: 'DirectConnectRoute', DestinationCidrBlock: '10.226.0.0/16', RouteTableId: [Ref: "RouteTable"], VpcPeeringConnectionId: "pcx-xxxxxxxx"),
         ]
     }
 
@@ -65,5 +65,24 @@ class RouteTest {
         ]
         assert sut.toResourceMap() == expected
     }
+
+    @Test
+    void "refIds"() {
+        def sut = Route.newInstance(
+            id: 'PrivateRoute', RouteTableId: "Ref:PrivateRouteTable",
+            DestinationCidrBlock: '0.0.0.0/0', InstanceId: "Ref:Bastion")
+        assert sut.refIds == ['PrivateRouteTable', 'Bastion']
+    }
+
+    @Test(expected = ValidErrorException)
+    void "DestinationCidrBlock必須"() {
+        Route.newInstance(id: 'PrivateRoute', RouteTableId: [Ref: 'PrivateRouteTable'], InstanceId: [Ref: 'Bastion'])
+    }
+
+    @Test(expected = ValidErrorException)
+    void "RouteTableId必須"() {
+        Route.newInstance(id: 'PrivateRoute', DestinationCidrBlock: '0.0.0.0/0', InstanceId: [Ref: 'Bastion'])
+    }
+
 
 }
