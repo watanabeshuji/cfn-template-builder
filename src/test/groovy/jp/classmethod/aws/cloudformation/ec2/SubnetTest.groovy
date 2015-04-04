@@ -1,5 +1,6 @@
 package jp.classmethod.aws.cloudformation.ec2
 
+import jp.classmethod.aws.cloudformation.util.ValidErrorException
 import org.junit.Test
 
 import java.nio.file.Path
@@ -41,4 +42,22 @@ class SubnetTest {
         assert sut.toResourceMap() == expected
     }
 
+
+    @Test
+    void "refIds"() {
+        def sut = Subnet.newInstance(
+            id: 'PublicSubnet', VpcId: [Ref: 'VPC'],
+            CidrBlock: '10.0.0.0/24', AvailabilityZone: 'ap-northeast-1a')
+        assert sut.refIds == ['VPC']
+    }
+
+    @Test(expected = ValidErrorException)
+    void "VpcId必須"() {
+        def sut = Subnet.newInstance(id: 'PublicSubnet', CidrBlock: '10.0.0.0/24')
+    }
+
+    @Test(expected = ValidErrorException)
+    void "CidrBlock必須"() {
+        def sut = Subnet.newInstance(id: 'PublicSubnet', VpcId: [Ref: 'VPC'])
+    }
 }

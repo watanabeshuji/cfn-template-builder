@@ -93,7 +93,7 @@ class ResourcesDelegate {
     }
 
     void subnet(Map params) {
-        this.resources << new Subnet(convert(params))
+        this.resources << Subnet.newInstance(params)
     }
 
     void routeTable(Map params) {
