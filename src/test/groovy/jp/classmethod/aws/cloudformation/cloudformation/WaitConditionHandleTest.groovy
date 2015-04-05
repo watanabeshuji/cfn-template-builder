@@ -1,5 +1,6 @@
 package jp.classmethod.aws.cloudformation.cloudformation
 
+import jp.classmethod.aws.cloudformation.util.ValidErrorException
 import org.junit.Test
 
 import java.nio.file.Path
@@ -30,4 +31,16 @@ class WaitConditionHandleTest {
         ]
         assert sut.toResourceMap() == expected
     }
+
+    @Test
+    void "refIds"() {
+        def sut = WaitConditionHandle.newInstance(id: 'WaitConditionHandle')
+        assert sut.refIds == []
+    }
+
+    @Test(expected = ValidErrorException)
+    void "id 必須"() {
+        WaitConditionHandle.newInstance([:])
+    }
+
 }
