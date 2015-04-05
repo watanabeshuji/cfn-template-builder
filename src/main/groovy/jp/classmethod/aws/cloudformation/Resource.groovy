@@ -13,7 +13,7 @@ class Resource {
     def refIds = []
 
     def withRefIds(Map params) {
-        params.values().findAll{
+        params.values().findAll {
             (it instanceof Map) && it.containsKey('Ref')
         }.forEach() {
             refIds << it['Ref']

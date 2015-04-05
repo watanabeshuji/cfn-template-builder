@@ -27,7 +27,7 @@ class Values {
     }
 
     private def toMap(value) {
-        ['Fn::FindInMap': value.split(':').collect({ convertToRef(it) ? toRef(it) : it }) ]
+        ['Fn::FindInMap': value.split(':').collect({ convertToRef(it) ? toRef(it) : it })]
     }
 
     private def convertToGetAttr(value) {

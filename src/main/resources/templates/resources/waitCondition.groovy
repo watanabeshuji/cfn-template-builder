@@ -1,3 +1,3 @@
 resources {
-    waitCondition id: "WebServerWaitCondition", Handle: [Ref: "WebServerWaitHandle"], Timeout: "1000"
+    waitCondition id: "WebServerWaitCondition", Handle: "Ref:WebServerWaitHandle", Timeout: "1000"
 }

@@ -1,9 +1,9 @@
 package jp.classmethod.aws.cloudformation.ec2
 
-import static jp.classmethod.aws.cloudformation.util.Params.convert
 import groovy.transform.Canonical
 import jp.classmethod.aws.cloudformation.Resource
 
+import static jp.classmethod.aws.cloudformation.util.Params.convert
 import static jp.classmethod.aws.cloudformation.util.Valid.*
 
 /**
@@ -64,7 +64,7 @@ resources {
         ]
         if (EnableDnsSupport != null) map['Properties']['EnableDnsSupport'] = EnableDnsSupport
         if (EnableDnsHostnames != null) map['Properties']['EnableDnsHostnames'] = EnableDnsHostnames
-        Tags.each {key, value ->
+        Tags.each { key, value ->
             map['Properties']['Tags'] << ['Key': key, 'Value': value]
         }
         if (Tags['Name'] == null) map['Properties']['Tags'] << ['Key': 'Name', 'Value': id]

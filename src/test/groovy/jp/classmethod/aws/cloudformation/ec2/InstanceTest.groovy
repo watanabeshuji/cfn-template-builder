@@ -12,7 +12,6 @@ import static jp.classmethod.aws.cloudformation.testing.TestSupport.getPath
 class InstanceTest {
 
 
-
     @Test
     void "load instance.groovy"() {
         Path input = getPath("/templates/resources/instance.groovy")

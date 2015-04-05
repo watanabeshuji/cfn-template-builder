@@ -4,9 +4,7 @@ import groovy.transform.Canonical
 import jp.classmethod.aws.cloudformation.Resource
 
 import static jp.classmethod.aws.cloudformation.util.Params.convert
-import static jp.classmethod.aws.cloudformation.util.Valid.checkKeys
-import static jp.classmethod.aws.cloudformation.util.Valid.logicalId
-import static jp.classmethod.aws.cloudformation.util.Valid.require
+import static jp.classmethod.aws.cloudformation.util.Valid.*
 
 /**
  * AWS::EC2::SubnetRouteTableAssociation

@@ -3,11 +3,8 @@ package jp.classmethod.aws.cloudformation.ec2
 import jp.classmethod.aws.cloudformation.util.ValidErrorException
 import org.junit.Test
 
-import java.nio.file.Paths
-
-import static jp.classmethod.aws.cloudformation.testing.TestSupport.*
-
 import java.nio.file.Path
+import java.nio.file.Paths
 
 /**
  * Test for VPC
@@ -97,8 +94,8 @@ class VPCTest {
         def expected = [
             'Type'      : 'AWS::EC2::VPC',
             'Properties': [
-                'CidrBlock'         : "10.0.0.0/16",
-                'Tags'              : [
+                'CidrBlock': "10.0.0.0/16",
+                'Tags'     : [
                     ['Key': 'Name', 'Value': 'dev-vpc'],
                     ['Key': 'Env', 'Value': 'Development'],
                     ['Key': 'Application', 'Value': ['Ref': 'AWS::StackId']]

@@ -16,12 +16,12 @@ class ElasticLoadBalancingTest {
         Path input = getPath("/templates/resources/elasticLoadBalancing.groovy")
         def actual = ElasticLoadBalancing.load(input)
         def expected = [
-            new ElasticLoadBalancing(id: 'ELB',  LoadBalancerName: "ELB",
+            new ElasticLoadBalancing(id: 'ELB', LoadBalancerName: "ELB",
                 Subnets: [[Ref: "FrontA"], [Ref: "FrontC"]], SecurityGroups: [[Ref: "PublicWeb"]],
                 Instances: [[Ref: "WebA"], [Ref: "WebC"]],
                 Listeners: [
                     new ElasticLoadBalancing.Listener(Protocol: "HTTP", LoadBalancerPort: "80", InstancePort: "80"),
-                    new ElasticLoadBalancing.Listener(Protocol: "HTTPS", LoadBalancerPort: "443", InstanceProtocol: "HTTP",InstancePort: "80", SSLCertificateId: "sslid")
+                    new ElasticLoadBalancing.Listener(Protocol: "HTTPS", LoadBalancerPort: "443", InstanceProtocol: "HTTP", InstancePort: "80", SSLCertificateId: "sslid")
                 ],
                 HealthCheck: new ElasticLoadBalancing.HealthCheck(Target: "HTTP:80/", HealthyThreshold: "3", UnhealthyThreshold: "5", Interval: "30", Timeout: "5"),
                 AccessLoggingPolicy: new ElasticLoadBalancing.AccessLoggingPolicy(Enabled: true, S3BucketName: [Ref: "ElbAccessLoggingBucket"], S3BucketPrefix: "elb/", EmitInterval: 60)
@@ -106,11 +106,11 @@ class ElasticLoadBalancingTest {
                 ['Fn::FindInMap': ['Resources', 'Instance', 'Web2']],
             ],
             HealthCheck: new ElasticLoadBalancing.HealthCheck(
-                Target            : 'HTTP:80/index.html',
-                Timeout           : '5',
-                Interval          : '30',
+                Target: 'HTTP:80/index.html',
+                Timeout: '5',
+                Interval: '30',
                 UnhealthyThreshold: '2',
-                HealthyThreshold  : '10',
+                HealthyThreshold: '10',
             ),
             AccessLoggingPolicy: new ElasticLoadBalancing.AccessLoggingPolicy(
                 Enabled: 'true',

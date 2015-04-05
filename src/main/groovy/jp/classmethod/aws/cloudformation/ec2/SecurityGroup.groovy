@@ -4,9 +4,7 @@ import groovy.transform.Canonical
 import jp.classmethod.aws.cloudformation.Resource
 
 import static jp.classmethod.aws.cloudformation.util.Params.convert
-import static jp.classmethod.aws.cloudformation.util.Valid.checkKeys
-import static jp.classmethod.aws.cloudformation.util.Valid.logicalId
-import static jp.classmethod.aws.cloudformation.util.Valid.require
+import static jp.classmethod.aws.cloudformation.util.Valid.*
 
 /**
  * AWS::EC2::SecurityGroup
@@ -63,7 +61,7 @@ securityGroup id: "PublicWeb", VpcId: [Ref: "VPC"], GroupDescription: "Allow web
                 'Tags'                : []
             ]
         ]
-        Tags.each {key, value ->
+        Tags.each { key, value ->
             map['Properties']['Tags'] << ['Key': key, 'Value': value]
         }
         if (Tags['Name'] == null) map['Properties']['Tags'] << ['Key': 'Name', 'Value': id]

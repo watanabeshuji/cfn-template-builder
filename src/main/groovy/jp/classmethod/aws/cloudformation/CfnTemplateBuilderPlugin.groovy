@@ -1,12 +1,6 @@
 package jp.classmethod.aws.cloudformation
 
-import jp.classmethod.aws.cloudformation.ec2.InternetGateway
-import jp.classmethod.aws.cloudformation.ec2.Route
-import jp.classmethod.aws.cloudformation.ec2.RouteTable
-import jp.classmethod.aws.cloudformation.ec2.Subnet
-import jp.classmethod.aws.cloudformation.ec2.SubnetRouteTableAssociation
-import jp.classmethod.aws.cloudformation.ec2.VPC
-import jp.classmethod.aws.cloudformation.ec2.VPCGatewayAttachment
+import jp.classmethod.aws.cloudformation.ec2.*
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 

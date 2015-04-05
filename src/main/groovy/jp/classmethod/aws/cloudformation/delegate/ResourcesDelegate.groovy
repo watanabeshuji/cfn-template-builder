@@ -1,6 +1,5 @@
 package jp.classmethod.aws.cloudformation.delegate
 
-import static jp.classmethod.aws.cloudformation.util.Params.convert
 import jp.classmethod.aws.cloudformation.cloudformation.WaitCondition
 import jp.classmethod.aws.cloudformation.cloudformation.WaitConditionHandle
 import jp.classmethod.aws.cloudformation.ec2.*
@@ -10,6 +9,8 @@ import jp.classmethod.aws.cloudformation.iam.Policy
 import jp.classmethod.aws.cloudformation.iam.Role
 import jp.classmethod.aws.cloudformation.rds.DBInstance
 import jp.classmethod.aws.cloudformation.rds.DBSubnetGroup
+
+import static jp.classmethod.aws.cloudformation.util.Params.convert
 
 /**
  * Created by watanabeshuji on 2015/03/26.
@@ -169,11 +170,11 @@ class ResourcesDelegate {
     }
 
     void waitConditionHandle(Map params) {
-        this.resources << new WaitConditionHandle(convert(params))
+        this.resources << WaitConditionHandle.newInstance(params)
     }
 
     void waitCondition(Map params) {
-        this.resources << new WaitCondition(convert(params))
+        this.resources << WaitCondition.newInstance(params)
     }
 
 }

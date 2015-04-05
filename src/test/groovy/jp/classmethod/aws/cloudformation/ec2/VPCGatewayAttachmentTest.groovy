@@ -26,9 +26,9 @@ class VPCGatewayAttachmentTest {
     void "byids_toResourceMap"() {
         def sut = new VPCGatewayAttachment(id: 'InternetGatewayAttachment', VpcId: [Ref: 'VPC'], InternetGatewayId: [Ref: 'InternetGateway'])
         def expected = [
-            'Type': 'AWS::EC2::VPCGatewayAttachment',
+            'Type'      : 'AWS::EC2::VPCGatewayAttachment',
             'Properties': [
-                'VpcId': [Ref: 'VPC'],
+                'VpcId'            : [Ref: 'VPC'],
                 'InternetGatewayId': [Ref: 'InternetGateway']
             ]
         ]

@@ -58,7 +58,7 @@ class Instance extends Resource {
         if (!Volumes.isEmpty()) {
             map['Properties']['Volumes'] = Volumes.collect { it.toResourceMap() }
         }
-        Tags.each {key, value ->
+        Tags.each { key, value ->
             map['Properties']['Tags'] << ['Key': key, 'Value': value]
         }
         if (Tags['Name'] == null) map['Properties']['Tags'] << ['Key': 'Name', 'Value': id]

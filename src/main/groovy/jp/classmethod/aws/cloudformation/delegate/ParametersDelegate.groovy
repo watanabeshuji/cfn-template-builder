@@ -10,7 +10,7 @@ class ParametersDelegate {
         this.parameters = parameters
     }
 
-    def methodMissing(String name, args){
+    def methodMissing(String name, args) {
         parameters[name] = args[0]
     }
 

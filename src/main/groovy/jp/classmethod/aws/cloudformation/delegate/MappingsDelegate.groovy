@@ -10,7 +10,7 @@ class MappingsDelegate {
         this.mappings = mappings
     }
 
-    def methodMissing(String name, args){
+    def methodMissing(String name, args) {
         mappings[name] = args[0]
     }
 

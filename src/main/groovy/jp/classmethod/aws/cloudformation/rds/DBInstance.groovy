@@ -35,23 +35,23 @@ class DBInstance extends Resource {
 
     def toResourceMap() {
         def map = [
-            'Type': Type,
+            'Type'      : Type,
             'Properties': [
-                'DBSubnetGroupName': DBSubnetGroupName,
-                'MultiAZ': MultiAZ,
-                'DBInstanceClass': DBInstanceClass,
-                'AllocatedStorage': AllocatedStorage,
-                'Engine': Engine,
-                'EngineVersion': EngineVersion,
-                'Port': Port,
+                'DBSubnetGroupName'   : DBSubnetGroupName,
+                'MultiAZ'             : MultiAZ,
+                'DBInstanceClass'     : DBInstanceClass,
+                'AllocatedStorage'    : AllocatedStorage,
+                'Engine'              : Engine,
+                'EngineVersion'       : EngineVersion,
+                'Port'                : Port,
                 'DBParameterGroupName': DBParameterGroupName,
-                'DBName': DBName,
-                'MasterUsername': MasterUsername,
-                'MasterUserPassword': MasterUserPassword,
-                'VPCSecurityGroups': VPCSecurityGroups,
-                'Tags': [
-                        ['Key': 'Name', 'Value': id],
-                        ['Key': 'Application', 'Value': ['Ref': 'AWS::StackId' ]]
+                'DBName'              : DBName,
+                'MasterUsername'      : MasterUsername,
+                'MasterUserPassword'  : MasterUserPassword,
+                'VPCSecurityGroups'   : VPCSecurityGroups,
+                'Tags'                : [
+                    ['Key': 'Name', 'Value': id],
+                    ['Key': 'Application', 'Value': ['Ref': 'AWS::StackId']]
                 ]
             ]
         ]

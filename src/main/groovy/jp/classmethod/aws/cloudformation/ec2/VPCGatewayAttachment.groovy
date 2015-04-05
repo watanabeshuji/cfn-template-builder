@@ -1,15 +1,10 @@
 package jp.classmethod.aws.cloudformation.ec2
 
 import groovy.transform.Canonical
-import jp.classmethod.aws.cloudformation.DSLSupport
 import jp.classmethod.aws.cloudformation.Resource
 
-import java.nio.file.Path
-
 import static jp.classmethod.aws.cloudformation.util.Params.convert
-import static jp.classmethod.aws.cloudformation.util.Valid.checkKeys
-import static jp.classmethod.aws.cloudformation.util.Valid.logicalId
-import static jp.classmethod.aws.cloudformation.util.Valid.require
+import static jp.classmethod.aws.cloudformation.util.Valid.*
 
 /**
  * AWS::EC2::VPCGatewayAttachment
