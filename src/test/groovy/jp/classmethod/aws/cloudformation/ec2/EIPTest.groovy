@@ -1,5 +1,6 @@
 package jp.classmethod.aws.cloudformation.ec2
 
+import jp.classmethod.aws.cloudformation.util.ValidErrorException
 import org.junit.Test
 
 import java.nio.file.Path
@@ -35,7 +36,7 @@ class EIPTest {
 
     @Test
     void "Instanceに紐尽くtoResourceMap"() {
-        def sut = new EIP(id: 'WebEIP', InstanceId: 'Web')
+        def sut = new EIP(id: 'WebEIP', InstanceId: [Ref: 'Web'])
         def expected = [
             'Type'      : 'AWS::EC2::EIP',
             'Properties': [
@@ -46,4 +47,15 @@ class EIPTest {
         assert sut.toResourceMap() == expected
     }
 
+    @Test
+    void "refIds"() {
+        def sut = EIP.newInstance(id: 'WebEIP', InstanceId: [Ref: 'Web'])
+        assert sut.refIds == ['Web']
+    }
+
+
+    @Test(expected = ValidErrorException)
+    void "id 必須"() {
+        EIP.newInstance(InstanceId: [Ref: 'Web'])
+    }
 }

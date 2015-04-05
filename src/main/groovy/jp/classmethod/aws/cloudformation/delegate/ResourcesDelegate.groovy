@@ -134,7 +134,7 @@ class ResourcesDelegate {
     }
 
     void eip(Map params) {
-        this.resources << new EIP(convert(params))
+        this.resources << EIP.newInstance(params)
     }
 
     void role(Map params) {
