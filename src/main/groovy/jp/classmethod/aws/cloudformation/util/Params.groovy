@@ -5,6 +5,33 @@ package jp.classmethod.aws.cloudformation.util
  */
 class Params {
 
+    static def convertUserData(String userData) {
+        def result = []
+        userData.split("\n").each {
+            result.addAll(splitLine(it))
+        }
+        result
+    }
+
+    private static List<String> splitLine(String line) {
+        if (line.indexOf("[Ref:") == -1) return ["${line}\\n"]
+        String buf = line
+        List result = []
+        while (true) {
+            def m = (buf =~ /(.*?)\[Ref:(.*?)\](.*)/)
+            if (m.matches()) {
+                result << m[0][1]
+                result << [Ref: m[0][2]]
+                buf = m[0][3]
+            } else {
+                result << "${buf}\\n"
+                break
+            }
+        }
+        result
+    }
+
+
     static Map convert(Map params) {
         params.each { k, v ->
             params[k] = convertValue(v)
