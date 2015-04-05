@@ -18,7 +18,7 @@ cloudformation {
         route id: "PublicRoute", RouteTableId: [Ref: "PublicRouteTable"], DestinationCidrBlock: "0.0.0.0/0", GatewayId: [Ref: "InternetGateway"]
         subnetRouteTableAssociation id: "SubnetRouteTableAssociationA", SubnetId: [Ref: "SubnetA"], RouteTableId: [Ref: "PublicRouteTable"]
         subnetRouteTableAssociation id: "SubnetRouteTableAssociationC", SubnetId: [Ref: "SubnetC"], RouteTableId: [Ref: "PublicRouteTable"]
-        securityGroup id: "PublicWeb", VpcId: vpcId, Description: "Allow web access from internet.", {
+        securityGroup id: "PublicWeb", VpcId: vpcId, GroupDescription: "Allow web access from internet.", {
             securityGroupIngress IpProtocol: "tcp", FromPort: 80,  ToPort:  80, CidrIp: "0.0.0.0/0"
             securityGroupIngress IpProtocol: "tcp", FromPort: 443, ToPort: 443, CidrIp: "0.0.0.0/0"
         }

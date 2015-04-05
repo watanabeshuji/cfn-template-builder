@@ -80,7 +80,7 @@ class CloudFormationTest {
                 new Route(id: 'PublicRoute', RouteTableId: [Ref: "PublicRouteTable"], DestinationCidrBlock: '0.0.0.0/0', GatewayId: [Ref: "InternetGateway"]),
                 new SubnetRouteTableAssociation(id: 'SubnetRouteTableAssociationA', SubnetId: [Ref: "SubnetA"], RouteTableId: [Ref: "PublicRouteTable"]),
                 new SubnetRouteTableAssociation(id: 'SubnetRouteTableAssociationC', SubnetId: [Ref: "SubnetC"], RouteTableId: [Ref: "PublicRouteTable"]),
-                new SecurityGroup(id: 'PublicWeb', VpcId: [Ref: "VPC"], Description: "Allow web access from internet.",
+                new SecurityGroup(id: 'PublicWeb', VpcId: [Ref: "VPC"], GroupDescription: "Allow web access from internet.",
                     SecurityGroupIngress: [
                         new SecurityGroupIngress(IpProtocol: "tcp", FromPort: 80, ToPort: 80, CidrIp: "0.0.0.0/0"),
                         new SecurityGroupIngress(IpProtocol: "tcp", FromPort: 443, ToPort: 443, CidrIp: "0.0.0.0/0")
@@ -137,12 +137,12 @@ class CloudFormationTest {
                 new VPC(id: 'VPC', CidrBlock: "10.0.0.0/16"),
                 new Subnet(id: 'Subnet1', CidrBlock: "10.0.0.0/24", VpcId: [Ref: "VPC"]),
                 new Subnet(id: 'Subnet2', CidrBlock: "10.0.1.0/24", VpcId: [Ref: "VPC"], AvailabilityZone: "ap-northeast-1a"),
-                new SecurityGroup(id: 'PublicWeb', VpcId: [Ref: "VPC"], Description: "Allow web access from internet.",
+                new SecurityGroup(id: 'PublicWeb', VpcId: [Ref: "VPC"], GroupDescription: "Allow web access from internet.",
                     SecurityGroupIngress: [
                         new SecurityGroupIngress(IpProtocol: "tcp", FromPort: 80, ToPort: 80, CidrIp: "0.0.0.0/0"),
                         new SecurityGroupIngress(IpProtocol: "tcp", FromPort: 443, ToPort: 443, CidrIp: "0.0.0.0/0")
                     ]),
-                new SecurityGroup(id: 'MyMainte', VpcId: [Ref: "VPC"], Description: "Allow ssh access from specific ip address.",
+                new SecurityGroup(id: 'MyMainte', VpcId: [Ref: "VPC"], GroupDescription: "Allow ssh access from specific ip address.",
                     SecurityGroupIngress: [
                         new SecurityGroupIngress(IpProtocol: "tcp", FromPort: 22, ToPort: 22, CidrIp: "1.2.3.4/32"),
                         new SecurityGroupIngress(IpProtocol: "tcp", FromPort: 22, ToPort: 22, CidrIp: "1.2.3.5/32")

@@ -15,7 +15,7 @@ class SecurityGroupDelegate {
     }
 
     void securityGroupIngress(Map params) {
-        this.securityGroup.SecurityGroupIngress << new SecurityGroupIngress(params)
+        this.securityGroup.SecurityGroupIngress << SecurityGroupIngress.newInstance(params)
     }
 
 }

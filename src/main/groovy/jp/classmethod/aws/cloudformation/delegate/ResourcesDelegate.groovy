@@ -109,7 +109,7 @@ class ResourcesDelegate {
     }
 
     void securityGroup(Map params, Closure cl) {
-        def securityGroup = new SecurityGroup(convert(params))
+        def securityGroup = SecurityGroup.newInstance(params)
         cl.delegate = new SecurityGroupDelegate(securityGroup)
         cl.resolveStrategy = Closure.DELEGATE_FIRST
         cl()

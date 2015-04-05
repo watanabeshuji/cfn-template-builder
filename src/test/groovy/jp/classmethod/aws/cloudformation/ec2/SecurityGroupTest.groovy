@@ -1,5 +1,6 @@
 package jp.classmethod.aws.cloudformation.ec2
 
+import jp.classmethod.aws.cloudformation.util.ValidErrorException
 import org.junit.Test
 
 import java.nio.file.Path
@@ -16,7 +17,7 @@ class SecurityGroupTest {
         Path input = getPath("/templates/resources/securityGroup.groovy")
         def actual = SecurityGroup.load(input)
         assert actual == [
-            new SecurityGroup(id: 'PublicWeb', VpcId: [Ref: "VPC"], Description: "Allow web access from internet.",
+            new SecurityGroup(id: 'PublicWeb', VpcId: [Ref: "VPC"], GroupDescription: "Allow web access from internet.",
                 SecurityGroupIngress: [
                     new SecurityGroupIngress(IpProtocol: "tcp", FromPort: 80, ToPort: 80, CidrIp: "0.0.0.0/0"),
                     new SecurityGroupIngress(IpProtocol: "tcp", FromPort: 443, ToPort: 443, CidrIp: "0.0.0.0/0")
@@ -26,7 +27,7 @@ class SecurityGroupTest {
 
     @Test
     void "toResourceMap"() {
-        def sut = new SecurityGroup(id: 'Internal', VpcId: [Ref: 'VPC'], Description: 'Allow all communications in VPC',
+        def sut = new SecurityGroup(id: 'Internal', VpcId: [Ref: 'VPC'], GroupDescription: 'Allow all communications in VPC',
             SecurityGroupIngress: [
                 new SecurityGroupIngress(IpProtocol: 'tcp', FromPort: '0', ToPort: '65535', CidrIp: '10.0.0.0/16'),
                 new SecurityGroupIngress(IpProtocol: 'udp', FromPort: '0', ToPort: '65535', CidrIp: '10.0.0.0/16'),
@@ -51,5 +52,32 @@ class SecurityGroupTest {
         assert sut.toResourceMap() == expected
     }
 
+
+    @Test
+    void "refIds"() {
+        def sut = SecurityGroup.newInstance(id: 'Internal', VpcId: [Ref: 'VPC'], GroupDescription: 'Allow all communications in VPC')
+        assert sut.refIds == ['VPC']
+    }
+
+    @Test(expected = ValidErrorException)
+    void "id 必須"() {
+        def sut = SecurityGroup.newInstance(
+            VpcId: [Ref: 'VPC'], GroupDescription: 'Allow all communications in VPC'
+        )
+    }
+
+    @Test(expected = ValidErrorException)
+    void "VpcId 必須"() {
+        def sut = SecurityGroup.newInstance(
+            id: 'Internal', GroupDescription: 'Allow all communications in VPC'
+        )
+    }
+
+    @Test(expected = ValidErrorException)
+    void "GroupDescription 必須"() {
+        def sut = SecurityGroup.newInstance(
+            id: 'Internal', VpcId: [Ref: 'VPC']
+        )
+    }
 
 }
