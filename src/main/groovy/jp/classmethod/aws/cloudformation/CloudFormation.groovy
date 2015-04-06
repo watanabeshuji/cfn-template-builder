@@ -20,7 +20,7 @@ class CloudFormation {
     def getResourcesSummary() {
         def summary = []
         Resources.each {
-            summary << [Name: it.id, Type: it.Type]
+            summary << [Name: it.id, Type: it.TYPE]
         }
         summary
     }

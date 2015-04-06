@@ -10,7 +10,7 @@ import jp.classmethod.aws.cloudformation.Resource
 class Role extends Resource {
 
     def id
-    final def Type = 'AWS::IAM::Role'
+    static final def TYPE = 'AWS::IAM::Role'
     def Path = '/'
     def AssumeRolePolicyDocument = [
         Version  : '2012-10-17',
@@ -24,7 +24,7 @@ class Role extends Resource {
 
     def toResourceMap() {
         [
-            'Type'      : Type,
+            'Type'      : TYPE,
             'Properties': [
                 'AssumeRolePolicyDocument': AssumeRolePolicyDocument,
                 'Path'                    : Path

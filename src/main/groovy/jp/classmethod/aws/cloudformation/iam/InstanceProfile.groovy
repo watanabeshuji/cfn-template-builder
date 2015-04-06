@@ -12,13 +12,13 @@ import jp.classmethod.aws.cloudformation.Resource
 class InstanceProfile extends Resource {
 
     def id
-    final def Type = 'AWS::IAM::InstanceProfile'
+    static final def TYPE = 'AWS::IAM::InstanceProfile'
     def Path
     def Roles
 
     def toResourceMap() {
         def result = [
-            'Type'      : Type,
+            'Type'      : TYPE,
             'Properties': [
                 'Path' : Path,
                 'Roles': Roles
