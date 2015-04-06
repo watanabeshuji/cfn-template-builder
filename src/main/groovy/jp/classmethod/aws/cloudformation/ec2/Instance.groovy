@@ -106,6 +106,31 @@ http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-ec2
     @Canonical
     static class Volume {
 
+        static final def TYPE = 'AWS::EC2::Instance'
+        static def DESC = '''\
+AWS::EC2::EIP
+http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-ec2-instance.html
+
+[Required Params]
+- id
+- ImageId
+
+[Optional Params]
+- InstanceType
+- KeyName
+- SubnetId
+- IamInstanceProfile
+- SourceDestCheck
+- PrivateIpAddress
+- SecurityGroupIds
+- Volumes
+- BlockDeviceMappings
+- UserData
+- Tags
+
+[Sample]
+'''
+
         def VolumeId
         def Device
 

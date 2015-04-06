@@ -1,5 +1,7 @@
 package jp.classmethod.aws.cloudformation
 
+import jp.classmethod.aws.cloudformation.cloudformation.WaitCondition
+import jp.classmethod.aws.cloudformation.cloudformation.WaitConditionHandle
 import jp.classmethod.aws.cloudformation.ec2.*
 import org.gradle.api.Plugin
 import org.gradle.api.Project
@@ -93,39 +95,55 @@ class CfnTemplateBuilderPlugin implements Plugin<Project> {
     def help(String type) {
         println "------"
         switch (type) {
-            case "EC2::VPC":
+            case "VPC":
                 println VPC.DESC
                 break
-            case "EC2::InternetGateway":
+            case "InternetGateway":
                 println InternetGateway.DESC
                 break
-            case "EC2::VPCGatewayAttachment":
+            case "VPCGatewayAttachment":
                 println VPCGatewayAttachment.DESC
                 break
-            case "EC2::Subnet":
+            case "Subnet":
                 println Subnet.DESC
                 break
-            case "EC2::RouteTable":
+            case "RouteTable":
                 println RouteTable.DESC
                 break
-            case "EC2::Route":
+            case "Route":
                 println Route.DESC
                 break
-            case "EC2::SubnetRouteTableAssociation":
+            case "SubnetRouteTableAssociation":
                 println SubnetRouteTableAssociation.DESC
+                break
+            case "EIP":
+                println EIP.DESC
+                break
+            case "Instance":
+                println Instance.DESC
+                break
+            case "WaitCondition":
+                println WaitCondition.DESC
+                break
+            case "WaitConditionHandle":
+                println WaitConditionHandle.DESC
                 break
             default:
                 println '''\
 [Usage]
 gradle -PcfnType=[Type] cfnHelp
 Type list
-- EC2::VPC
-- EC2::InternetGateway
-- EC2::VPCGatewayAttachment
-- EC2::Subnet
-- EC2::RouteTable
-- EC2::Route
-- EC2::SubnetRouteTableAssociation
+- VPC
+- InternetGateway
+- VPCGatewayAttachment
+- Subnet
+- RouteTable
+- Route
+- SubnetRouteTableAssociation
+- EIP
+- Instance
+- WaitCondition
+- WaitConditionHandle
 '''
                 break
         }
