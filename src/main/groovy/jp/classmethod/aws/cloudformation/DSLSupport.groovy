@@ -19,6 +19,15 @@ class DSLSupport {
                 cl.resolveStrategy = Closure.DELEGATE_FIRST
                 cl()
             }
+            emc.properties = { Map params ->
+                params
+            }
+            emc.properties = { Map params1, Map params2 ->
+                Map params = [:]
+                params << params1
+                params << params2
+                params
+            }
         })
         cfn
     }
