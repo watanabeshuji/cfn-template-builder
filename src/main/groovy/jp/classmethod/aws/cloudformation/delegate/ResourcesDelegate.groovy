@@ -122,7 +122,7 @@ class ResourcesDelegate {
     }
 
     void instance(Map params) {
-        this.resources << new Instance(convert(params))
+        this.resources << Instance.newInstance(params)
     }
 
     void instance(Map params, Closure cl) {

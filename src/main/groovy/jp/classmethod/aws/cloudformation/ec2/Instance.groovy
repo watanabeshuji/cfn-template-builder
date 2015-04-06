@@ -3,6 +3,11 @@ package jp.classmethod.aws.cloudformation.ec2
 import groovy.transform.Canonical
 import jp.classmethod.aws.cloudformation.Resource
 
+import static jp.classmethod.aws.cloudformation.util.Params.convert
+import static jp.classmethod.aws.cloudformation.util.Valid.checkKeys
+import static jp.classmethod.aws.cloudformation.util.Valid.logicalId
+import static jp.classmethod.aws.cloudformation.util.Valid.require
+
 /**
  * AWS::EC2::Instance
  * http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-ec2-instance.html
@@ -12,12 +17,36 @@ import jp.classmethod.aws.cloudformation.Resource
 @Canonical
 class Instance extends Resource {
 
-    final def Type = 'AWS::EC2::Instance'
+    static final def TYPE = 'AWS::EC2::Instance'
+    static def DESC = '''\
+AWS::EC2::EIP
+http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-ec2-instance.html
+
+[Required Params]
+- id
+- ImageId
+
+[Optional Params]
+- InstanceType
+- KeyName
+- SubnetId
+- IamInstanceProfile
+- SourceDestCheck
+- PrivateIpAddress
+- SecurityGroupIds
+- Volumes
+- BlockDeviceMappings
+- UserData
+- Tags
+
+[Sample]
+'''
+
     def id
+    def ImageId
     def InstanceType
     def KeyName
     def SubnetId
-    def ImageId
     def IamInstanceProfile
     def SourceDestCheck
     def PrivateIpAddress
@@ -27,23 +56,31 @@ class Instance extends Resource {
     def UserData
     def Tags = [:]
 
-    def Instance() {
+    static Instance newInstance(Map params) {
+        convert(params)
+        checkKeys(Instance, params, [
+            'id', 'ImageId', 'InstanceType', 'KeyName', 'SubnetId', 'IamInstanceProfile', 'SourceDestCheck',
+            'PrivateIpAddress', 'SecurityGroupIds', 'Volumes', 'BlockDeviceMappings', 'UserData', 'Tags'
+            ])
+        logicalId(Instance, params)
+        require(RouteTable, 'ImageId', params)
+        new Instance(params).withRefIds(params)
     }
 
     def toResourceMap() {
         def map = [
-            'Type'      : Type,
+            'Type'      : TYPE,
             'Properties': [
+                'ImageId': ImageId,
                 'Tags': []
             ]
         ]
         if (InstanceType) map['Properties']['InstanceType'] = InstanceType
         if (KeyName) map['Properties']['KeyName'] = KeyName
-        map['Properties']['SubnetId'] = SubnetId
-        map['Properties']['ImageId'] = ImageId
+        if (SubnetId) map['Properties']['SubnetId'] = SubnetId
         if (IamInstanceProfile) map['Properties']['IamInstanceProfile'] = IamInstanceProfile
         if (SourceDestCheck != null) map['Properties']['SourceDestCheck'] = SourceDestCheck
-        map['Properties']['SecurityGroupIds'] = SecurityGroupIds
+        if (SecurityGroupIds) map['Properties']['SecurityGroupIds'] = SecurityGroupIds
         if (PrivateIpAddress) map['Properties']['PrivateIpAddress'] = PrivateIpAddress
         if (UserData) {
             map['Properties']['UserData'] = [

@@ -1,5 +1,6 @@
 package jp.classmethod.aws.cloudformation.ec2
 
+import jp.classmethod.aws.cloudformation.util.ValidErrorException
 import org.junit.Test
 
 import java.nio.file.Path
@@ -44,7 +45,7 @@ yum -y update
 
     @Test
     void "toResourceMap"() {
-        def sut = new Instance(
+        def sut = Instance.newInstance(
             id: 'Bastion',
             InstanceType: 't1.micro',
             KeyName: ['Fn::FindInMap': ['Common', 'KeyPair', 'Ec2KeyName']],
@@ -61,17 +62,17 @@ yum update -y
         def expected = [
             'Type'      : 'AWS::EC2::Instance',
             'Properties': [
-                'InstanceType'      : 't1.micro',
-                'KeyName'           : ['Fn::FindInMap': ['Common', 'KeyPair', 'Ec2KeyName']],
-                'SubnetId'          : ['Ref': 'PublicSubnet'],
                 'ImageId'           : ['Fn::FindInMap': ['AMI', 'NAT', '201309']],
-                'IamInstanceProfile': ['Fn::FindInMap': ['Common', 'Role', 'Ec2Role']],
-                'SourceDestCheck'   : false,
-                'SecurityGroupIds'  : [['Ref': 'Internal'], ['Ref': 'CmMainte']],
                 'Tags'              : [
                     ['Key': 'Name', 'Value': 'Bastion'],
                     ['Key': 'Application', 'Value': ['Ref': 'AWS::StackId']]
                 ],
+                'InstanceType'      : 't1.micro',
+                'KeyName'           : ['Fn::FindInMap': ['Common', 'KeyPair', 'Ec2KeyName']],
+                'SubnetId'          : ['Ref': 'PublicSubnet'],
+                'IamInstanceProfile': ['Fn::FindInMap': ['Common', 'Role', 'Ec2Role']],
+                'SourceDestCheck'   : false,
+                'SecurityGroupIds'  : [['Ref': 'Internal'], ['Ref': 'CmMainte']],
                 'UserData'          : [
                     'Fn::Base64': [
                         'Fn::Join': ['',
@@ -87,7 +88,7 @@ yum update -y
 
     @Test
     void "toResourceMap_Volume有"() {
-        def sut = new Instance(
+        def sut = Instance.newInstance(
             id: 'NAT',
             InstanceType: 't1.micro',
             KeyName: ['Fn::FindInMap': ['Common', 'KeyPair', 'Ec2KeyName']],
@@ -121,13 +122,12 @@ yum update -y
 
     @Test
     void "toResourceMap_BlockDeviceMappings"() {
-        def sut = new Instance(
+        def sut = Instance.newInstance(
             id: 'WebServer',
             InstanceType: 'm3.medium',
             KeyName: ['Fn::FindInMap': ['Common', 'KeyPair', 'Ec2KeyName']],
             SubnetId: [Ref: 'PublicSubnet'],
             ImageId: ['Fn::FindInMap': ['AMI', 'AmazonLinux', '20140901']],
-            SecurityGroupIds: [],
             BlockDeviceMappings: [
                 new Instance.BlockDeviceMapping(
                     DeviceName: '/dev/xvda',
@@ -142,11 +142,14 @@ yum update -y
         def expected = [
             'Type'      : 'AWS::EC2::Instance',
             'Properties': [
+                'ImageId'            : ['Fn::FindInMap': ['AMI', 'AmazonLinux', '20140901']],
+                'Tags'               : [
+                    ['Key': 'Name', 'Value': 'WebServer'],
+                    ['Key': 'Application', 'Value': ['Ref': 'AWS::StackId']]
+                ],
                 'InstanceType'       : 'm3.medium',
                 'KeyName'            : ['Fn::FindInMap': ['Common', 'KeyPair', 'Ec2KeyName']],
                 'SubnetId'           : ['Ref': 'PublicSubnet'],
-                'ImageId'            : ['Fn::FindInMap': ['AMI', 'AmazonLinux', '20140901']],
-                'SecurityGroupIds'   : [],
                 'BlockDeviceMappings': [
                     [
                         'DeviceName': '/dev/xvda',
@@ -157,15 +160,40 @@ yum update -y
                         'Ebs'       : ['VolumeSize': '400', 'VolumeType': 'gp2']
                     ]
                 ],
-                'Tags'               : [
-                    ['Key': 'Name', 'Value': 'WebServer'],
-                    ['Key': 'Application', 'Value': ['Ref': 'AWS::StackId']]
-                ],
             ]
         ]
         assert sut.toResourceMap() == expected
     }
 
 
+
+    @Test
+    void "refIds"() {
+        def sut = Instance.newInstance(
+            id: 'Bastion',
+            InstanceType: 't1.micro',
+            KeyName: ['Fn::FindInMap': ['Common', 'KeyPair', 'Ec2KeyName']],
+            SubnetId: [Ref: 'PublicSubnet'],
+            ImageId: ['Fn::FindInMap': ['AMI', 'NAT', '201309']],
+            IamInstanceProfile: ['Fn::FindInMap': ['Common', 'Role', 'Ec2Role']],
+            SourceDestCheck: false,
+            SecurityGroupIds: [[Ref: 'Internal'], [Ref: 'CmMainte']],
+            UserData: '''\
+#! /bin/bash -v
+yum update -y
+'''
+        )
+        assert sut.refIds == ['PublicSubnet','Internal', 'CmMainte']
+    }
+
+    @Test(expected = ValidErrorException)
+    void "id 必須"() {
+        Instance.newInstance(ImageId: ['Fn::FindInMap': ['AMI', 'NAT', '201309']])
+    }
+
+    @Test(expected = ValidErrorException)
+    void "ImageId 必須"() {
+        Instance.newInstance(id: 'Web')
+    }
 }
 
