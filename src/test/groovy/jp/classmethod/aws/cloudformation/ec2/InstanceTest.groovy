@@ -17,10 +17,11 @@ class InstanceTest {
     void "load instance.groovy"() {
         Path input = getPath("/templates/resources/instance.groovy")
         def actual = Instance.load(input)
-        def userData = '''/
-#!/bin/sh
-yum -y update
-'''
+        def userData = [
+            "#!/bin/sh\\n",
+            "\\n",
+            "yum -y update\\n"
+        ]
         def excepted = [
             new Instance(id: "Web", InstanceType: "t2.small", KeyName: "web-key", SubnetId: [Ref: "PublicSubnet"],
                 ImageId: ["Fn::FindInMap": ["AMI", "AmazonLinux", "201503"]], IamInstanceProfile: [Ref: "WebInstanceProfile"],
@@ -40,6 +41,9 @@ yum -y update
                     new Instance.BlockDeviceMapping(DeviceName: "/dev/xvdb", Ebs: new Instance.Ebs(VolumeType: "gp2", VolumeSize: "100"))
                 ]),
         ]
+        assert actual[0].UserData == excepted[0].UserData
+        assert actual[1].UserData == excepted[1].UserData
+        assert actual[2].UserData == excepted[2].UserData
         assert actual == excepted
     }
 

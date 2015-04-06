@@ -1,5 +1,6 @@
-def userData = '''/
+def userData = '''\
 #!/bin/sh
+
 yum -y update
 '''
 
