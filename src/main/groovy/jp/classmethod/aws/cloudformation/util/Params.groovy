@@ -39,7 +39,7 @@ class Params {
         params
     }
 
-    private static def convertValue(value) {
+    static def convertValue(value) {
         if (value instanceof List) return value.collect { convertValue(it) }
         if (needsConvertRef(value)) return toRef(value)
         if (needsConvertFindMap(value)) return toFindMap(value)

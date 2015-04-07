@@ -62,4 +62,11 @@ class CloudFormationDelegate {
             cfn.Resources.addAll(resources)
         }
     }
+
+    void outputs(Closure cl) {
+        cl.delegate = new OutputsDelegate(cfn.Outputs)
+        cl.resolveStrategy = Closure.DELEGATE_FIRST
+        cl()
+    }
+
 }

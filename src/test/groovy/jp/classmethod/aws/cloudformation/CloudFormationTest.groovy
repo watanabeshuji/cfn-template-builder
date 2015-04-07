@@ -153,6 +153,20 @@ class CloudFormationTest {
     }
 
 
+    @Test
+    void "load outputs.groovy"() {
+        Path input = getPath("/templates/outputs.groovy")
+        def actual = CloudFormation.load(input)
+        def expected = new CloudFormation(
+            Outputs: [
+                CodeDeployTrustRoleARN: ["Fn::GetAtt": ["CodeDeployTrustRole", "Arn"]],
+                InstanceProfile: [Ref: "InstanceProfile"]
+            ]
+        )
+        assert actual == expected
+    }
+
+
     @Test(expected = InvalidResourceException)
     void "doValidteで重複idはエラー"() {
         CloudFormation sut = new CloudFormation()
