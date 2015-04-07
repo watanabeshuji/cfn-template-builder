@@ -4,10 +4,7 @@ import groovy.transform.Canonical
 import jp.classmethod.aws.cloudformation.Resource
 
 import static jp.classmethod.aws.cloudformation.util.Params.convert
-import static jp.classmethod.aws.cloudformation.util.Valid.checkKeys
-import static jp.classmethod.aws.cloudformation.util.Valid.logicalId
-import static jp.classmethod.aws.cloudformation.util.Valid.require
-import static jp.classmethod.aws.cloudformation.util.Valid.requireOneOf
+import static jp.classmethod.aws.cloudformation.util.Valid.*
 
 /**
  * AWS::IAM::Policy
@@ -54,9 +51,9 @@ resources {
     static Policy newInstance(Map params) {
         convert(params)
         checkKeys(Policy, params, ['id', 'PolicyName', 'PolicyDocument', 'Roles', 'Groups', 'Users'])
-        logicalId(Role, params)
-        require(Role, ['PolicyName', 'PolicyDocument'], params)
-        requireOneOf(Role, ['Roles', 'Groups', 'Users'], params)
+        logicalId(Policy, params)
+        require(Policy, ['PolicyName', 'PolicyDocument'], params)
+        requireOneOf(Policy, ['Roles', 'Groups', 'Users'], params)
         new Policy(params).withRefIds(params)
     }
 

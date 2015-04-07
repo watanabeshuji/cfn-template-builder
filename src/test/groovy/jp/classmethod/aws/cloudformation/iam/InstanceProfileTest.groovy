@@ -1,5 +1,6 @@
 package jp.classmethod.aws.cloudformation.iam
 
+import jp.classmethod.aws.cloudformation.util.ValidErrorException
 import org.junit.Test
 
 import java.nio.file.Path
@@ -23,7 +24,7 @@ class InstanceProfileTest {
 
     @Test
     void "toResourceMap"() {
-        def sut = new InstanceProfile(id: 'WebInstanceProfile', Path: '/', Roles: [[Ref: 'Web'], [Ref: 'EC2PowerUser']])
+        def sut = InstanceProfile.newInstance(id: 'WebInstanceProfile', Path: '/', Roles: ["Ref:Web", "Ref:EC2PowerUser"])
         def expected = [
             'Type'      : 'AWS::IAM::InstanceProfile',
             'Properties': [
@@ -34,5 +35,30 @@ class InstanceProfileTest {
         assert sut.toResourceMap() == expected
     }
 
+    @Test
+    void "refIds"() {
+        def sut = InstanceProfile.newInstance(id: 'WebInstanceProfile', Path: '/', Roles: ["Ref:Web", "Ref:EC2PowerUser"])
+        assert sut.refIds == ['Web', 'EC2PowerUser']
+    }
 
+
+    @Test(expected = ValidErrorException)
+    void "id 必須"() {
+        InstanceProfile.newInstance(Path: '/', Roles: ["Ref:Web", "Ref:EC2PowerUser"])
+    }
+
+    @Test(expected = ValidErrorException)
+    void "Path 必須"() {
+        InstanceProfile.newInstance(id: 'WebInstanceProfile', Roles: ["Ref:Web", "Ref:EC2PowerUser"])
+    }
+
+    @Test(expected = ValidErrorException)
+    void "Roles 必須"() {
+        InstanceProfile.newInstance(id: 'WebInstanceProfile', Path: '/')
+    }
+
+    @Test(expected = ValidErrorException)
+    void "Roles 必須(空)"() {
+        InstanceProfile.newInstance(id: 'WebInstanceProfile', Path: '/', Roles: [])
+    }
 }

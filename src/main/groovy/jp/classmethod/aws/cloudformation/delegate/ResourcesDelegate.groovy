@@ -146,7 +146,7 @@ class ResourcesDelegate {
     }
 
     void instanceProfile(Map params) {
-        this.resources << new InstanceProfile(convert(params))
+        this.resources << InstanceProfile.newInstance(params)
     }
 
     void dbSubnetGroup(Map params) {

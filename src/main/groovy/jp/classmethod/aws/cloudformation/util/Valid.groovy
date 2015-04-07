@@ -36,7 +36,7 @@ $type.DESC"
 
     static void require(Class type, String name, Map params) {
         def value = params[name]
-        if (value == null) throw new ValidErrorException("""\
+        if (value == null || (value instanceof Collection && value.isEmpty())) throw new ValidErrorException("""\
 ${type.TYPE}[$name] can't be null.
 --
 $type.DESC"
