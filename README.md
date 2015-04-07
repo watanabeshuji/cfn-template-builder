@@ -35,7 +35,7 @@ cfnBuildタスクを実行し、テンプレートファイルを作成します
 ```
 $ gradle cfnBuild
 ```
-cfn.groovy がテンプレートファイルです。
+cfn.template がテンプレートファイルです。
 
 
 ## タスク
