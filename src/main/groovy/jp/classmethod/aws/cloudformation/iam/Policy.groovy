@@ -3,6 +3,12 @@ package jp.classmethod.aws.cloudformation.iam
 import groovy.transform.Canonical
 import jp.classmethod.aws.cloudformation.Resource
 
+import static jp.classmethod.aws.cloudformation.util.Params.convert
+import static jp.classmethod.aws.cloudformation.util.Valid.checkKeys
+import static jp.classmethod.aws.cloudformation.util.Valid.logicalId
+import static jp.classmethod.aws.cloudformation.util.Valid.require
+import static jp.classmethod.aws.cloudformation.util.Valid.requireOneOf
+
 /**
  * AWS::IAM::Policy
  * http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-iam-policy.html
@@ -12,29 +18,60 @@ import jp.classmethod.aws.cloudformation.Resource
 @Canonical
 class Policy extends Resource {
 
-    def id
     static final def TYPE = 'AWS::IAM::Policy'
+    static def DESC = '''\
+AWS::IAM::Policy
+http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-iam-policy.html
+
+[Required Params]
+- id
+- PolicyName
+- PolicyDocument
+- Roles or Groups or Users
+
+[Optional Params]
+none
+
+[Sample]
+def ec2PolicyDocument = [
+    "Version"  : "2012-10-17",
+    "Statement": [
+        ["Effect": "Allow", "Action": "*", "Resource": "*"]
+    ]
+]
+resources {
+    policy id: "EC2Policy", PolicyName: "EC2", PolicyDocument: ec2PolicyDocument, Roles: ["RefEC2Role"]]
+}
+
+'''
+    def id
     def PolicyName
     def PolicyDocument
-    def Roles = []
-    def Groups = []
-    def Users = []
+    def Roles
+    def Groups
+    def Users
 
-    def Policy() {
+    static Policy newInstance(Map params) {
+        convert(params)
+        checkKeys(Policy, params, ['id', 'PolicyName', 'PolicyDocument', 'Roles', 'Groups', 'Users'])
+        logicalId(Role, params)
+        require(Role, ['PolicyName', 'PolicyDocument'], params)
+        requireOneOf(Role, ['Roles', 'Groups', 'Users'], params)
+        new Policy(params).withRefIds(params)
     }
 
     def toResourceMap() {
-        def result = [
+        def map = [
             'Type'      : TYPE,
             'Properties': [
                 'PolicyName'    : PolicyName,
                 'PolicyDocument': PolicyDocument
             ]
         ]
-        if (!Roles.isEmpty()) result['Properties']['Roles'] = Roles
-        if (!Groups.isEmpty()) result['Properties']['Groups'] = Groups
-        if (!Users.isEmpty()) result['Properties']['Users'] = Users
-        result
+        if (Roles) map['Properties']['Roles'] = Roles
+        if (Groups) map['Properties']['Groups'] = Groups
+        if (Users) map['Properties']['Users'] = Users
+        map
     }
 
 }

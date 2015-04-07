@@ -1,5 +1,6 @@
 package jp.classmethod.aws.cloudformation.iam
 
+import jp.classmethod.aws.cloudformation.util.ValidErrorException
 import org.junit.Test
 
 import java.nio.file.Path
@@ -47,14 +48,14 @@ class PolicyTest {
 
     @Test
     void "toResourceMap"() {
-        def sut = new Policy(id: 'RootPolicy', PolicyName: 'root',
+        def sut = Policy.newInstance(id: 'RootPolicy', PolicyName: 'root',
             PolicyDocument: [
                 Version  : '2012-10-17',
                 Statement: [
                     [Action: '*', Effect: 'Allow', Resource: '*']
                 ]
             ],
-            Roles: [[Ref: 'Web']], Users: [[Ref: 'Admin'], [Ref: 'PowerUser']]
+            Roles: ["Ref:Web"], Users: ["Ref:Admin", "Ref:PowerUser"]
         )
         def expected = [
             'Type'      : 'AWS::IAM::Policy',
@@ -71,5 +72,62 @@ class PolicyTest {
         assert sut.toResourceMap() == expected
     }
 
+    @Test
+    void "refIds"() {
+        def sut = Policy.newInstance(id: 'RootPolicy', PolicyName: 'root',
+            PolicyDocument: [
+                Version  : '2012-10-17',
+                Statement: [
+                    [Action: '*', Effect: 'Allow', Resource: '*']
+                ]
+            ],
+            Roles: ["Ref:Web"], Users: ["Ref:Admin", "Ref:PowerUser"]
+        )
+        assert sut.refIds == ['Web', 'Admin', 'PowerUser']
+    }
 
+    @Test(expected = ValidErrorException)
+    void "id 必須"() {
+        Policy.newInstance(PolicyName: 'root',
+            PolicyDocument: [
+                Version  : '2012-10-17',
+                Statement: [
+                    [Action: '*', Effect: 'Allow', Resource: '*']
+                ]
+            ],
+            Roles: ["Ref:Web"], Users: ["Ref:Admin", "Ref:PowerUser"]
+        )
+    }
+
+    @Test(expected = ValidErrorException)
+    void "PolicyName 必須"() {
+        Policy.newInstance(id: 'RootPolicy',
+            PolicyDocument: [
+                Version  : '2012-10-17',
+                Statement: [
+                    [Action: '*', Effect: 'Allow', Resource: '*']
+                ]
+            ],
+            Roles: ["Ref:Web"], Users: ["Ref:Admin", "Ref:PowerUser"]
+        )
+    }
+
+    @Test(expected = ValidErrorException)
+    void "PolicyDocument 必須"() {
+        Policy.newInstance(id: 'RootPolicy', PolicyName: 'root',
+            Roles: ["Ref:Web"], Users: ["Ref:Admin", "Ref:PowerUser"]
+        )
+    }
+
+    @Test(expected = ValidErrorException)
+    void "Roles/Users/Groups 必須"() {
+        Policy.newInstance(id: 'RootPolicy', PolicyName: 'root',
+            PolicyDocument: [
+                Version  : '2012-10-17',
+                Statement: [
+                    [Action: '*', Effect: 'Allow', Resource: '*']
+                ]
+            ]
+        )
+    }
 }

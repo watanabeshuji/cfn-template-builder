@@ -142,7 +142,7 @@ class ResourcesDelegate {
     }
 
     void policy(Map params) {
-        this.resources << new Policy(convert(params))
+        this.resources << Policy.newInstance(params)
     }
 
     void instanceProfile(Map params) {

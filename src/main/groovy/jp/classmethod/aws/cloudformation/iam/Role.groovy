@@ -26,7 +26,7 @@ http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-iam-r
 [Optional Params]
 -
 
-[Sample: InternetGateway]
+[Sample]
 resources {
     role id: "Role"
 }
