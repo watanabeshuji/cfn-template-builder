@@ -118,7 +118,12 @@ class CloudFormationTest {
         def expected = new CloudFormation(
             Description: "a iam template.",
             Resources: [
-                new Role(id: 'EC2Role'),
+                new Role(id: 'EC2Role', 'Path': '/', 'AssumeRolePolicyDocument': [
+                    Version  : '2012-10-17',
+                    Statement: [
+                        [Effect: 'Allow', Principal: [Service: ['ec2.amazonaws.com']], Action: ['sts:AssumeRole']]
+                    ]
+                ]),
                 new Policy(id: 'EC2Policy', PolicyName: "EC2", PolicyDocument: doc, Roles: [[Ref: "EC2Role"]]),
                 new InstanceProfile(id: 'EC2InstanceProfile', Path: "/", Roles: [[Ref: "EC2Role"]])
             ]

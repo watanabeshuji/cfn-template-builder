@@ -138,7 +138,7 @@ class ResourcesDelegate {
     }
 
     void role(Map params) {
-        this.resources << new Role(convert(params))
+        this.resources << Role.newInstance(params)
     }
 
     void policy(Map params) {

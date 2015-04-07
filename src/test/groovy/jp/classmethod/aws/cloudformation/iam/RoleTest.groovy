@@ -1,5 +1,6 @@
 package jp.classmethod.aws.cloudformation.iam
 
+import jp.classmethod.aws.cloudformation.util.ValidErrorException
 import org.junit.Test
 
 import java.nio.file.Path
@@ -16,13 +17,22 @@ class RoleTest {
         Path input = getPath("/templates/resources/role.groovy")
         def actual = Role.load(input)
         assert actual == [
-            new Role(id: 'Role')
+            new Role(
+                id: 'Role',
+                'Path': '/',
+                'AssumeRolePolicyDocument': [
+                    Version  : '2012-10-17',
+                    Statement: [
+                        [Effect: 'Allow', Principal: [Service: ['ec2.amazonaws.com']], Action: ['sts:AssumeRole']]
+                    ]
+                ]
+            )
         ]
     }
 
     @Test
     void "toResourceMap"() {
-        def sut = new Role(id: 'RootRole')
+        def sut = Role.newInstance(id: 'RootRole')
         def expected = [
             'Type'      : 'AWS::IAM::Role',
             'Properties': [
@@ -39,4 +49,15 @@ class RoleTest {
     }
 
 
+    @Test
+    void "refIds"() {
+        def sut = Role.newInstance(id: 'Web')
+        assert sut.refIds == []
+    }
+
+
+    @Test(expected = ValidErrorException)
+    void "id 必須"() {
+        Role.newInstance([:])
+    }
 }
