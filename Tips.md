@@ -31,6 +31,15 @@ resources {
 {  "Fn::FindInMap": [ "AddressMap", "IpRange", "VPC"] }
 ```
 
+### GetAtt
+```groovy
+"GetAtt:CodeDeployTrustRole:Arn" >> ["Fn::GetAtt": ["CodeDeployTrustRole", "Arn"]]
+```
+```json
+{  "Fn::GetAtt": [ "CodeDeployTrustRole", "Arn"] }
+```
+
+
 ## EC2:Instance
 
 ### UserData

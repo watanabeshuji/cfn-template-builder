@@ -43,6 +43,7 @@ class Params {
         if (value instanceof List) return value.collect { convertValue(it) }
         if (needsConvertRef(value)) return toRef(value)
         if (needsConvertFindMap(value)) return toFindMap(value)
+        if (needsConvertGetAtt(value)) return toGetAtt(value)
         value
     }
 
@@ -63,4 +64,14 @@ class Params {
         def keys = v.split(":")
         ["Fn::FindInMap": [keys[1], keys[2], keys[3]]]
     }
+
+    private static boolean needsConvertGetAtt(v) {
+        String.class.isInstance(v) && v.startsWith("GetAtt:")
+    }
+
+    private static Map toGetAtt(String v) {
+        def keys = v.split(":")
+        ["Fn::GetAtt": [keys[1], keys[2]]]
+    }
+
 }
