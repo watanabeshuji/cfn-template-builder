@@ -17,6 +17,7 @@ class CloudFormation {
     Map Parameters = [:]
     List Resources = []
     Map Outputs = [:]
+    Map binding = [:]
 
     def getResourcesSummary() {
         def summary = []
@@ -58,7 +59,11 @@ class CloudFormation {
     }
 
     static CloudFormation load(Path path) {
-        DSLSupport.load(path)
+        load(path, [:])
+    }
+
+    static CloudFormation load(Path path, Map binding) {
+        DSLSupport.load(path, binding)
     }
 
     static void main(String[] args) {

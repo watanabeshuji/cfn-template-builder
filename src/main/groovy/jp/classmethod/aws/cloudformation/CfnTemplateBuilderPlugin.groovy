@@ -1,6 +1,5 @@
 package jp.classmethod.aws.cloudformation
 
-import groovy.json.JsonBuilder
 import jp.classmethod.aws.cloudformation.cloudformation.WaitCondition
 import jp.classmethod.aws.cloudformation.cloudformation.WaitConditionHandle
 import jp.classmethod.aws.cloudformation.ec2.*
@@ -73,26 +72,57 @@ CloudFormation Template Builder
         }
     }
 
+    def List<String> getEnvironments(Project project) {
+        project.hasProperty('cfnEnvironment') ? [project.cfnEnvironment] : project.extensions.cfn.cfnEnvironments
+    }
+
     def doValidate(Project project) {
-        getCfnTemplates(project).each {
-            CloudFormation cfn = load(it[0])
-            validateTemplate(cfn)
-            println()
+        def environments = getEnvironments(project)
+        getCfnTemplates(project).each { template ->
+            if (environments != null && !environments.isEmpty()) {
+                environments.each { env ->
+                    CloudFormation cfn = load(template[0], [env: env])
+                    validateTemplate(cfn)
+                    println()
+                }
+            } else {
+                CloudFormation cfn = load(template[0], [:])
+                validateTemplate(cfn)
+                println()
+            }
         }
         println "Success!"
     }
 
     def doBuild(Project project) {
-        getCfnTemplates(project).each {
-            CloudFormation cfn = load(it[0])
-            build(cfn, it[1])
-            println()
+        def environments = getEnvironments(project)
+        getCfnTemplates(project).each { template ->
+            if (environments != null && !environments.isEmpty()) {
+                mkEnvDirs(getCfnDir(project), environments)
+                environments.each { env ->
+                    CloudFormation cfn = load(template[0], [env: env])
+                    build(cfn, template[1].parent.resolve(env).resolve(template[1].fileName))
+                    println()
+                }
+            } else {
+                CloudFormation cfn = load(template[0], [:])
+                build(cfn, template[1])
+                println()
+            }
+        }
+        println "Success!"
+    }
+
+    def mkEnvDirs(String cfnDir, List<String> environments) {
+        environments.each { env ->
+            Path p = Paths.get(cfnDir, env)
+            if (Files.notExists(p)) Files.createDirectory(p)
         }
     }
 
-    def CloudFormation load(Path path) {
+    def CloudFormation load(Path path, Map binding) {
         println "Load from $path"
-        CloudFormation.load(path)
+        CloudFormation.load(path, binding)
     }
 
     def validateTemplate(CloudFormation cfn) {

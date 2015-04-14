@@ -7,5 +7,6 @@ class CfnTemplateBuilderPluginExtention {
 
     def String cfnDir = "./cfn"
     def List<String> cfnTemplates = ['cfn']
+    def List<String> cfnEnvironments = []
 
 }

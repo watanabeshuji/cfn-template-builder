@@ -22,6 +22,8 @@ cfn {
     // DSL and template file names (as List) [Default: cfn ]
 //  cfnTemplates = ['cfn']
 //  cfnTemplates = ['vpc', 'servers']
+    // enviroments 
+//    cfnEnvironments = ['dev', 'stg', 'prd']
 }
 
 buildscript {

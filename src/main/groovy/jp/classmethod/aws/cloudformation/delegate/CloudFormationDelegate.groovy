@@ -53,12 +53,12 @@ class CloudFormationDelegate {
         if (resourcePath.startsWith("/")) {
             URL resource = getClass().getResource(resourcePath)
             if (resource == null) throw new InvalidResourceException("not found: ${resourcePath}")
-            List resources = DSLSupport.loadResources(resource.toURI())
+            List resources = DSLSupport.loadResources(resource.toURI(), cfn.binding)
             cfn.Resources.addAll(resources)
         } else {
             Path path = Paths.get(resourcePath)
             if (!Files.exists(path)) throw new InvalidResourceException("not found: ${resourcePath}")
-            List resources = DSLSupport.loadResources(path)
+            List resources = DSLSupport.loadResources(path, cfn.binding)
             cfn.Resources.addAll(resources)
         }
     }

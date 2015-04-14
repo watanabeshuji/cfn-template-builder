@@ -22,6 +22,10 @@ class Resource {
     }
 
     static List load(Path dsl) {
-        DSLSupport.loadResources(dsl)
+        load(dsl, [:])
+    }
+
+    static List load(Path dsl, Map binding) {
+        DSLSupport.loadResources(dsl, binding)
     }
 }

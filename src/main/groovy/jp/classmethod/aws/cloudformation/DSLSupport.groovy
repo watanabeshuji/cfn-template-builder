@@ -11,9 +11,10 @@ import java.nio.file.Path
 class DSLSupport {
 
 
-    static CloudFormation load(Path dsl) {
+    static CloudFormation load(Path dsl, Map binding) {
         CloudFormation cfn = new CloudFormation()
-        _load(dsl.toFile(), { ExpandoMetaClass emc ->
+        cfn.binding = binding
+        _load(dsl.toFile(), binding, { ExpandoMetaClass emc ->
             emc.cloudformation = { Closure cl ->
                 cl.delegate = new CloudFormationDelegate(cfn)
                 cl.resolveStrategy = Closure.DELEGATE_FIRST
@@ -32,9 +33,9 @@ class DSLSupport {
         cfn
     }
 
-    static List loadResources(URI uri) {
+    static List loadResources(URI uri, Map binding) {
         List resources = []
-        _load(uri, { ExpandoMetaClass emc ->
+        _load(uri, binding, { ExpandoMetaClass emc ->
             emc.resources = { Closure cl ->
                 cl.delegate = new ResourcesDelegate(resources)
                 cl.resolveStrategy = Closure.DELEGATE_FIRST
@@ -44,9 +45,9 @@ class DSLSupport {
         resources
     }
 
-    static List loadResources(Path dsl) {
+    static List loadResources(Path dsl, Map binding) {
         List resources = []
-        _load(dsl.toFile(), { ExpandoMetaClass emc ->
+        _load(dsl.toFile(), binding, { ExpandoMetaClass emc ->
             emc.resources = { Closure cl ->
                 cl.delegate = new ResourcesDelegate(resources)
                 cl.resolveStrategy = Closure.DELEGATE_FIRST
@@ -56,14 +57,16 @@ class DSLSupport {
         resources
     }
 
-    private static _load(URI uri, Closure cls) {
+    private static _load(URI uri, Map binding, Closure cls) {
         Script dslScript = new GroovyShell().parse(uri)
+        dslScript.setBinding(new Binding(binding))
         dslScript.metaClass = _createEMC(dslScript.class, cls)
         dslScript.run()
     }
 
-    private static _load(File file, Closure cls) {
+    private static _load(File file, Map binding, Closure cls) {
         Script dslScript = new GroovyShell().parse(file)
+        dslScript.setBinding(new Binding(binding))
         dslScript.metaClass = _createEMC(dslScript.class, cls)
         dslScript.run()
     }
