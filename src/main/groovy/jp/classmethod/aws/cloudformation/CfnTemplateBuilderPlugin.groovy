@@ -9,6 +9,7 @@ import org.gradle.api.Plugin
 import org.gradle.api.Project
 
 import java.nio.file.Files
+import java.nio.file.Path
 import java.nio.file.Paths
 
 /**
@@ -17,72 +18,80 @@ import java.nio.file.Paths
 class CfnTemplateBuilderPlugin implements Plugin<Project> {
 
     static final String TASK_NAME = 'AWS tasks'
+    static final String BASE_MESSAGE = '''\
+CloudFormation Template Builder
+'''
 
     void apply(Project project) {
-        project.ext.cfnDir = (project.hasProperty('cfnDir')) ? project.getProperty('cfnDir') : "./cfn"
-        project.ext.cfnType = (project.hasProperty('cfnType')) ? project.getProperty('cfnType') : ""
-        def dir = project.ext.cfnDir
-        def type = project.ext.cfnType
-        def output = (project.hasProperty('output')) ? project.getProperty('output') as Boolean : true
-        def dryRun = (project.hasProperty('dryRun')) ? project.getProperty('dryRun') as Boolean : false
-        project.task('cfnInit') << {
-            println 'CloudFormation Builder'
-            def cfnDir = project.ext.cfnDir
-            if (Paths.get(cfnDir).toFile().exists()) {
-                println ""
-                println "Sorry!!"
-                println "Already exist cfn directory: " + cfnDir
-                return
-            }
-            def out = Paths.get(cfnDir, 'cfn.groovy')
-            Files.createDirectory(Paths.get(cfnDir))
-            Files.copy(CfnTemplateBuilderPlugin.class.getResourceAsStream('/templates/cfn.groovy'), out)
-            println "create CloudFormation DSL file: $out"
-        }
+        initProject(project)
         project.task('cfnValidate') << {
-            println 'CloudFormation Builder'
-            println 'Validate DSL as template....'
-            CloudFormation cfn = load(dir)
-            validateTemplate(cfn)
-            println "Success!"
+            println BASE_MESSAGE
+            println 'Validate templates....'
+            doValidate(project)
         }
         project.task('cfnBuild') << {
-            println 'CloudFormation Builder'
-            CloudFormation cfn = load(dir)
-            build(cfn, output, dir)
-        }
-        project.task('cfnClean') << {
-            println 'CloudFormation Builder'
-            println 'Cleanup cfn directory....'
-            def cfnDir = project.ext.cfnDir
-            Paths.get(cfnDir).toFile().deleteDir()
+            println BASE_MESSAGE
+            println 'Build templates....'
+            doBuild(project)
         }
         project.task('cfnRelationships') << {
-            println 'CloudFormation Builder'
+            println BASE_MESSAGE
             def vpcId = project.getProperty('vpcId')
             relationships(vpcId)
         }
         project.task('cfnHelp') << {
-            println 'CloudFormation Builder'
-            help(type)
+            println BASE_MESSAGE
+            doHelp(project)
         }
-        project.tasks.cfnInit.group = TASK_NAME
-        project.tasks.cfnClean.group = TASK_NAME
         project.tasks.cfnValidate.group = TASK_NAME
         project.tasks.cfnBuild.group = TASK_NAME
         project.tasks.cfnRelationships.group = TASK_NAME
         project.tasks.cfnHelp.group = TASK_NAME
-        project.tasks.cfnInit.description = "Initialize cfn-template-builder. Create cfn directory. Option: -PcfnDir=[cfnDir]."
-        project.tasks.cfnValidate.description = "Validate CloudFormation DSL. Option: -PcfnDir=[cfnDir]."
-        project.tasks.cfnBuild.description = "Build CloudFormation DSL. Option: -PcfnDir=[cfnDir]."
-        project.tasks.cfnClean.description = "Cleanup cfn directory. Option: -PcfnDir=[cfnDir]."
+        project.tasks.cfnValidate.description = "Validate CloudFormation templates."
+        project.tasks.cfnBuild.description = "Build CloudFormation templates."
         project.tasks.cfnRelationships.description = "TODO "
         project.tasks.cfnHelp.description = "Show documents and samples. Option: -PcfnType=[Type]."
     }
 
-    def CloudFormation load(String dir) {
-        println "Load from $dir"
-        CloudFormation.load(Paths.get(dir, "cfn.groovy"))
+    def initProject(Project project) {
+        project.extensions.create("cfn", CfnTemplateBuilderPluginExtention)
+    }
+
+    def getCfnDir(Project project) {
+        if (project.hasProperty('cfnDir')) {
+            project.cfnDir
+        } else {
+            project.extensions.cfn.cfnDir
+        }
+    }
+
+    def List<Path[]> getCfnTemplates(Project project) {
+        def cfnDir = getCfnDir(project)
+        project.extensions.cfn.cfnTemplates.collect {
+            [Paths.get(cfnDir, "${it}.groovy"), Paths.get(cfnDir, "${it}.template")]
+        }
+    }
+
+    def doValidate(Project project) {
+        getCfnTemplates(project).each {
+            CloudFormation cfn = load(it[0])
+            validateTemplate(cfn)
+            println()
+        }
+        println "Success!"
+    }
+
+    def doBuild(Project project) {
+        getCfnTemplates(project).each {
+            CloudFormation cfn = load(it[0])
+            build(cfn, it[1])
+            println()
+        }
+    }
+
+    def CloudFormation load(Path path) {
+        println "Load from $path"
+        CloudFormation.load(path)
     }
 
     def validateTemplate(CloudFormation cfn) {
@@ -90,13 +99,12 @@ class CfnTemplateBuilderPlugin implements Plugin<Project> {
         client.validateTemplate(cfn.toString())
     }
 
-    def build(CloudFormation cfn, output, dir) {
+    def build(CloudFormation cfn, Path out) {
         cfn.doValidate()
         def json = cfn.toPrettyString()
-        if (output) println json
-        def out = new File(dir, "cfn.template")
+        println json
         out.write(json)
-        println "File generated:  ${out.absolutePath}"
+        println "File generated:  ${out}"
         println "Name\tType"
         cfn.resourcesSummary.each { println "${it.Name}\t${it.Type}" }
     }
@@ -121,7 +129,8 @@ class CfnTemplateBuilderPlugin implements Plugin<Project> {
         println "]"
     }
 
-    def help(String type) {
+    def doHelp(Project project) {
+        def type = project.hasProperty('cfnType') ? project.cfnType : ""
         println "------"
         switch (type) {
             case "VPC":
