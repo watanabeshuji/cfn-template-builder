@@ -22,6 +22,26 @@ class ParamsTest {
         assert Params.convert([ Key: "FindInMap:Key1:Key2:Key3" ]) == [ Key: ["Fn::FindInMap": ["Key1", "Key2", "Key3"] ]]
     }
 
+    @Test
+    def void "convert Ref in FindInMap First"() {
+        assert Params.convert([ Key: "FindInMap:Key1:[Ref:Value]:Key3" ]) == [ Key: ["Fn::FindInMap": ["Key1", [Ref: "Value"], "Key3"] ]]
+    }
+
+    @Test
+    def void "convert Ref in FindInMap Second"() {
+        assert Params.convert([ Key: "FindInMap:[Ref:Value]:Key2:Key3" ]) == [ Key: ["Fn::FindInMap": [[Ref: "Value"], "Key2", "Key3"] ]]
+    }
+
+    @Test
+    def void "convert Ref in FindInMap Last"() {
+        assert Params.convert([ Key: "FindInMap:Key1:Key2:[Ref:Value]" ]) == [ Key: ["Fn::FindInMap": ["Key1", "Key2", [Ref: "Value"]] ]]
+    }
+
+    @Test
+    def void "convert Ref in FindInMap All"() {
+        assert Params.convert([ Key: "FindInMap:[Ref:Value1]:[Ref:Value2]:[Ref:Value3]" ]) == [ Key: ["Fn::FindInMap": [[Ref: "Value1"], [Ref: "Value2"], [Ref: "Value3"]] ]]
+    }
+
 
     @Test
     def void "convert GetAtt"() {
@@ -34,12 +54,14 @@ class ParamsTest {
             Key1: "Value",
             Key2: "Ref:Value",
             Key3: "FindInMap:Key1:Key2:Key3",
-            Key4: "GetAtt:Target:Attr"
+            Key4: "FindInMap:Key1:Key2:[Ref:Value]",
+            Key5: "GetAtt:Target:Attr"
         ]) == [
             Key1: "Value",
             Key2: [Ref: "Value" ],
             Key3: ["Fn::FindInMap": ["Key1", "Key2", "Key3"]],
-            Key4: ["Fn::GetAtt": ["Target", "Attr"] ]
+            Key4: ["Fn::FindInMap": ["Key1", "Key2", [Ref: "Value"]]],
+            Key5: ["Fn::GetAtt": ["Target", "Attr"] ]
         ]
     }
 

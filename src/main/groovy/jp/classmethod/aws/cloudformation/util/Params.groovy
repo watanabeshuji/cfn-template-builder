@@ -42,8 +42,8 @@ class Params {
     static def convertValue(value) {
         if (value instanceof List) return value.collect { convertValue(it) }
         if (needsConvertRef(value)) return toRef(value)
-        if (needsConvertFindMap(value)) return toFindMap(value)
         if (needsConvertGetAtt(value)) return toGetAtt(value)
+        if (needsConvertFindMap(value)) return toFindMap(value)
         value
     }
 
@@ -61,8 +61,26 @@ class Params {
     }
 
     private static Map toFindMap(String v) {
-        def keys = v.split(":")
-        ["Fn::FindInMap": [keys[1], keys[2], keys[3]]]
+        def keys = []
+        def buf = v.substring("FindInMap:".length())
+        while (0 < buf.length()) {
+            if (buf.startsWith("[Ref:")) {
+                def ref = toRef(buf.substring(1, buf.indexOf("]")))
+                keys << ref
+                buf = buf.substring(buf.indexOf("]") + 1)
+                if (buf.indexOf(':') == 0) buf = buf.substring(1)
+            } else {
+                def idx = buf.indexOf(':')
+                if (idx == -1) {
+                    keys << buf
+                    break
+                } else {
+                    keys << buf.substring(0, idx)
+                    buf = buf.substring(idx + 1)
+                }
+            }
+        }
+        ["Fn::FindInMap": keys]
     }
 
     private static boolean needsConvertGetAtt(v) {
