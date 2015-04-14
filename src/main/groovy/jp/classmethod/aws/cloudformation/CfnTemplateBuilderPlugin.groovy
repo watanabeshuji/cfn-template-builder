@@ -67,7 +67,8 @@ CloudFormation Template Builder
 
     def List<Path[]> getCfnTemplates(Project project) {
         def cfnDir = getCfnDir(project)
-        project.extensions.cfn.cfnTemplates.collect {
+        def templates = project.hasProperty('cfnTemplate') ? [project.cfnTemplate] : project.extensions.cfn.cfnTemplates
+        templates.collect {
             [Paths.get(cfnDir, "${it}.groovy"), Paths.get(cfnDir, "${it}.template")]
         }
     }

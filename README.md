@@ -1,5 +1,8 @@
 # CloudFormation Template Builder
 
+- [Resources](docs/Resources.md)
+- [Tips](docs/Tips.md)
+
 ## これは何？
 Groovy DSLからCloudFormationの定義ファイルをJSONに整形するGradleのPluginです。
 
@@ -11,6 +14,15 @@ Groovy DSLからCloudFormationの定義ファイルをJSONに整形するGradle�
 build.gradle を作成します。
 ```groovy
 apply plugin: 'cfn-template-builder'
+
+// setting for cfn-template-builder
+cfn {
+    // directory for DSL and template files [Default: cfn ]
+//  cfnDir = "cfn"
+    // DSL and template file names (as List) [Default: cfn ]
+//  cfnTemplates = ['cfn']
+//  cfnTemplates = ['vpc', 'servers']
+}
 
 buildscript {
     repositories {
@@ -25,34 +37,37 @@ buildscript {
 }
 ```
 
-cfnInitタスクを実行します。
+テンプレート用のディレクトリ（cfn）を作成し、DSLファイル（cfn.groovy）を作成します。
+```groovy
+cloudformation {
+    description "a cloudformation template."
+    resources {
+        vpc id: 'VPC', CidrBlock: "10.0.0.0/16"
+    }
+}
 ```
-$ gradle cfnInit
-```
-cfnディレクトリが作成され、定義ファイルcfn.groovyが作成されます。
 
 cfnBuildタスクを実行し、テンプレートファイルを作成します。
 ```
 $ gradle cfnBuild
 ```
-cfn.template がテンプレートファイルです。
-
+cfn/cfn.template がテンプレートファイルです。
 
 ## タスク
 Task         |Desc
 -----------  |-------------------------------------------------------------------------------------------------------------------------
-cfnClean     |cfnディレクトリを削除します
-cfnInit      |cfnディレクトリを作成し、最小限のファイルを作成します
 cfnBuild     |cfnテンプレートを作成します                
+cfnValidate  |DLSのバリデーションを行います                
 cfnHelp      |ヘルプを表示します                
 
 ### オプション
 Gradleの環境変数としてオプションを指定。
 
-Option       |Default Value  |Task                  |Desc
------------- |-------------  |--------------------  |------------------------------------------------------------
-cfnDir       |cfn            |cfn*                  |CloudFormation DSLを配置するディレクトリ
-cfnType      |ALL            |cfnHelp               |CloudFormation DSLの種別
+Option       |Task                  |Desc
+------------ |--------------------  |------------------------------------------------------------
+cfnTemplate  |cfnBuild, cfnValidate |CloudFormation DSLの名称（build.gradleに定義されたリストから選択）
+cfnDir       |cfnBuild, cfnValidate |CloudFormation DSLを配置するディレクトリ（build.gradleを上書き）
+cfnType      |cfnHelp               |CloudFormation DSLの種別
 
 ### cfnType
 - EC2::VPC
@@ -100,6 +115,14 @@ apply plugin: 'idea'
 version = '1.0'
 defaultTasks 'cfnBuild'
 
+// setting for cfn-template-builder
+cfn {
+    // directory for DSL and template files [Default: cfn ]
+    cfnDir = "cfn"
+    // DSL and template file names (as List) [Default: cfn ]
+    cfnTemplates = ['vpc', 'servers']
+}
+
 buildscript {
     repositories {
         mavenCentral()
@@ -114,9 +137,9 @@ buildscript {
 ```
 
 ## DSLファイル
-DSLファイルは、groovy DSL形式、cfnディレクトリ以下に配置します。
-cfn-template-builderは、cfnディレクトリ以下のcfn.groovyを読み込みます。
-必要に応じてDSLを分割し、cfn.groovyからインクルードすることができます。
+DSLファイルは、groovy DSL形式で、cfnディレクトリ以下に配置します。
+cfn-template-builderは、cfnディレクトリ以下のDSLを読み込みます。
+この時、読み込むテンプレートファイル名はcfn.cfnTemplates に定義します（デフォルトはcfn）。
 
 # DSL
 cfn-template-builderはGroovy DSLで記述します。
@@ -189,31 +212,6 @@ resources "commonSecurityGroups.groovy"
 
 絶対パスには対応していません。
 絶対パスは、ライブラリのリソースを参照します。
-
-
-### EC2::VPC
-AWS::EC2::VPC リソースを定義します。
-
-Key                 |Required  |Default     |Example                        |Desc
---------------------|----------|------------|-------------------------------|----------------------------------
-id                  |YES       |-           |"VPC"                          |VPC名
-CidrBlock           |YES       |-           |"10.0.0.0/16"                  |CIDR Block
-EnableDnsSupport    |NO        |false       |true                           |DNSサポートの有無
-EnableDnsHostnames  |NO        |false       |true                           |DBSホスト名解決の有無
-Tags                |NO        |[:]         |[Name: "vpc-dev"]              |リソースに定義するタグ、Mapで定義
-
-#### Simple VPC
-```groovy
-resources {
-    vpc id: "VPC", CidrBlock: "10.0.0.0/16"
-}
-```
-#### Enable DNS Hostname and Name tag
-```groovy
-resources {
-    vpc id: "VPC", CidrBlock: "192.168.0.0/16", EnableDnsSupport: true, EnableDnsHostnames: true, Tags: [Name: 'my-vpc']
-}
-```
 
 ## Groovy DSLの記法
 Groovy DSLでは、ブロックはクロージャとして実行されます。
