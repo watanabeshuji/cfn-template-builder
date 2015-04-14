@@ -1,8 +1,10 @@
 package jp.classmethod.aws.cloudformation
 
+import groovy.json.JsonBuilder
 import jp.classmethod.aws.cloudformation.cloudformation.WaitCondition
 import jp.classmethod.aws.cloudformation.cloudformation.WaitConditionHandle
 import jp.classmethod.aws.cloudformation.ec2.*
+import jp.classmethod.aws.config.ConfigClient
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 
@@ -55,6 +57,11 @@ class CfnTemplateBuilderPlugin implements Plugin<Project> {
             def cfnDir = project.ext.cfnDir
             Paths.get(cfnDir).toFile().deleteDir()
         }
+        project.task('cfnRelationships') << {
+            println 'CloudFormation Builder'
+            def vpcId = project.getProperty('vpcId')
+            relationships(vpcId)
+        }
         project.task('cfnHelp') << {
             println 'CloudFormation Builder'
             help(type)
@@ -63,11 +70,13 @@ class CfnTemplateBuilderPlugin implements Plugin<Project> {
         project.tasks.cfnClean.group = TASK_NAME
         project.tasks.cfnValidate.group = TASK_NAME
         project.tasks.cfnBuild.group = TASK_NAME
+        project.tasks.cfnRelationships.group = TASK_NAME
         project.tasks.cfnHelp.group = TASK_NAME
         project.tasks.cfnInit.description = "Initialize cfn-template-builder. Create cfn directory. Option: -PcfnDir=[cfnDir]."
         project.tasks.cfnValidate.description = "Validate CloudFormation DSL. Option: -PcfnDir=[cfnDir]."
         project.tasks.cfnBuild.description = "Build CloudFormation DSL. Option: -PcfnDir=[cfnDir]."
         project.tasks.cfnClean.description = "Cleanup cfn directory. Option: -PcfnDir=[cfnDir]."
+        project.tasks.cfnRelationships.description = "TODO "
         project.tasks.cfnHelp.description = "Show documents and samples. Option: -PcfnType=[Type]."
     }
 
@@ -90,6 +99,26 @@ class CfnTemplateBuilderPlugin implements Plugin<Project> {
         println "File generated:  ${out.absolutePath}"
         println "Name\tType"
         cfn.resourcesSummary.each { println "${it.Name}\t${it.Type}" }
+    }
+
+    def relationships(String vpcId) {
+        def client = new ConfigClient()
+        def relationships = client.getRelationshipsToVPC(vpcId)
+        def resources = [:]
+        println "mappings = ["
+        println "    Resources: ["
+        println "        SecurityGroup: ["
+        relationships['SecurityGroup'].each { k, v ->
+            print "\"$k\": \"$v\", "
+        }
+        println "],"
+        println "        Subnet: ["
+        relationships['Subnet'].each { k, v ->
+            print "\"$k\": \"$v\", "
+        }
+        println "]"
+        println "    ]"
+        println "]"
     }
 
     def help(String type) {
