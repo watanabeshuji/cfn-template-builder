@@ -16,7 +16,7 @@ class CloudFormation {
     Map Mappings = [:]
     Map Parameters = [:]
     List Resources = []
-    Map Outputs = [:]
+    List Outputs = []
     Map binding = [:]
 
     def getResourcesSummary() {
@@ -35,7 +35,7 @@ class CloudFormation {
             if (!Mappings.isEmpty()) 'Mappings' Mappings
             if (!Parameters.isEmpty()) 'Parameters' Parameters
             if (!resources.isEmpty()) 'Resources' Resources.collectEntries { [it.id, it.toResourceMap()] }
-            if (!Outputs.isEmpty()) 'Outputs' Outputs
+            if (!Outputs.isEmpty()) 'Outputs' Outputs.collectEntries { [it.id, it.toMap()] }
         }
         json
     }

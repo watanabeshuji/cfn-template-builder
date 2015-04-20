@@ -1,6 +1,6 @@
 cloudformation {
     outputs {
-        "CodeDeployTrustRoleARN" "GetAtt:CodeDeployTrustRole:Arn"
-        "InstanceProfile" "Ref:InstanceProfile"
+        "CodeDeployTrustRoleARN" Value: "GetAtt:CodeDeployTrustRole:Arn"
+        "InstanceProfile" Value: "Ref:InstanceProfile", Description: "InstanceProfile Logical Id"
     }
 }

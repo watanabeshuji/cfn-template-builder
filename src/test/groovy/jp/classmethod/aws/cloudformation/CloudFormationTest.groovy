@@ -164,8 +164,8 @@ class CloudFormationTest {
         def actual = CloudFormation.load(input)
         def expected = new CloudFormation(
             Outputs: [
-                CodeDeployTrustRoleARN: ["Fn::GetAtt": ["CodeDeployTrustRole", "Arn"]],
-                InstanceProfile: [Ref: "InstanceProfile"]
+                new Output(id: "CodeDeployTrustRoleARN", Value: ["Fn::GetAtt": ["CodeDeployTrustRole", "Arn"]]),
+                new Output(id: "InstanceProfile", Value: [Ref: "InstanceProfile"], Description: "InstanceProfile Logical Id")
             ]
         )
         assert actual == expected

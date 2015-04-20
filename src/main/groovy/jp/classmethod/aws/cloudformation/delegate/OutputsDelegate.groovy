@@ -1,20 +1,20 @@
 package jp.classmethod.aws.cloudformation.delegate
 
-import jp.classmethod.aws.cloudformation.util.Params
+import jp.classmethod.aws.cloudformation.Output
 
 /**
  * Created by watanabeshuji on 2015/03/27.
  */
 class OutputsDelegate {
 
-    Map outputs
+    List outputs
 
-    OutputsDelegate(Map outputs) {
+    OutputsDelegate(List outputs) {
         this.outputs = outputs
     }
 
     def methodMissing(String name, args) {
-        outputs[name] = Params.convertValue(args[0])
+        outputs << Output.newInstance(name, args[0])
     }
 
 }
