@@ -10,6 +10,7 @@ import jp.classmethod.aws.cloudformation.iam.Role
 import jp.classmethod.aws.cloudformation.rds.DBInstance
 import jp.classmethod.aws.cloudformation.rds.DBSubnetGroup
 import jp.classmethod.aws.cloudformation.route53.HostedZone
+import jp.classmethod.aws.cloudformation.route53.RecordSet
 
 import static jp.classmethod.aws.cloudformation.util.Params.convert
 
@@ -188,5 +189,9 @@ class ResourcesDelegate {
         cl.resolveStrategy = Closure.DELEGATE_FIRST
         cl()
         this.resources << hostedZone
+    }
+
+    void recordSet(Map params) {
+        this.resources << RecordSet.newInstance(params)
     }
 }
