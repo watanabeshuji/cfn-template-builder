@@ -194,4 +194,12 @@ class ResourcesDelegate {
     void recordSet(Map params) {
         this.resources << RecordSet.newInstance(params)
     }
+
+    void recordSet(Map params, Closure cl) {
+        def recordSet = RecordSet.newInstance(params)
+        cl.delegate = new RecordSetDelegate(recordSet)
+        cl.resolveStrategy = Closure.DELEGATE_FIRST
+        cl()
+        this.resources << recordSet
+    }
 }

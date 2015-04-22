@@ -39,6 +39,7 @@ resources {
     def ResourceRecords
     def SetIdentifier
     def Comment
+    def AliasTarget
 
     static RecordSet newInstance(Map params) {
         convert(params)
@@ -65,7 +66,26 @@ resources {
         if (ResourceRecords && !ResourceRecords.isEmpty()) map['Properties']['ResourceRecords'] = ResourceRecords
         if (SetIdentifier) map['Properties']['SetIdentifier'] = SetIdentifier
         if (Comment) map['Properties']['Comment'] = Comment
+        if (AliasTarget) map['Properties']['AliasTarget'] = AliasTarget.toMap()
         map
     }
 
+    @Canonical
+    static class AliasTarget {
+        def HostedZoneId
+        def DNSName
+
+        static AliasTarget newInstance(Map params) {
+            convert(params)
+            new AliasTarget(params)
+        }
+
+        def toMap() {
+            [
+                HostedZoneId: HostedZoneId,
+                DNSName     : DNSName
+            ]
+        }
+
+    }
 }

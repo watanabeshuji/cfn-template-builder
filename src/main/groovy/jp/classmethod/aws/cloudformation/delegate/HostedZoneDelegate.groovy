@@ -1,6 +1,5 @@
 package jp.classmethod.aws.cloudformation.delegate
 
-import jp.classmethod.aws.cloudformation.ec2.Instance
 import jp.classmethod.aws.cloudformation.route53.HostedZone
 
 /**
