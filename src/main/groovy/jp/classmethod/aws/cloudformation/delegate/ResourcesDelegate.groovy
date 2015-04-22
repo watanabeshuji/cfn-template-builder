@@ -9,6 +9,7 @@ import jp.classmethod.aws.cloudformation.iam.Policy
 import jp.classmethod.aws.cloudformation.iam.Role
 import jp.classmethod.aws.cloudformation.rds.DBInstance
 import jp.classmethod.aws.cloudformation.rds.DBSubnetGroup
+import jp.classmethod.aws.cloudformation.route53.HostedZone
 
 import static jp.classmethod.aws.cloudformation.util.Params.convert
 
@@ -177,4 +178,15 @@ class ResourcesDelegate {
         this.resources << WaitCondition.newInstance(params)
     }
 
+    void hostedZone(Map params) {
+        this.resources << HostedZone.newInstance(params)
+    }
+
+    void hostedZone(Map params, Closure cl) {
+        def hostedZone = HostedZone.newInstance(params)
+        cl.delegate = new HostedZoneDelegate(hostedZone)
+        cl.resolveStrategy = Closure.DELEGATE_FIRST
+        cl()
+        this.resources << hostedZone
+    }
 }
