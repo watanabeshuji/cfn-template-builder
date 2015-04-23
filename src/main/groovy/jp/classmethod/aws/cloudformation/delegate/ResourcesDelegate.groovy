@@ -11,6 +11,7 @@ import jp.classmethod.aws.cloudformation.rds.DBInstance
 import jp.classmethod.aws.cloudformation.rds.DBSubnetGroup
 import jp.classmethod.aws.cloudformation.route53.HostedZone
 import jp.classmethod.aws.cloudformation.route53.RecordSet
+import jp.classmethod.aws.cloudformation.route53.RecordSetGroup
 
 import static jp.classmethod.aws.cloudformation.util.Params.convert
 
@@ -202,4 +203,13 @@ class ResourcesDelegate {
         cl()
         this.resources << recordSet
     }
+
+    void recordSetGroup(Map params, Closure cl) {
+        def recordSetGroup = RecordSetGroup.newInstance(params)
+        cl.delegate = new RecordSetGroupDelegate(recordSetGroup)
+        cl.resolveStrategy = Closure.DELEGATE_FIRST
+        cl()
+        this.resources << recordSetGroup
+    }
+
 }

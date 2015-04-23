@@ -27,8 +27,20 @@ http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-rou
 
 [Sample]
 resources {
-    hostedZone id: "ExampleComHostedZone", Name: "example.com"
+    recordSet id: "MyDnsRecord2", HostedZoneName: "example.com.", Comment: "A records for my frontends.",
+        Name: "www.example.com.", Type: "A", TTL: "900", ResourceRecords: ['192.168.0.1', '192.168.0.2']
 }
+
+[Sample (ELB)]
+resources {
+    recordSet id: "MyDnsRecord", HostedZoneName: "example.com.", Comment: "A records for elb.",
+        Name: "www.example.com.", Type: "A", {
+            aliasTarget HostedZoneId: "GetAtt:ELB:CanonicalHostedZoneNameID",
+                        DNSName: "GetAtt:ELB:CanonicalHostedZoneName"
+    }
+}
+
+
 '''
     def id
     def Name
@@ -43,13 +55,22 @@ resources {
 
     static RecordSet newInstance(Map params) {
         convert(params)
-        checkKeys(HostedZone, params, [
+        checkKeys(RecordSet, params, [
             'id', 'Name', 'Type', 'HostedZoneId', 'HostedZoneName', 'TTL', 'ResourceRecords', 'SetIdentifier', 'Comment'
         ])
-        logicalId(HostedZone, params)
-        require(HostedZone, ['Name', 'Type'], params)
-        requireOneOf(HostedZone, ['HostedZoneId', 'HostedZoneName'], params)
+        logicalId(RecordSet, params)
+        require(RecordSet, ['Name', 'Type'], params)
+        requireOneOf(RecordSet, ['HostedZoneId', 'HostedZoneName'], params)
         new RecordSet(params).withRefIds(params)
+    }
+
+    static RecordSet newInlineInstance(Map params) {
+        convert(params)
+        checkKeys(RecordSet, params, [
+            'Name', 'Type', 'TTL', 'ResourceRecords', 'SetIdentifier', 'Comment'
+        ])
+        require(RecordSet, ['Name', 'Type'], params)
+        new RecordSet(params)
     }
 
     def toResourceMap() {
@@ -67,6 +88,19 @@ resources {
         if (SetIdentifier) map['Properties']['SetIdentifier'] = SetIdentifier
         if (Comment) map['Properties']['Comment'] = Comment
         if (AliasTarget) map['Properties']['AliasTarget'] = AliasTarget.toMap()
+        map
+    }
+
+    def toInlineMap() {
+        def map = [
+            'Name': Name,
+            'Type': Type
+        ]
+        if (TTL) map['TTL'] = TTL
+        if (ResourceRecords && !ResourceRecords.isEmpty()) map['ResourceRecords'] = ResourceRecords
+        if (SetIdentifier) map['SetIdentifier'] = SetIdentifier
+        if (Comment) map['Comment'] = Comment
+        if (AliasTarget) map['AliasTarget'] = AliasTarget.toMap()
         map
     }
 
